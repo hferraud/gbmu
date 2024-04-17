@@ -2,7 +2,7 @@
 /target
 
 # Assets
-rom
+roms/
 
 # MacOS
 .DS_Store
