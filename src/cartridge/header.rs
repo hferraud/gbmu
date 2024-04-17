@@ -50,30 +50,15 @@ pub struct CartridgeHeader {
 }
 
 impl CartridgeHeader {
-    pub fn new() -> CartridgeHeader {
-        CartridgeHeader {
-            entry_point: [0; ENTRY_POINT_WIDTH],
-            nintendo_logo: [0; NINTENDO_LOGO_WIDTH],
-            title: [0; TITLE_WIDTH],
-            new_licensee_code: [0; NEW_LICENSEE_CODE_WIDTH],
-            sgb_flag: [0; SGB_FLAG_WIDTH],
-            cartridge_type: [0; CARTRIDGE_TYPE_WIDTH],
-            rom_size: [0; ROM_SIZE_WIDTH],
-            ram_size: [0; RAM_SIZE_WIDTH],
-            destination_code: [0; DESTINATION_CODE_WIDTH],
-            old_licensee_code: [0; OLD_LICENSEE_CODE_WIDTH],
-            mask_rom_version: [0; MASK_ROM_VERSION_WIDTH],
-            header_checksum: [0; HEADER_CHECKSUM_WIDTH],
-            global_checksum: [0; GLOBAL_CHECKSUM_WIDTH],
-        }
-    }
-
-    pub fn from_bytes(bytes: &[u8]) -> Option<Self> {
+    pub fn from_bytes(bytes: &[u8]) -> Result<Self, std::io::Error> {
         if bytes.len() < std::mem::size_of::<Self>() {
-            return None;
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::InvalidData,
+                "Insufficient bytes to parse the cartridge header",
+            ));
         }
         let ptr = bytes.as_ptr() as *const Self;
         let cartridge_header = unsafe { ptr.read() };
-        Some(cartridge_header)
+        Ok(cartridge_header)
     }
 }
