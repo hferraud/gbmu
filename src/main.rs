@@ -9,5 +9,5 @@ fn main() {
     }
     let rom_path = &args[1];
     let cartridge = cartridge::Cartridge::load_rom(rom_path).unwrap();
-    println!("{:#?}", cartridge);
+    println!("{:#x?}", cartridge);
 }

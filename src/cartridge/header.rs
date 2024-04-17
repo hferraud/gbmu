@@ -31,6 +31,7 @@ pub const HEADER_CHECKSUM_WIDTH: usize = 0x1;
 pub const GLOBAL_CHECKSUM_OFFSET: u16 = 0x4E;
 pub const GLOBAL_CHECKSUM_WIDTH: usize = 0x2;
 
+#[repr(C)]
 #[derive(Debug)]
 pub struct CartridgeHeader {
     entry_point: [u8; ENTRY_POINT_WIDTH],
@@ -71,11 +72,7 @@ impl CartridgeHeader {
         if bytes.len() < std::mem::size_of::<Self>() {
             return None;
         }
-        println!("Reading bytes: {:#?}", bytes);
-        println!("size: {}", std::mem::size_of::<Self>());
-        println!("align: {}", std::mem::align_of::<Self>());
         let ptr = bytes.as_ptr() as *const Self;
-
         let cartridge_header = unsafe { ptr.read() };
         Some(cartridge_header)
     }
