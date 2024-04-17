@@ -1,0 +1,12 @@
+# Rust
+/target
+
+# Assets
+rom
+
+# MacOS
+.DS_Store
+
+# IDE
+.vscode
+.idea
