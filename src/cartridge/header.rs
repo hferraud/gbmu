@@ -1,4 +1,5 @@
-pub const HEADER_OFFSET: u64 = 0x100;
+pub const HEADER_OFFSET: usize = 0x100;
+pub const HEADER_END: usize = 0x14F;
 
 pub const ENTRY_POINT_OFFSET: u16 = 0x0;
 pub const ENTRY_POINT_WIDTH: usize = 0x4;
@@ -34,19 +35,19 @@ pub const GLOBAL_CHECKSUM_WIDTH: usize = 0x2;
 #[repr(C)]
 #[derive(Debug)]
 pub struct CartridgeHeader {
-    entry_point: [u8; ENTRY_POINT_WIDTH],
-    nintendo_logo: [u8; NINTENDO_LOGO_WIDTH],
-    title: [u8; TITLE_WIDTH],
-    new_licensee_code: [u8; NEW_LICENSEE_CODE_WIDTH],
-    sgb_flag: [u8; SGB_FLAG_WIDTH],
-    cartridge_type: [u8; CARTRIDGE_TYPE_WIDTH],
-    rom_size: [u8; ROM_SIZE_WIDTH],
-    ram_size: [u8; RAM_SIZE_WIDTH],
-    destination_code: [u8; DESTINATION_CODE_WIDTH],
-    old_licensee_code: [u8; OLD_LICENSEE_CODE_WIDTH],
-    mask_rom_version: [u8; MASK_ROM_VERSION_WIDTH],
-    header_checksum: [u8; HEADER_CHECKSUM_WIDTH],
-    global_checksum: [u8; GLOBAL_CHECKSUM_WIDTH],
+    pub entry_point: [u8; ENTRY_POINT_WIDTH],
+    pub nintendo_logo: [u8; NINTENDO_LOGO_WIDTH],
+    pub title: [u8; TITLE_WIDTH],
+    pub new_licensee_code: [u8; NEW_LICENSEE_CODE_WIDTH],
+    pub sgb_flag: [u8; SGB_FLAG_WIDTH],
+    pub cartridge_type: [u8; CARTRIDGE_TYPE_WIDTH],
+    pub rom_size: [u8; ROM_SIZE_WIDTH],
+    pub ram_size: [u8; RAM_SIZE_WIDTH],
+    pub destination_code: [u8; DESTINATION_CODE_WIDTH],
+    pub old_licensee_code: [u8; OLD_LICENSEE_CODE_WIDTH],
+    pub mask_rom_version: [u8; MASK_ROM_VERSION_WIDTH],
+    pub header_checksum: [u8; HEADER_CHECKSUM_WIDTH],
+    pub global_checksum: [u8; GLOBAL_CHECKSUM_WIDTH],
 }
 
 impl CartridgeHeader {
