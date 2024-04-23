@@ -77,6 +77,9 @@ impl Registers {
         }
     }
 
+    pub fn reset_flags(&mut self) {
+        self.f = 0;
+    }
     pub fn get_flag(&self, flag: Flags) -> bool {
         self.f & (flag as u8) != 0
     }
