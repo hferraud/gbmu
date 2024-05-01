@@ -1,14 +1,10 @@
 pub mod header;
 pub mod mbc0;
 
-use crate::cartridge::header::CartridgeHeader;
 use std::io::Read;
 
-use crate::cartridge;
-use std::mem::size_of;
-use std::os::unix::fs::FileExt;
-
 use crate::cartridge::mbc0::MBC0;
+use crate::cartridge::header::CartridgeHeader;
 use crate::header::{HEADER_END, HEADER_OFFSET};
 
 #[derive(Debug)]
