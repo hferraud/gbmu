@@ -1,14 +1,14 @@
-const B_REGISTER_CODE: u8 = 0x0;
-const C_REGISTER_CODE: u8 = 0x1;
-const D_REGISTER_CODE: u8 = 0x2;
-const E_REGISTER_CODE: u8 = 0x3;
-const H_REGISTER_CODE: u8 = 0x4;
-const L_REGISTER_CODE: u8 = 0x5;
-const HL_REGISTER_CODE: u8 = 0x6;
-const A_REGISTER_CODE: u8 = 0x7;
+pub const B_REGISTER_CODE: u8 = 0x0;
+pub const C_REGISTER_CODE: u8 = 0x1;
+pub const D_REGISTER_CODE: u8 = 0x2;
+pub const E_REGISTER_CODE: u8 = 0x3;
+pub const H_REGISTER_CODE: u8 = 0x4;
+pub const L_REGISTER_CODE: u8 = 0x5;
+pub const HL_REGISTER_CODE: u8 = 0x6;
+pub const A_REGISTER_CODE: u8 = 0x7;
 
 pub struct Registers {
-    pub a: u8,
+    a: u8,
     f: u8,
     b: u8,
     c: u8,
@@ -91,10 +91,38 @@ impl Registers {
             C_REGISTER_CODE => Some(self.c),
             D_REGISTER_CODE => Some(self.d),
             E_REGISTER_CODE => Some(self.e),
-            HL_REGISTER_CODE => Some(self.h),
+            H_REGISTER_CODE => Some(self.h),
             L_REGISTER_CODE => Some(self.l),
-            _ => None
             // HL_REGISTER_CODE =>
+            _ => None
+        }
+    }
+
+    pub fn get_register(&self, binary_register: u8) -> Option<&u8> {
+        match binary_register {
+            A_REGISTER_CODE => Some(&self.a),
+            B_REGISTER_CODE => Some(&self.b),
+            C_REGISTER_CODE => Some(&self.c),
+            D_REGISTER_CODE => Some(&self.d),
+            E_REGISTER_CODE => Some(&self.e),
+            H_REGISTER_CODE => Some(&self.h),
+            L_REGISTER_CODE => Some(&self.l),
+            // HL_REGISTER_CODE => ,
+            _ => None
+        }
+    }
+
+    pub fn set_register(&mut self, binary_register: u8, value: u8) {
+        match binary_register {
+            A_REGISTER_CODE => self.a = value,
+            B_REGISTER_CODE => self.b = value,
+            C_REGISTER_CODE => self.c = value,
+            D_REGISTER_CODE => self.d = value,
+            E_REGISTER_CODE => self.e = value,
+            H_REGISTER_CODE => self.h = value,
+            L_REGISTER_CODE => self.l = value,
+            // HL_REGISTER_CODE => ,
+            _ => (),
         }
     }
 }
