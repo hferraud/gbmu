@@ -1,5 +1,5 @@
-use crate::cpu::registers::{A_REGISTER_CODE, Registers};
 use crate::cpu::registers::Flags;
+use crate::cpu::registers::{Registers, A_REGISTER_CODE};
 
 const OPCODE_MASK: u8 = 0b00111000;
 const REGISTER_MASK: u8 = 0b00000111;
@@ -11,7 +11,6 @@ const AND_OPCODE: u8 = 0b100;
 const XOR_OPCODE: u8 = 0b101;
 const OR_OPCODE: u8 = 0b110;
 const CP_OPCODE: u8 = 0b111;
-
 
 pub fn alu(opcode: u8, registers: &mut Registers) -> Option<u8> {
     let masked_opcode = (opcode & OPCODE_MASK) >> 3;
@@ -31,7 +30,7 @@ pub fn alu(opcode: u8, registers: &mut Registers) -> Option<u8> {
         XOR_OPCODE => Some(registers.get_register_value(A_REGISTER_CODE)? ^ src_value),
         OR_OPCODE => Some(registers.get_register_value(A_REGISTER_CODE)? | src_value),
         CP_OPCODE => cp(src_value, true, registers),
-        _ => None
+        _ => None,
     };
     if let Some(result) = result {
         if result == 0 {
@@ -46,11 +45,15 @@ pub fn alu(opcode: u8, registers: &mut Registers) -> Option<u8> {
 
 fn add(operand: u8, carry: bool, registers: &mut Registers) -> Option<u8> {
     if carry {
-        registers.set_flags(Flags::C, operand > u8::MAX
-            - registers.get_register_value(A_REGISTER_CODE)?);
+        registers.set_flags(
+            Flags::C,
+            operand > u8::MAX - registers.get_register_value(A_REGISTER_CODE)?,
+        );
     }
-    registers.set_flags(Flags::H, ((operand & 0x0F)
-        + (registers.get_register_value(A_REGISTER_CODE)? & 0x0F)) & 0x10 != 0);
+    registers.set_flags(
+        Flags::H,
+        ((operand & 0x0F) + (registers.get_register_value(A_REGISTER_CODE)? & 0x0F)) & 0x10 != 0,
+    );
     Some(operand + registers.get_register_value(A_REGISTER_CODE)?)
 }
 

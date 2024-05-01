@@ -49,7 +49,7 @@ impl Registers {
     }
 
     pub fn get_bc(&self) -> u16 {
-        (self.b as u16) <<  8 | self.c as u16
+        (self.b as u16) << 8 | self.c as u16
     }
 
     pub fn set_de(&mut self, value: u16) {
@@ -94,7 +94,7 @@ impl Registers {
             H_REGISTER_CODE => Some(self.h),
             L_REGISTER_CODE => Some(self.l),
             // HL_REGISTER_CODE =>
-            _ => None
+            _ => None,
         }
     }
 
@@ -108,7 +108,7 @@ impl Registers {
             H_REGISTER_CODE => Some(&self.h),
             L_REGISTER_CODE => Some(&self.l),
             // HL_REGISTER_CODE => ,
-            _ => None
+            _ => None,
         }
     }
 

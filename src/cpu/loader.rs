@@ -1,16 +1,14 @@
-use crate::cpu::{BLOCK_MASK, BLOCK_SHIFT, BLOCK_1};
 use crate::cpu::registers::Registers;
-
+use crate::cpu::{BLOCK_1, BLOCK_MASK, BLOCK_SHIFT};
 
 const LOAD_REGISTER_DST_MASK: u8 = 0b00111000;
 const LOAD_REGISTER_SRC_MASK: u8 = 0b00000111;
-
 
 pub fn load(opcode: u8, registers: &mut Registers) -> Option<u8> {
     let block = (opcode & BLOCK_MASK) >> BLOCK_SHIFT;
     match block {
         BLOCK_1 => load_register_to_register(opcode, registers),
-        _ => None
+        _ => None,
     }
 }
 
