@@ -1,5 +1,4 @@
 #[derive(Debug)]
-
 pub struct MBC0 {
     rom: Vec<u8>,
 }
@@ -7,5 +6,9 @@ pub struct MBC0 {
 impl MBC0 {
     pub fn new(data: Vec<u8>) -> Self {
         MBC0 { rom: data }
+    }
+
+    pub fn get_address(&mut self, address: u16) -> &mut u8 {
+        return &mut self.rom[address as usize];
     }
 }
