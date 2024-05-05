@@ -1,4 +1,5 @@
 mod alu;
+mod instructions;
 mod loader;
 mod registers;
 

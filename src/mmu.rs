@@ -1,4 +1,7 @@
+use std::io;
+
 use crate::cartridge::mbc0::MBC0;
+use crate::error;
 use crate::wram::WRAM;
 
 const MEMORY_SIZE: u16 = 0xFFFF;
@@ -18,7 +21,7 @@ const HRAM_START: u16 = 0xFF80;
 const HRAM_END: u16 = 0xFFFE;
 const IE_REGISTER: u16 = 0xFFFF;
 
-struct MMU<'a> {
+pub struct MMU<'a> {
     mbc: &'a mut MBC0,
     wram: &'a mut WRAM,
 }
@@ -28,22 +31,21 @@ impl<'a> MMU<'a> {
         MMU { mbc, wram }
     }
 
-    pub fn get(&mut self, address: u16) -> Option<u8> {
-        return Some(*self.get_physical_address(address)?);
+    pub fn get(&mut self, address: u16) -> Result<u8, io::Error> {
+        Ok(*self.get_physical_address(address)?)
     }
 
-    pub fn set(&mut self, address: u16, value: u8) {
-        if let Some(physical_address) = self.get_physical_address(address) {
-            *physical_address = value;
-        }
+    pub fn set(&mut self, address: u16, value: u8) -> Result<(), io::Error> {
+        *self.get_physical_address(address)? = value;
+        Ok(())
     }
 
-    fn get_physical_address(&mut self, address: u16) -> Option<&mut u8> {
+    fn get_physical_address(&mut self, address: u16) -> Result<&mut u8, io::Error> {
         if address >= ROM_START && address <= ROM_END {
-            return Some(self.mbc.get_address(address));
+            return Ok(self.mbc.get_address(address));
         } else if address >= WRAM_START && address <= WRAM_END {
-            return Some(self.wram.get_address(address - WRAM_START));
+            return Ok(self.wram.get_address(address - WRAM_START));
         }
-        return None;
+        Err(error::invalid_address())
     }
 }
