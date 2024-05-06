@@ -27,7 +27,7 @@ pub struct Registers {
     e: u8,
     h: u8,
     l: u8,
-    pc: u16,
+    pub pc: u16,
     sp: u16,
 }
 

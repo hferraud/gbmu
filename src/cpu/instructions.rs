@@ -108,8 +108,8 @@ mod block_0 {
     }
 
     fn ld_r16mem_a(opcode: u8, registers: &mut Registers, mmu: &mut MMU) -> Result<(), io::Error> {
-        mmu.set(
-            registers.get_dword(get_r16_code!(opcode))?,
+        mmu.set_word(
+            registers.get_dword(get_r16_code!(opcode))? as usize,
             registers.get_word(A_REGISTER_CODE)?,
         )
     }
@@ -117,7 +117,7 @@ mod block_0 {
     fn ld_a_r16mem(opcode: u8, registers: &mut Registers, mmu: &mut MMU) -> Result<(), io::Error> {
         registers.set_word(
             A_REGISTER_CODE,
-            mmu.get(registers.get_dword(get_r16_code!(opcode))?)?,
+            *mmu.fetch_word_address(registers.get_dword(get_r16_code!(opcode))? as usize)?,
         )
     }
 

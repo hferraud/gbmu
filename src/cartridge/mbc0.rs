@@ -8,7 +8,7 @@ impl MBC0 {
         MBC0 { rom: data }
     }
 
-    pub fn get_address(&mut self, address: u16) -> &mut u8 {
-        return &mut self.rom[address as usize];
+    pub fn get_address(&mut self, address: usize) -> &mut u8 {
+        return &mut self.rom[address];
     }
 }

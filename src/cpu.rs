@@ -1,3 +1,6 @@
+use std::{io, mem};
+use crate::mmu::MMU;
+
 mod alu;
 mod instructions;
 mod loader;
@@ -14,4 +17,16 @@ pub struct CPU {
     registers: registers::Registers,
 }
 
-impl CPU {}
+impl CPU {
+    pub fn fetch_next_word(&mut self, mmu: &mut MMU) -> Result<u8, io::Error> {
+        let word = mmu.get_word(self.registers.pc as usize)?;
+        self.registers.pc += mem::size_of::<u8>() as u16;
+        Ok(word)
+    }
+
+   pub unsafe fn fetch_next_dword(&mut self, mmu: &mut MMU) -> Result<u16, io::Error> {
+       let dword = mmu.get_dword(self.registers.pc as usize)?;
+       self.registers.pc = mem::size_of::<u16>() as u16;
+       Ok(dword)
+   }
+}
