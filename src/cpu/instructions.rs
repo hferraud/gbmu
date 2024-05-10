@@ -371,4 +371,9 @@ mod block_3 {
         }
         Ok(())
     }
+
+    pub fn jp_hl(registers: &mut Registers, cpu: &mut CPU) {
+        let hl = registers.get_hl();
+        cpu.registers.pc = hl;
+    }
 }
