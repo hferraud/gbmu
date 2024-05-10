@@ -13,6 +13,7 @@ pub const BC_REGISTER_CODE: u8 = 0x0;
 pub const DE_REGISTER_CODE: u8 = 0x1;
 pub const HL_REGISTER_CODE: u8 = 0x2;
 pub const SP_REGISTER_CODE: u8 = 0x3;
+pub const AF_REGISTER_CODE: u8 = 0x3;
 pub const BC_MEM_REGISTER_CODE: u8 = 0x0;
 pub const DE_MEM_REGISTER_CODE: u8 = 0x1;
 pub const HL_INC_REGISTER_CODE: u8 = 0x2;
@@ -80,6 +81,23 @@ impl Registers {
     pub fn get_hl(&self) -> u16 {
         (self.h as u16) << 8 | self.l as u16
     }
+    
+    pub fn set_sp(&mut self, value: u16) {
+        self.sp = value
+    }
+
+    pub fn get_sp(&self) -> u16 {
+        self.sp
+    }
+
+    pub fn set_af(&mut self, value: u16) {
+        self.a = (value & 0xff00 >> 8) as u8;
+        self.f = value as u8;
+    }
+
+    pub fn get_af(&self) -> u16 {
+        (self.a as u16) << 8 | self.f as u16
+    }
 
     pub fn set_flags(&mut self, flag: Flags, value: bool) {
         match value {
@@ -120,6 +138,17 @@ impl Registers {
             BC_REGISTER_CODE => Ok(self.get_bc()),
             HL_REGISTER_CODE => Ok(self.get_hl()),
             DE_REGISTER_CODE => Ok(self.get_de()),
+            SP_REGISTER_CODE => Ok(self.get_sp()),
+            _ => Err(error::invalid_r16_code()),
+        }
+    }
+
+    pub fn get_dword_stk(&self, r16_code: u8) -> Result<u16, io::Error> {
+        match r16_code {
+            BC_REGISTER_CODE => Ok(self.get_bc()),
+            HL_REGISTER_CODE => Ok(self.get_hl()),
+            DE_REGISTER_CODE => Ok(self.get_de()),
+            AF_REGISTER_CODE => Ok(self.get_af()),
             _ => Err(error::invalid_r16_code()),
         }
     }
@@ -143,6 +172,18 @@ impl Registers {
             BC_REGISTER_CODE => self.set_bc(value),
             HL_REGISTER_CODE => self.set_hl(value),
             DE_REGISTER_CODE => self.set_de(value),
+            SP_REGISTER_CODE => self.set_sp(value),
+            _ => return Err(error::invalid_r16_code()),
+        }
+        Ok(())
+    }
+
+    pub fn set_dword_stk(&mut self, binary_register: u8, value: u16) -> Result<(), io::Error> {
+        match binary_register {
+            BC_REGISTER_CODE => self.set_bc(value),
+            HL_REGISTER_CODE => self.set_hl(value),
+            DE_REGISTER_CODE => self.set_de(value),
+            AF_REGISTER_CODE => self.set_af(value),
             _ => return Err(error::invalid_r16_code()),
         }
         Ok(())

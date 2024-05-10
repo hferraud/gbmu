@@ -1,4 +1,4 @@
-use std::io;
+use std::io::{self, ErrorKind};
 
 pub fn unsupported_instruction() -> io::Error {
     io::Error::new(io::ErrorKind::Unsupported, "Instruction is unsupported")
