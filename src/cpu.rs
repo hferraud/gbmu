@@ -27,9 +27,9 @@ impl CPU {
         Ok(word)
     }
 
-   pub fn fetch_next_dword(&mut self, mmu: &mut MMU) -> Result<u16, io::Error> {
-       let dword = mmu.get_dword(self.registers.pc as usize)?;
-       self.registers.pc = mem::size_of::<Word>() as DWord;
-       Ok(dword)
-   }
+    pub fn fetch_next_dword(&mut self, mmu: &mut MMU) -> Result<u16, io::Error> {
+        let dword = mmu.get_dword(self.registers.pc as usize)?;
+        self.registers.pc += mem::size_of::<DWord>() as DWord;
+        Ok(dword)
+    }
 }
