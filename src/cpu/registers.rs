@@ -28,7 +28,7 @@ pub struct Registers {
     h: u8,
     l: u8,
     pub pc: u16,
-    sp: u16,
+    pub sp: u16,
 }
 
 pub enum Flags {
@@ -84,15 +84,22 @@ impl Registers {
     pub fn set_flags(&mut self, flag: Flags, value: bool) {
         match value {
             true => self.f |= flag as u8,
-            false => self.f &= flag as u8,
+            false => self.f &= !(flag as u8),
         }
     }
 
     pub fn reset_flags(&mut self) {
         self.f = 0;
     }
+
     pub fn get_flag(&self, flag: Flags) -> bool {
         self.f & (flag as u8) != 0
+    }
+
+    pub fn set_h_flag(&mut self, rhs: u8, lhs: u8) {
+        let value = ((lhs & 0x0F) + (rhs & 0x0F)) & 0x10 != 0;
+        
+        self.set_flags(Flags::H, value);
     }
 
     pub fn get_word(&self, r8_code: u8) -> Result<u8, io::Error> {

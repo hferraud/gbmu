@@ -9,5 +9,5 @@ pub fn load(opcode: u8, registers: &mut Registers) -> Result<(), io::Error> {
     let dest_register = (opcode & LOAD_REGISTER_DST_MASK) >> 3;
     let src_register = opcode & LOAD_REGISTER_SRC_MASK;
     let src_value = registers.get_word(src_register)?;
-    return registers.set_word(dest_register, src_value);
+    registers.set_word(dest_register, src_value)
 }

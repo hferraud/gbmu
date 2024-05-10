@@ -1,9 +1,10 @@
 mod block_0 {
-    use crate::cpu::registers::{Flags, Registers, A_REGISTER_CODE};
+    use crate::cpu::registers::{self, Flags, Registers, A_REGISTER_CODE};
     use crate::error;
     use crate::mmu::MMU;
-    use std::arch::aarch64::vreinterpret_u8_f32;
+    use std::error::Error;
     use std::io;
+    use crate::cpu::CPU;
 
     const INSTRUCTION_TYPE_MASK: u8 = 0b00000111;
     const EXTENDED_INSTRUCTION_TYPE_MASK: u8 = INSTRUCTION_TYPE_MASK | 0b00001000;
@@ -14,7 +15,7 @@ mod block_0 {
     const LD_R16_IMM16_OPCODE: u8 = 0b00000001;
     const LD_R16MEM_A_OPCODE: u8 = 0b00000010;
     const LD_A_R16MEM_OPCODE: u8 = 0b00001010;
-    const LD_IMM16_SP_OPCODE: u8 = 0b00001000;
+    const LD_IMM16MEM_SP_OPCODE: u8 = 0b00001000;
     const INC_R16_OPCODE: u8 = 0b00000011;
     const DEC_R16_OPCODE: u8 = 0b00001011;
     const ADD_HL_R16_OPCODE: u8 = 0b00001001;
@@ -47,13 +48,14 @@ mod block_0 {
             ($opcode & R8_MASK) >> R8_SHIFT
         };
     }
+    
 
-    pub fn execute(opcode: u8, registers: &mut Registers, mmu: &mut MMU) -> Result<(), io::Error> {
+    pub fn execute(cpu: &mut CPU, opcode: u8, registers: &mut Registers, mmu: &mut MMU) -> Result<(), io::Error> {
         match opcode & INSTRUCTION_TYPE_MASK {
-            // LD_R16_IMM16_OPCODE => , TODO: Implement this
+            LD_R16_IMM16_OPCODE => return ld_r16_imm16(cpu, opcode, registers, mmu),
             LD_R16MEM_A_OPCODE => return ld_r16mem_a(opcode, registers, mmu),
             LD_A_R16MEM_OPCODE => return ld_a_r16mem(opcode, registers, mmu),
-            // LD_IMM16_SP_OPCODE => , TODO: Implement this
+            LD_IMM16MEM_SP_OPCODE => return ld_imm16mem_sp(cpu, registers, mmu),
             INC_R16_OPCODE => return inc_r16(opcode, registers),
             DEC_R16_OPCODE => return dec_r16(opcode, registers),
             ADD_HL_R16_OPCODE => return add_hl_r16(opcode, registers),
@@ -65,14 +67,20 @@ mod block_0 {
             _ => {}
         }
         match opcode {
-            RLCA_OPCODE => return rlca(registers),
-            RRCA_OPCODE => return rrca(registers),
-            RLA_OPCODE => return rla(registers),
-            RRA_OPCODE => return rra(registers),
-            // DAA_OPCODE =>
-            // CPL_OPCODE =>
-            // SCF_OPCODE =>
-            // CCF_OPCODE =>
+            RLCA_OPCODE => rlca(registers),
+            RRCA_OPCODE => rrca(registers),
+            RLA_OPCODE => rla(registers),
+            RRA_OPCODE => rra(registers),
+            DAA_OPCODE => daa(registers),
+            CPL_OPCODE => cpl(registers),
+            SCF_OPCODE => {
+                scf(registers);
+                Ok(())
+            },
+            CCF_OPCODE => {
+                ccf(registers);
+                Ok(())
+            },
             _ => Err(error::unsupported_instruction()),
         }
     }
@@ -86,7 +94,7 @@ mod block_0 {
     fn dec_r16(opcode: u8, registers: &mut Registers) -> Result<(), io::Error> {
         let register = get_r16_code!(opcode);
         let register_value = registers.get_dword(register)?;
-        registers.set_dword(register, register_value + 1)
+        registers.set_dword(register, register_value - 1)
     }
 
     fn add_hl_r16(opcode: u8, registers: &mut Registers) -> Result<(), io::Error> {
@@ -95,16 +103,21 @@ mod block_0 {
         registers.set_hl(registers.get_hl() + register_value);
         Ok(())
     }
+    
     fn inc_r8(opcode: u8, registers: &mut Registers) -> Result<(), io::Error> {
         let register = get_r8_code!(opcode);
-        let register_value = registers.get_dword(register)?;
-        registers.set_dword(register, register_value + 1)
+        let register_value = registers.get_word(register)?;
+
+        registers.set_h_flag(register_value, 1);
+        registers.set_word(register, register_value + 1)
     }
 
     fn dec_r8(opcode: u8, registers: &mut Registers) -> Result<(), io::Error> {
         let register = get_r8_code!(opcode);
         let register_value = registers.get_word(register)?;
-        registers.set_word(register, register_value + 1)
+
+        registers.set_h_flag(register_value, !1);
+        registers.set_word(register_value, register_value - 1)
     }
 
     fn ld_r16mem_a(opcode: u8, registers: &mut Registers, mmu: &mut MMU) -> Result<(), io::Error> {
@@ -119,6 +132,16 @@ mod block_0 {
             A_REGISTER_CODE,
             *mmu.fetch_word_address(registers.get_dword(get_r16_code!(opcode))? as usize)?,
         )
+    }
+
+    fn ld_r16_imm16(cpu: &mut CPU, opcode: u8, registers: &mut Registers, mmu: &mut MMU) -> Result<(), io::Error> {
+        registers.set_dword(get_r16_code!(opcode), cpu.fetch_next_dword(mmu)?)
+    }
+
+    fn ld_imm16mem_sp(cpu: &mut CPU, registers: &mut Registers, mmu: &mut MMU) -> Result<(), io::Error> {
+        let address = cpu.fetch_next_dword(mmu)?;
+        *mmu.fetch_dword_address(address as usize)? = registers.sp;
+        Ok(())
     }
 
     fn rlca(registers: &mut Registers) -> Result<(), io::Error> {
@@ -148,11 +171,35 @@ mod block_0 {
     }
 
     fn daa(registers: &mut Registers) -> Result<(), io::Error> {
-        // TODO: Not finished
-        let unit = registers.get_word(A_REGISTER_CODE)? % 10;
-        let decimal = registers.get_word(A_REGISTER_CODE)? / 10;
-        registers.set_word(A_REGISTER_CODE, (decimal << 4) + unit)
+        // TODO: handle N flag
+        registers.set_flags(Flags::H, false);
+        let a = registers.get_word(A_REGISTER_CODE)?;
+        registers.set_flags(Flags::C, a > 99);
+
+        let unit = a % 10;
+        let decimal = (a / 10) % 10;
+        let result = (decimal << 4) + unit;
+
+        registers.set_flags(Flags::Z, result == 0);
+        registers.set_word(A_REGISTER_CODE, result)
     }
+
+    fn cpl(registers: &mut Registers) -> Result<(), io::Error> {
+        registers.set_flags(Flags::N, true);
+        registers.set_flags(Flags::H, true);
+        registers.set_word(A_REGISTER_CODE, !registers.get_word(A_REGISTER_CODE)?)
+    }
+
+    fn scf(registers: &mut Registers) {
+        registers.set_flags(Flags::N, false);
+        registers.set_flags(Flags::H, false);
+        registers.set_flags(Flags::C, true);
+    }
+
+    fn ccf(registers: &mut Registers) {
+        registers.set_flags(Flags::C, !registers.get_flag(Flags::C));
+    }
+
 }
 
 mod block_1 {

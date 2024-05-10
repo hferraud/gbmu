@@ -24,7 +24,7 @@ impl CPU {
         Ok(word)
     }
 
-   pub unsafe fn fetch_next_dword(&mut self, mmu: &mut MMU) -> Result<u16, io::Error> {
+   pub fn fetch_next_dword(&mut self, mmu: &mut MMU) -> Result<u16, io::Error> {
        let dword = mmu.get_dword(self.registers.pc as usize)?;
        self.registers.pc = mem::size_of::<u16>() as u16;
        Ok(dword)

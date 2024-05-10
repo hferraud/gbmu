@@ -40,28 +40,26 @@ pub fn alu(opcode: u8, registers: &mut Registers) -> Result<(), io::Error> {
     if masked_opcode != CP_OPCODE {
         registers.set_word(A_REGISTER_CODE, result)?;
     }
-    return Ok(());
+    Ok(())
 }
 
 fn add(operand: u8, carry: bool, registers: &mut Registers) -> Result<u8, io::Error> {
+    let a = registers.get_word(A_REGISTER_CODE)?;
     if carry {
         registers.set_flags(
             Flags::C,
-            operand > u8::MAX - registers.get_word(A_REGISTER_CODE)?,
+            operand > u8::MAX - a,
         );
     }
-    registers.set_flags(
-        Flags::H,
-        ((operand & 0x0F) + (registers.get_word(A_REGISTER_CODE)? & 0x0F)) & 0x10 != 0,
-    );
+    registers.set_h_flag(operand, a);
     Ok(operand + registers.get_word(A_REGISTER_CODE)?)
 }
 
 fn sub(operand: u8, carry: bool, registers: &mut Registers) -> Result<u8, io::Error> {
     registers.set_flags(Flags::N, true);
-    Ok(add(!operand, carry, registers)?)
+    add(!operand, carry, registers)
 }
 
 fn cp(operand: u8, carry: bool, registers: &mut Registers) -> Result<u8, io::Error> {
-    Ok(sub(operand, carry, registers)?)
+    sub(operand, carry, registers)
 }
