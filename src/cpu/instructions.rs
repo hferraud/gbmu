@@ -319,14 +319,12 @@ mod block_3 {
         Ok(result)
     }
 
-    /// *SP++ = register
     pub fn push_r16stk(opcode: u8, registers: &mut Registers, mmu: &mut MMU) -> Result<(), io::Error> {
         let register = super::get_r16_code(opcode);
         let value = registers.get_dword_stk(register)?;
         push(value, registers, mmu)
     }
 
-    /// register = *SP--
     pub fn pop_r16stk(opcode: u8, registers: &mut Registers, mmu: &mut MMU) -> Result<(), io::Error> {
         let register = super::get_r16_code(opcode);
         let value: u16 = pop(registers, mmu)?;
@@ -375,5 +373,15 @@ mod block_3 {
     pub fn jp_hl(registers: &mut Registers, cpu: &mut CPU) {
         let hl = registers.get_hl();
         cpu.registers.pc = hl;
+    }
+
+    pub fn call_imm16(cpu: &mut CPU, registers: &mut Registers, mmu: &mut MMU) -> Result<(), io::Error> {
+        let imm16 = cpu.fetch_next_dword(mmu)?;
+
+        push(cpu.registers.pc, registers, mmu)?;
+
+        cpu.registers.pc = imm16;
+
+        Ok(())
     }
 }
