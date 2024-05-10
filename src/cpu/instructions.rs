@@ -72,11 +72,11 @@ mod block_0 {
             SCF_OPCODE => {
                 scf(registers);
                 Ok(())
-            },
+            }
             CCF_OPCODE => {
                 ccf(registers);
                 Ok(())
-            },
+            }
             JR_IMM8_OPCODE => jr_imm8(cpu, registers, mmu),
             JR_NZ_IMM8_OPCODE => jr_cc_imm8(cpu, registers, mmu, !registers.get_flag(Flags::Z)),
             JR_Z_IMM8_OPCODE => jr_cc_imm8(cpu, registers, mmu, registers.get_flag(Flags::Z)),
@@ -320,14 +320,14 @@ mod block_3 {
     }
 
     /// *SP++ = register
-    pub fn push_r16stk(opcode: u8,registers: &mut Registers, mmu: &mut MMU) -> Result<(), io::Error> {
+    pub fn push_r16stk(opcode: u8, registers: &mut Registers, mmu: &mut MMU) -> Result<(), io::Error> {
         let register = super::get_r16_code(opcode);
         let value = registers.get_dword_stk(register)?;
         push(value, registers, mmu)
     }
 
     /// register = *SP--
-    pub fn pop_r16stk(opcode: u8,registers: &mut Registers, mmu: &mut MMU) -> Result<(), io::Error> {
+    pub fn pop_r16stk(opcode: u8, registers: &mut Registers, mmu: &mut MMU) -> Result<(), io::Error> {
         let register = super::get_r16_code(opcode);
         let value: u16 = pop(registers, mmu)?;
         registers.set_dword_stk(register, value)
@@ -359,4 +359,9 @@ mod block_3 {
         (opcode & COND_MASK) >> COND_SHIFT
     }
 
+    pub fn jp_imm16(cpu: &mut CPU, mmu: &mut MMU) -> Result<(), io::Error> {
+        let imm16 = cpu.fetch_next_dword(mmu)?;
+        cpu.registers.pc = imm16;
+        Ok(())
+    }
 }
