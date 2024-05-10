@@ -341,27 +341,34 @@ mod block_3 {
     }
 
     pub fn ret_cond(opcode: u8, registers: &mut Registers, mmu: &mut MMU) -> Result<(), io::Error> {
-        let cond = get_cond_code(opcode);
-        let result = match cond {
-            NZ_COND_CODE => !registers.get_flag(Flags::Z),
-            Z_COND_CODE => registers.get_flag(Flags::Z),
-            NC_COND_CODE => !registers.get_flag(Flags::C),
-            C_COND_CODE => registers.get_flag(Flags::C),
-            _ => return Err(error::invalid_condition_code()),
-        };
-        if result {
+        if check_condition(opcode, registers)? {
             ret(registers, mmu)?;
         }
         Ok(())
     }
 
-    fn get_cond_code(opcode: u8) -> u8 {
-        (opcode & COND_MASK) >> COND_SHIFT
+    fn check_condition(opcode: u8, registers: &mut Registers) -> Result<bool, io::Error> {
+        match (opcode & COND_MASK) >> COND_SHIFT {
+            NZ_COND_CODE => Ok(!registers.get_flag(Flags::Z)),
+            Z_COND_CODE => Ok(registers.get_flag(Flags::Z)),
+            NC_COND_CODE => Ok(!registers.get_flag(Flags::C)),
+            C_COND_CODE => Ok(registers.get_flag(Flags::C)),
+            _ => Err(error::invalid_condition_code()),
+        }
     }
 
     pub fn jp_imm16(cpu: &mut CPU, mmu: &mut MMU) -> Result<(), io::Error> {
         let imm16 = cpu.fetch_next_dword(mmu)?;
         cpu.registers.pc = imm16;
+        Ok(())
+    }
+
+    pub fn jp_cc_imm16(opcode: u8, registers: &mut Registers, cpu: &mut CPU, mmu: &mut MMU) -> Result<(), io::Error> {
+        let imm16 = cpu.fetch_next_dword(mmu)?;
+
+        if check_condition(opcode, registers)? {
+            cpu.registers.pc = imm16;
+        }
         Ok(())
     }
 }
