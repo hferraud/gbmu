@@ -378,9 +378,23 @@ mod block_3 {
     pub fn call_imm16(cpu: &mut CPU, registers: &mut Registers, mmu: &mut MMU) -> Result<(), io::Error> {
         let imm16 = cpu.fetch_next_dword(mmu)?;
 
+        call_function(imm16, cpu, registers, mmu)
+    }
+
+    pub fn call_cc_imm16(opcode: u8, cpu: &mut CPU, registers: &mut Registers, mmu: &mut MMU) -> Result<(), io::Error> {
+        let imm16 = cpu.fetch_next_dword(mmu)?;
+
+        if check_condition(opcode, registers)? {
+            call_function(imm16, cpu, registers, mmu)?;
+        }
+
+        Ok(())
+    }
+
+    fn call_function(fn_address: u16, cpu: &mut CPU, registers: &mut Registers, mmu: &mut MMU) -> Result<(), io::Error> {
         push(cpu.registers.pc, registers, mmu)?;
 
-        cpu.registers.pc = imm16;
+        cpu.registers.pc = fn_address;
 
         Ok(())
     }
