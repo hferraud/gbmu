@@ -171,17 +171,24 @@ mod block_0 {
     }
 
     fn daa(registers: &mut Registers) -> Result<(), io::Error> {
-        // TODO: handle N flag
+        let op = match registers.get_flag(Flags::N) {
+            true => |a: u8, correction: u8| a - correction,
+            false => |a: u8, correction: u8| a + correction,
+        };
+
+        let mut a = registers.get_word(A_REGISTER_CODE)?;
+        if registers.get_flag(Flags::H) || a & 0xF > 9 {
+            a = op(a, 0x6);
+        }
+        if registers.get_flag(Flags::C) || (a & 0xF0) >> 4 > 9 {
+            a = op(a, 0x60);
+        }
+
+        registers.set_flags(Flags::Z, a == 0);
+        // N is left untouched
         registers.set_flags(Flags::H, false);
-        let a = registers.get_word(A_REGISTER_CODE)?;
-        registers.set_flags(Flags::C, a > 99);
-
-        let unit = a % 10;
-        let decimal = (a / 10) % 10;
-        let result = (decimal << 4) + unit;
-
-        registers.set_flags(Flags::Z, result == 0);
-        registers.set_word(A_REGISTER_CODE, result)
+        registers.set_flags(Flags::C, (a & 0xF0) >> 4 > 9);
+        registers.set_word(A_REGISTER_CODE, a)
     }
 
     fn cpl(registers: &mut Registers) -> Result<(), io::Error> {
