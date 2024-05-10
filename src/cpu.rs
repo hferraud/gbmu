@@ -13,8 +13,8 @@ pub const BLOCK_1: u8 = 0b01;
 pub const BLOCK_2: u8 = 0b10;
 pub const BLOCK_3: u8 = 0b11;
 
-pub type word = u8;
-pub type dword = u16;
+pub type Word = u8;
+pub type DWord = u16;
 
 pub struct CPU {
     registers: registers::Registers,
@@ -23,13 +23,13 @@ pub struct CPU {
 impl CPU {
     pub fn fetch_next_word(&mut self, mmu: &mut MMU) -> Result<u8, io::Error> {
         let word = mmu.get_word(self.registers.pc as usize)?;
-        self.registers.pc += mem::size_of::<word>() as dword;
+        self.registers.pc += mem::size_of::<Word>() as DWord;
         Ok(word)
     }
 
    pub fn fetch_next_dword(&mut self, mmu: &mut MMU) -> Result<u16, io::Error> {
        let dword = mmu.get_dword(self.registers.pc as usize)?;
-       self.registers.pc = mem::size_of::<word>() as dword;
+       self.registers.pc = mem::size_of::<Word>() as DWord;
        Ok(dword)
    }
 }

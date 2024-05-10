@@ -29,7 +29,7 @@ pub fn alu(opcode: u8, operand: u8, registers: &mut Registers) -> Result<(), io:
         BITWISE_OPERATION => bitwise_operation(operation, operand, registers)?,
         _ => return Err(error::invalid_opcode()),
     };
-    return alu_post_process(operation, result, registers)
+    alu_post_process(operation, result, registers)
 }
 
 pub fn alu_register(opcode: u8, registers: &mut Registers) -> Result<(), io::Error> {
@@ -65,7 +65,7 @@ fn bitwise_operation(operation: u8, operand: u8, registers: &mut Registers) -> R
         XOR_OPERATION => Ok(registers.get_word(A_REGISTER_CODE)? ^ operand),
         OR_OPERATION => Ok(registers.get_word(A_REGISTER_CODE)? | operand),
         CP_OPERATION => cp(operand, true, registers),
-        _ => return Err(error::invalid_opcode()), 
+        _ => Err(error::invalid_opcode()),
     }
 }
 

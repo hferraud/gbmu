@@ -12,10 +12,9 @@ fn get_r8_code(opcode: u8) -> u8 {
 }
 
 mod block_0 {
-    use crate::cpu::registers::{self, Flags, Registers, A_REGISTER_CODE};
+    use crate::cpu::registers::{Flags, Registers, A_REGISTER_CODE};
     use crate::error;
     use crate::mmu::MMU;
-    use std::error::Error;
     use std::io;
     use crate::cpu::CPU;
 
@@ -105,7 +104,7 @@ mod block_0 {
         registers.set_hl(registers.get_hl() + register_value);
         Ok(())
     }
-    
+
     fn inc_r8(opcode: u8, registers: &mut Registers) -> Result<(), io::Error> {
         let register = super::get_r8_code(opcode);
         let register_value = registers.get_word(register)?;
@@ -212,7 +211,7 @@ mod block_0 {
     fn jr_imm8(cpu: &mut CPU, registers: &mut Registers, mmu: &mut MMU) -> Result<(), io::Error> {
         jr_cc_imm8(cpu, registers, mmu, true)
     }
-    
+
     fn jr_cc_imm8(cpu: &mut CPU, registers: &mut Registers, mmu: &mut MMU, cc: bool) -> Result<(), io::Error> {
         let relative = imm8_to_jr(cpu, mmu)?;
 
@@ -221,20 +220,20 @@ mod block_0 {
         } else if relative < 0 {
             registers.pc -= (-relative) as u16;
         } else {
-            registers.pc += relative as u16; 
+            registers.pc += relative as u16;
         }
         Ok(())
     }
 
     fn imm8_to_jr(cpu: &mut CPU, mmu: &mut MMU) -> Result<i16, io::Error> {
         let mut imm8 = cpu.fetch_next_word(mmu)? as i16;
-        
+
         imm8 -= 127;
         if imm8 >= 0 {
             imm8 += 1;
         }
         Ok(imm8)
-    } 
+    }
 }
 
 mod block_1 {
@@ -258,15 +257,12 @@ mod block_2 {
 }
 
 mod block_3 {
-    use std::error::Error;
     use std::{io, mem};
-    use crate::error::{self, invalid_condition_code};
-    use crate::cpu::{CPU, dword};
+    use crate::error;
+    use crate::cpu::{CPU, DWord};
     use crate::mmu::MMU;
     use crate::cpu::alu::alu;
     use crate::cpu::registers::{Flags, Registers};
-
-    use super::get_r16_code;
 
     const INSTRUCTION_TYPE_MASK: u8 = 0b111;
 
@@ -274,7 +270,7 @@ mod block_3 {
     const JMP_COND_IMM16_OPCODE: u8 = 0b010;
     const CALL_COND_IMM16_OPCODE: u8 = 0b100;
     const ALU_OPCODE: u8 = 0b110;
-    
+
     const RET_OPCODE: u8 = 0b11001001;
     const RETI_OPCODE: u8 = 0b11011001;
     const JP_IMM16_OPCODE: u8 = 0b11000011;
@@ -288,7 +284,7 @@ mod block_3 {
     const Z_COND_CODE: u8 = 1;
     const NC_COND_CODE: u8 = 2;
     const C_COND_CODE: u8 = 3;
-    
+
     pub fn execute(cpu: &mut CPU, opcode: u8, registers: &mut Registers, mmu: &mut MMU) -> Result<(), io::Error> {
         match opcode & INSTRUCTION_TYPE_MASK {
             RET_COND_OPCODE => ret_cond(opcode, registers, mmu)?,
@@ -313,13 +309,13 @@ mod block_3 {
 
     fn push(value: u16, registers: &mut Registers, mmu: &mut MMU) -> Result<(), io::Error> {
         mmu.set_dword(registers.get_sp() as usize, value)?;
-        registers.set_sp(registers.get_sp() + std::mem::size_of::<dword>() as u16);
+        registers.set_sp(registers.get_sp() + mem::size_of::<DWord>() as u16);
         Ok(())
     }
 
-    fn pop(registers: &mut Registers, mmu: &mut MMU) -> Result<(u16), io::Error> {
+    fn pop(registers: &mut Registers, mmu: &mut MMU) -> Result<u16, io::Error> {
         let result = mmu.get_dword(registers.get_sp() as usize)?;
-        registers.set_sp(registers.get_sp() - mem::size_of::<dword>() as u16);
+        registers.set_sp(registers.get_sp() - mem::size_of::<DWord>() as u16);
         Ok(result)
     }
 
