@@ -45,7 +45,7 @@ const C_CC: u8 = 3;
 
 const TGT_MASK: u8 = 0b00111000;
 
-pub fn execute(cpu: &mut CPU, opcode: u8, mmu: &mut MMU) -> Result<(), io::Error> {
+pub fn execute(opcode: u8, cpu: &mut CPU, mmu: &mut MMU) -> Result<(), io::Error> {
     let registers = &mut cpu.registers;
     match opcode & INSTRUCTION_TYPE_MASK {
         RET_CC_OPCODE => return ret_cc(opcode, registers, mmu),
