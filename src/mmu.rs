@@ -61,12 +61,12 @@ impl<'a> MMU<'a> {
 
     pub fn fetch_dword_address(&mut self, address: usize) -> Result<&mut u16, io::Error> {
         match address {
-            ROM_START..=ROM_DWORD_END => unsafe { Ok(
-                &mut *(self.mbc.get_address(address) as *mut u8 as *mut u16)
-            ) },
-            WRAM_START..=WRAM_DWORD_END => unsafe { Ok(
-                &mut *(self.wram.get_address(address - WRAM_START) as *mut u8 as *mut u16)
-            ) },
+            ROM_START..=ROM_DWORD_END => unsafe {
+                Ok(&mut *(self.mbc.get_address(address) as *mut u8 as *mut u16))
+            },
+            WRAM_START..=WRAM_DWORD_END => unsafe {
+                Ok(&mut *(self.wram.get_address(address - WRAM_START) as *mut u8 as *mut u16))
+            },
             _ => Err(error::invalid_address()),
         }
     }

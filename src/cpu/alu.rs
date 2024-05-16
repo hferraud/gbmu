@@ -1,5 +1,5 @@
 use crate::cpu::registers::Flags;
-use crate::cpu::registers::{Registers, A_REGISTER_CODE};
+use crate::cpu::registers::Registers;
 use crate::error;
 use std::io;
 
@@ -44,7 +44,7 @@ fn alu_post_process(operation: u8, result: u8, registers: &mut Registers) -> Res
         registers.set_flags(Flags::Z, true);
     }
     if operation != CP_OPERATION {
-        return registers.set_word(A_REGISTER_CODE, result)
+        registers.a = result;
     }
     Ok(())
 }
@@ -59,18 +59,22 @@ fn sum_operation(operation: u8, operand: u8, registers: &mut Registers) -> Resul
     }
 }
 
-fn bitwise_operation(operation: u8, operand: u8, registers: &mut Registers) -> Result<u8, io::Error> {
+fn bitwise_operation(
+    operation: u8,
+    operand: u8,
+    registers: &mut Registers,
+) -> Result<u8, io::Error> {
     match operation {
         AND_OPERATION => and(operand, registers),
-        XOR_OPERATION => Ok(registers.get_word(A_REGISTER_CODE)? ^ operand),
-        OR_OPERATION => Ok(registers.get_word(A_REGISTER_CODE)? | operand),
+        XOR_OPERATION => Ok(registers.a ^ operand),
+        OR_OPERATION => Ok(registers.a | operand),
         CP_OPERATION => cp(operand, true, registers),
         _ => Err(error::invalid_opcode()),
     }
 }
 
 fn add(operand: u8, carry: bool, registers: &mut Registers) -> Result<u8, io::Error> {
-    let a = registers.get_word(A_REGISTER_CODE)?;
+    let a = registers.a;
     let (result, overflow) = a.overflowing_add(operand);
     if carry {
         registers.set_flags(Flags::C, overflow);
@@ -86,7 +90,7 @@ fn sub(operand: u8, carry: bool, registers: &mut Registers) -> Result<u8, io::Er
 
 fn and(operand: u8, registers: &mut Registers) -> Result<u8, io::Error> {
     registers.set_flags(Flags::H, true);
-    Ok(registers.get_word(A_REGISTER_CODE)? & operand)
+    Ok(registers.a & operand)
 }
 
 fn cp(operand: u8, carry: bool, registers: &mut Registers) -> Result<u8, io::Error> {

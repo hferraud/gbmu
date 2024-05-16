@@ -20,10 +20,10 @@ pub const HL_INC_REGISTER_CODE: u8 = 0x2;
 pub const HL_DEC_REGISTER_CODE: u8 = 0x3;
 
 pub struct Registers {
-    a: u8,
+    pub a: u8,
     f: u8,
     b: u8,
-    c: u8,
+    pub c: u8,
     d: u8,
     e: u8,
     h: u8,
@@ -81,7 +81,7 @@ impl Registers {
     pub fn get_hl(&self) -> u16 {
         (self.h as u16) << 8 | self.l as u16
     }
-    
+
     pub fn set_sp(&mut self, value: u16) {
         self.sp = value
     }
@@ -116,7 +116,7 @@ impl Registers {
 
     pub fn set_h_flag(&mut self, rhs: u8, lhs: u8) {
         let value = ((lhs & 0x0F) + (rhs & 0x0F)) & 0x10 != 0;
-        
+
         self.set_flags(Flags::H, value);
     }
 

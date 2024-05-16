@@ -1,5 +1,5 @@
-use std::{io, mem};
 use crate::mmu::MMU;
+use std::{io, mem};
 
 mod alu;
 mod instructions;
@@ -18,6 +18,7 @@ pub type DWord = u16;
 
 pub struct CPU {
     registers: registers::Registers,
+    ime: bool,
 }
 
 impl CPU {
