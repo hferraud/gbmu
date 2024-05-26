@@ -1,4 +1,4 @@
-use crate::cpu::registers::{Flags, Registers, A_REGISTER_CODE};
+use crate::cpu::registers::{Flags, Registers};
 use crate::cpu::CPU;
 use crate::error;
 use crate::mmu::MMU;
@@ -48,8 +48,8 @@ pub fn execute(
         _ => {}
     };
     match opcode & EXTENDED_INSTRUCTION_TYPE_MASK {
-        INC_R8_OPCODE => return inc_r8(opcode, &mut cpu.registers),
-        DEC_R8_OPCODE => return dec_r8(opcode, &mut cpu.registers),
+        INC_R8_OPCODE => return inc_r8(opcode, &mut cpu.registers, mmu),
+        DEC_R8_OPCODE => return dec_r8(opcode, &mut cpu.registers, mmu),
         _ => {}
     };
     match opcode {
@@ -58,7 +58,7 @@ pub fn execute(
         RLA_OPCODE => rla(&mut cpu.registers),
         RRA_OPCODE => rra(&mut cpu.registers),
         DAA_OPCODE => daa(&mut cpu.registers),
-        CPL_OPCODE => return cpl(&mut cpu.registers),
+        CPL_OPCODE => cpl(&mut cpu.registers),
         SCF_OPCODE => scf(&mut cpu.registers),
         CCF_OPCODE => ccf(&mut cpu.registers),
         JR_IMM8_OPCODE => return jr_imm8(cpu, mmu),
@@ -90,20 +90,20 @@ fn add_hl_r16(opcode: u8, registers: &mut Registers) -> Result<(), io::Error> {
     Ok(())
 }
 
-fn inc_r8(opcode: u8, registers: &mut Registers) -> Result<(), io::Error> {
+fn inc_r8(opcode: u8, registers: &mut Registers, mmu: &mut MMU) -> Result<(), io::Error> {
     let register = super::get_r8_code(opcode);
-    let register_value = registers.get_word(register)?;
+    let register_value = registers.get_word(register, mmu)?;
 
     registers.set_h_flag(register_value, 1);
-    registers.set_word(register, register_value + 1)
+    registers.set_word(register, register_value + 1, mmu)
 }
 
-fn dec_r8(opcode: u8, registers: &mut Registers) -> Result<(), io::Error> {
+fn dec_r8(opcode: u8, registers: &mut Registers, mmu: &mut MMU) -> Result<(), io::Error> {
     let register = super::get_r8_code(opcode);
-    let register_value = registers.get_word(register)?;
+    let register_value = registers.get_word(register, mmu)?;
 
     registers.set_h_flag(register_value, !1);
-    registers.set_word(register_value, register_value - 1)
+    registers.set_word(register_value, register_value - 1, mmu)
 }
 
 fn ld_r16mem_a(opcode: u8, registers: &mut Registers, mmu: &mut MMU) -> Result<(), io::Error> {
@@ -171,10 +171,10 @@ fn daa(registers: &mut Registers) {
     registers.set_flags(Flags::C, (registers.a & 0xF0) >> 4 > 9);
 }
 
-fn cpl(registers: &mut Registers) -> Result<(), io::Error> {
+fn cpl(registers: &mut Registers) {
     registers.set_flags(Flags::N, true);
     registers.set_flags(Flags::H, true);
-    registers.set_word(A_REGISTER_CODE, !registers.get_word(A_REGISTER_CODE)?)
+    registers.a = !registers.a;
 }
 
 fn scf(registers: &mut Registers) {

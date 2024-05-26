@@ -1,9 +1,11 @@
+use std::{io, mem};
+
 use crate::cpu::alu::alu;
 use crate::cpu::registers::{Flags, Registers};
 use crate::cpu::{DWord, CPU};
 use crate::error;
 use crate::mmu::MMU;
-use std::{io, mem};
+use crate::cpu::instructions::prefix;
 
 const LDH_ADDRESS_START: usize = 0xff00;
 
@@ -24,6 +26,8 @@ const RETI_OPCODE: u8 = 0b11011001;
 const JP_IMM16_OPCODE: u8 = 0b11000011;
 const JP_HL_OPCODE: u8 = 0b11101001;
 const CALL_IMM16_OPCODE: u8 = 0b11001101;
+
+const PREFIX_OPCODE: u8 = 0b11001011;
 
 const LDH_CMEM_A_OPCODE: u8 = 0b11100010;
 const LDH_IMM8_A_OPCODE: u8 = 0b11100000;
@@ -67,7 +71,7 @@ pub fn execute(opcode: u8, cpu: &mut CPU, mmu: &mut MMU) -> Result<(), io::Error
         JP_HL_OPCODE => jp_hl(cpu),
         CALL_IMM16_OPCODE => return call_imm16(cpu, mmu),
 
-        // PREFIX_OPCODE => return prefix(),
+        PREFIX_OPCODE => return prefix(cpu, mmu),
         LDH_CMEM_A_OPCODE => return ldh_cmem_a(registers, mmu),
         LDH_IMM8_A_OPCODE => return ldh_imm8_a(cpu, mmu),
         LD_IMM16_A_OPCODE => return ld_imm16_a(cpu, mmu),
@@ -84,6 +88,11 @@ pub fn execute(opcode: u8, cpu: &mut CPU, mmu: &mut MMU) -> Result<(), io::Error
 
 fn alu_imm8(opcode: u8, cpu: &mut CPU, mmu: &mut MMU) -> Result<(), io::Error> {
     alu(opcode, cpu.fetch_next_word(mmu)?, &mut cpu.registers)
+}
+
+fn prefix(cpu: &mut CPU, mmu: &mut MMU) -> Result<(), io::Error> {
+    let opcode = cpu.fetch_next_word(mmu)?;
+    prefix::execute(opcode, cpu, mmu)
 }
 
 fn push(value: u16, registers: &mut Registers, mmu: &mut MMU) -> Result<(), io::Error> {
@@ -211,8 +220,7 @@ fn ldh_a_imm8(cpu: &mut CPU, mmu: &mut MMU) -> Result<(), io::Error> {
 
 fn ld_imm16_a(cpu: &mut CPU, mmu: &mut MMU) -> Result<(), io::Error> {
     let address = cpu.fetch_next_dword(mmu)?;
-    mmu.set_word(address as usize, cpu.registers.a);
-    Ok(())
+    mmu.set_word(address as usize, cpu.registers.a)
 }
 
 fn ld_a_imm16(cpu: &mut CPU, mmu: &mut MMU) -> Result<(), io::Error> {

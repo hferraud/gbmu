@@ -1,7 +1,9 @@
+use std::io;
+
 use crate::cpu::registers::Flags;
 use crate::cpu::registers::Registers;
+use crate::mmu::MMU;
 use crate::error;
-use std::io;
 
 const OPERATION_MASK: u8 = 0b00111000;
 const OPERATION_SHIFT: u8 = 3;
@@ -32,9 +34,9 @@ pub fn alu(opcode: u8, operand: u8, registers: &mut Registers) -> Result<(), io:
     alu_post_process(operation, result, registers)
 }
 
-pub fn alu_register(opcode: u8, registers: &mut Registers) -> Result<(), io::Error> {
+pub fn alu_register(opcode: u8, registers: &mut Registers, mmu: &mut MMU) -> Result<(), io::Error> {
     let src_register = opcode & REGISTER_MASK;
-    let src_value = registers.get_word(src_register)?;
+    let src_value = registers.get_word(src_register, mmu)?;
 
     alu(opcode, src_value, registers)
 }

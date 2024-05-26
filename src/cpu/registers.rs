@@ -1,5 +1,6 @@
-use crate::error;
 use std::io;
+use crate::error;
+use crate::mmu::MMU;
 
 pub const B_REGISTER_CODE: u8 = 0x0;
 pub const C_REGISTER_CODE: u8 = 0x1;
@@ -120,7 +121,7 @@ impl Registers {
         self.set_flags(Flags::H, value);
     }
 
-    pub fn get_word(&self, r8_code: u8) -> Result<u8, io::Error> {
+    pub fn get_word(&self, r8_code: u8, mmu: &mut MMU) -> Result<u8, io::Error> {
         match r8_code {
             A_REGISTER_CODE => Ok(self.a),
             B_REGISTER_CODE => Ok(self.b),
@@ -129,6 +130,7 @@ impl Registers {
             E_REGISTER_CODE => Ok(self.e),
             H_REGISTER_CODE => Ok(self.h),
             L_REGISTER_CODE => Ok(self.l),
+            HL_MEM_REGISTER_CODE => Ok(mmu.get_word(self.get_hl() as usize)?),
             _ => Err(error::invalid_r8_code()),
         }
     }
@@ -153,8 +155,8 @@ impl Registers {
         }
     }
 
-    pub fn set_word(&mut self, binary_register: u8, value: u8) -> Result<(), io::Error> {
-        match binary_register {
+    pub fn set_word(&mut self, r8_code: u8, value: u8, mmu: &mut MMU) -> Result<(), io::Error> {
+        match r8_code {
             A_REGISTER_CODE => self.a = value,
             B_REGISTER_CODE => self.b = value,
             C_REGISTER_CODE => self.c = value,
@@ -162,6 +164,7 @@ impl Registers {
             E_REGISTER_CODE => self.e = value,
             H_REGISTER_CODE => self.h = value,
             L_REGISTER_CODE => self.l = value,
+            HL_MEM_REGISTER_CODE => mmu.set_word(self.get_hl() as usize, value)?,
             _ => return Err(error::invalid_r8_code()),
         }
         Ok(())
