@@ -2,8 +2,8 @@ use std::io;
 
 use crate::cpu::registers::Flags;
 use crate::cpu::registers::Registers;
-use crate::mmu::MMU;
 use crate::error;
+use crate::mmu::MMU;
 
 const OPERATION_MASK: u8 = 0b00111000;
 const OPERATION_SHIFT: u8 = 3;

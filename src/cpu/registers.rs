@@ -1,6 +1,6 @@
-use std::io;
 use crate::error;
 use crate::mmu::MMU;
+use std::io;
 
 pub const B_REGISTER_CODE: u8 = 0x0;
 pub const C_REGISTER_CODE: u8 = 0x1;

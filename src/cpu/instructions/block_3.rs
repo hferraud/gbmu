@@ -1,11 +1,11 @@
 use std::{io, mem};
 
 use crate::cpu::instructions::alu;
+use crate::cpu::instructions::prefix;
 use crate::cpu::registers::{Flags, Registers};
 use crate::cpu::{DWord, CPU};
 use crate::error;
 use crate::mmu::MMU;
-use crate::cpu::instructions::prefix;
 
 const LDH_ADDRESS_START: usize = 0xff00;
 

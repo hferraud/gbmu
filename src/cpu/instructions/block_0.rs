@@ -32,11 +32,7 @@ const JR_Z_IMM8_OPCODE: u8 = 0b00101000;
 const JR_NC_IMM8_OPCODE: u8 = 0b00110000;
 const JR_C_IMM8_OPCODE: u8 = 0b00111000;
 
-pub fn execute(
-    opcode: u8,
-    cpu: &mut CPU,
-    mmu: &mut MMU,
-) -> Result<(), io::Error> {
+pub fn execute(opcode: u8, cpu: &mut CPU, mmu: &mut MMU) -> Result<(), io::Error> {
     match opcode & INSTRUCTION_TYPE_MASK {
         LD_R16_IMM16_OPCODE => return ld_r16_imm16(opcode, cpu, mmu),
         LD_R16MEM_A_OPCODE => return ld_r16mem_a(opcode, &mut cpu.registers, mmu),
