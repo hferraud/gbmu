@@ -1,4 +1,4 @@
-use crate::cpu::loader::load;
+use crate::cpu::instructions::loader::load;
 use crate::cpu::registers::Registers;
 use crate::mmu::MMU;
 

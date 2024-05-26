@@ -1,9 +1,7 @@
 use crate::mmu::MMU;
 use std::{io, mem};
 
-mod alu;
 mod instructions;
-mod loader;
 mod registers;
 
 pub const BLOCK_MASK: u8 = 0b11000000;

@@ -1,6 +1,6 @@
 use std::{io, mem};
 
-use crate::cpu::alu::alu;
+use crate::cpu::instructions::alu;
 use crate::cpu::registers::{Flags, Registers};
 use crate::cpu::{DWord, CPU};
 use crate::error;
@@ -87,7 +87,7 @@ pub fn execute(opcode: u8, cpu: &mut CPU, mmu: &mut MMU) -> Result<(), io::Error
 }
 
 fn alu_imm8(opcode: u8, cpu: &mut CPU, mmu: &mut MMU) -> Result<(), io::Error> {
-    alu(opcode, cpu.fetch_next_word(mmu)?, &mut cpu.registers)
+    alu::alu(opcode, cpu.fetch_next_word(mmu)?, &mut cpu.registers)
 }
 
 fn prefix(cpu: &mut CPU, mmu: &mut MMU) -> Result<(), io::Error> {

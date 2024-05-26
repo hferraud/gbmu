@@ -7,6 +7,8 @@ mod block_1;
 mod block_2;
 mod block_3;
 mod prefix;
+mod loader;
+mod alu;
 
 pub const R16_MASK: u8 = 0b00110000;
 pub const R16_SHIFT: u8 = 4;
