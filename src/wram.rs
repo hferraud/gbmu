@@ -23,11 +23,11 @@ impl WRAM {
         }
     }
 
-    pub fn get_address(&mut self, address: u16) -> &mut u8 {
-        if (address as usize) < BANK_WIDTH {
-            &mut self.data[address as usize]
+    pub fn get_address(&mut self, address: usize) -> &mut u8 {
+        if (address) < BANK_WIDTH {
+            &mut self.data[address]
         } else {
-            &mut self.data[address as usize + self.bank as usize * BANK_WIDTH]
+            &mut self.data[address + self.bank as usize * BANK_WIDTH]
         }
     }
 }

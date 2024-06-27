@@ -1,23 +1,36 @@
+use crate::error;
+use crate::mmu::MMU;
+use std::io;
+
 pub const B_REGISTER_CODE: u8 = 0x0;
 pub const C_REGISTER_CODE: u8 = 0x1;
 pub const D_REGISTER_CODE: u8 = 0x2;
 pub const E_REGISTER_CODE: u8 = 0x3;
 pub const H_REGISTER_CODE: u8 = 0x4;
 pub const L_REGISTER_CODE: u8 = 0x5;
-pub const HL_REGISTER_CODE: u8 = 0x6;
+pub const HL_MEM_REGISTER_CODE: u8 = 0x6;
 pub const A_REGISTER_CODE: u8 = 0x7;
+pub const BC_REGISTER_CODE: u8 = 0x0;
+pub const DE_REGISTER_CODE: u8 = 0x1;
+pub const HL_REGISTER_CODE: u8 = 0x2;
+pub const SP_REGISTER_CODE: u8 = 0x3;
+pub const AF_REGISTER_CODE: u8 = 0x3;
+pub const BC_MEM_REGISTER_CODE: u8 = 0x0;
+pub const DE_MEM_REGISTER_CODE: u8 = 0x1;
+pub const HL_INC_REGISTER_CODE: u8 = 0x2;
+pub const HL_DEC_REGISTER_CODE: u8 = 0x3;
 
 pub struct Registers {
-    a: u8,
+    pub a: u8,
     f: u8,
     b: u8,
-    c: u8,
+    pub c: u8,
     d: u8,
     e: u8,
     h: u8,
     l: u8,
-    pc: u16,
-    sp: u16,
+    pub pc: u16,
+    pub sp: u16,
 }
 
 pub enum Flags {
@@ -70,50 +83,80 @@ impl Registers {
         (self.h as u16) << 8 | self.l as u16
     }
 
+    pub fn set_sp(&mut self, value: u16) {
+        self.sp = value
+    }
+
+    pub fn get_sp(&self) -> u16 {
+        self.sp
+    }
+
+    pub fn set_af(&mut self, value: u16) {
+        self.a = (value & 0xff00 >> 8) as u8;
+        self.f = value as u8;
+    }
+
+    pub fn get_af(&self) -> u16 {
+        (self.a as u16) << 8 | self.f as u16
+    }
+
     pub fn set_flags(&mut self, flag: Flags, value: bool) {
         match value {
             true => self.f |= flag as u8,
-            false => self.f &= flag as u8,
+            false => self.f &= !(flag as u8),
         }
     }
 
     pub fn reset_flags(&mut self) {
         self.f = 0;
     }
+
     pub fn get_flag(&self, flag: Flags) -> bool {
         self.f & (flag as u8) != 0
     }
 
-    pub fn get_register_value(&self, binary_register: u8) -> Option<u8> {
-        match binary_register {
-            A_REGISTER_CODE => Some(self.a),
-            B_REGISTER_CODE => Some(self.b),
-            C_REGISTER_CODE => Some(self.c),
-            D_REGISTER_CODE => Some(self.d),
-            E_REGISTER_CODE => Some(self.e),
-            H_REGISTER_CODE => Some(self.h),
-            L_REGISTER_CODE => Some(self.l),
-            // HL_REGISTER_CODE =>
-            _ => None,
+    pub fn set_h_flag(&mut self, rhs: u8, lhs: u8) {
+        let value = ((lhs & 0x0F) + (rhs & 0x0F)) & 0x10 != 0;
+
+        self.set_flags(Flags::H, value);
+    }
+
+    pub fn get_word(&self, r8_code: u8, mmu: &mut MMU) -> Result<u8, io::Error> {
+        match r8_code {
+            A_REGISTER_CODE => Ok(self.a),
+            B_REGISTER_CODE => Ok(self.b),
+            C_REGISTER_CODE => Ok(self.c),
+            D_REGISTER_CODE => Ok(self.d),
+            E_REGISTER_CODE => Ok(self.e),
+            H_REGISTER_CODE => Ok(self.h),
+            L_REGISTER_CODE => Ok(self.l),
+            HL_MEM_REGISTER_CODE => Ok(mmu.get_word(self.get_hl() as usize)?),
+            _ => Err(error::invalid_r8_code()),
         }
     }
 
-    pub fn get_register(&self, binary_register: u8) -> Option<&u8> {
-        match binary_register {
-            A_REGISTER_CODE => Some(&self.a),
-            B_REGISTER_CODE => Some(&self.b),
-            C_REGISTER_CODE => Some(&self.c),
-            D_REGISTER_CODE => Some(&self.d),
-            E_REGISTER_CODE => Some(&self.e),
-            H_REGISTER_CODE => Some(&self.h),
-            L_REGISTER_CODE => Some(&self.l),
-            // HL_REGISTER_CODE => ,
-            _ => None,
+    pub fn get_dword(&self, r16_code: u8) -> Result<u16, io::Error> {
+        match r16_code {
+            BC_REGISTER_CODE => Ok(self.get_bc()),
+            HL_REGISTER_CODE => Ok(self.get_hl()),
+            DE_REGISTER_CODE => Ok(self.get_de()),
+            SP_REGISTER_CODE => Ok(self.get_sp()),
+            _ => Err(error::invalid_r16_code()),
         }
     }
 
-    pub fn set_register(&mut self, binary_register: u8, value: u8) {
-        match binary_register {
+    pub fn get_dword_stk(&self, r16_code: u8) -> Result<u16, io::Error> {
+        match r16_code {
+            BC_REGISTER_CODE => Ok(self.get_bc()),
+            HL_REGISTER_CODE => Ok(self.get_hl()),
+            DE_REGISTER_CODE => Ok(self.get_de()),
+            AF_REGISTER_CODE => Ok(self.get_af()),
+            _ => Err(error::invalid_r16_code()),
+        }
+    }
+
+    pub fn set_word(&mut self, r8_code: u8, value: u8, mmu: &mut MMU) -> Result<(), io::Error> {
+        match r8_code {
             A_REGISTER_CODE => self.a = value,
             B_REGISTER_CODE => self.b = value,
             C_REGISTER_CODE => self.c = value,
@@ -121,8 +164,31 @@ impl Registers {
             E_REGISTER_CODE => self.e = value,
             H_REGISTER_CODE => self.h = value,
             L_REGISTER_CODE => self.l = value,
-            // HL_REGISTER_CODE => ,
-            _ => (),
+            HL_MEM_REGISTER_CODE => mmu.set_word(self.get_hl() as usize, value)?,
+            _ => return Err(error::invalid_r8_code()),
         }
+        Ok(())
+    }
+
+    pub fn set_dword(&mut self, binary_register: u8, value: u16) -> Result<(), io::Error> {
+        match binary_register {
+            BC_REGISTER_CODE => self.set_bc(value),
+            HL_REGISTER_CODE => self.set_hl(value),
+            DE_REGISTER_CODE => self.set_de(value),
+            SP_REGISTER_CODE => self.set_sp(value),
+            _ => return Err(error::invalid_r16_code()),
+        }
+        Ok(())
+    }
+
+    pub fn set_dword_stk(&mut self, binary_register: u8, value: u16) -> Result<(), io::Error> {
+        match binary_register {
+            BC_REGISTER_CODE => self.set_bc(value),
+            HL_REGISTER_CODE => self.set_hl(value),
+            DE_REGISTER_CODE => self.set_de(value),
+            AF_REGISTER_CODE => self.set_af(value),
+            _ => return Err(error::invalid_r16_code()),
+        }
+        Ok(())
     }
 }
