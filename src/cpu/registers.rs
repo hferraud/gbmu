@@ -20,6 +20,7 @@ pub const DE_MEM_REGISTER_CODE: u8 = 0x1;
 pub const HL_INC_REGISTER_CODE: u8 = 0x2;
 pub const HL_DEC_REGISTER_CODE: u8 = 0x3;
 
+#[derive(Debug)]
 pub struct Registers {
     pub a: u8,
     f: u8,
@@ -43,16 +44,16 @@ pub enum Flags {
 impl Registers {
     pub fn new() -> Self {
         Self {
-            a: 0,
-            f: 0,
-            b: 0,
-            c: 0,
-            d: 0,
-            e: 0,
-            h: 0,
-            l: 0,
-            pc: 0,
-            sp: 0,
+            a: 0x01,
+            f: 0x80,
+            b: 0x00,
+            c: 0x13,
+            d: 0x00,
+            e: 0xd8,
+            h: 0x01,
+            l: 0x4d,
+            pc: 0x0100,
+            sp: 0xfffe,
         }
     }
 
