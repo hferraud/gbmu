@@ -22,7 +22,6 @@ pub struct CPU {
 impl CPU {
     pub fn new() -> Self {
         let mut registers = registers::Registers::new();
-        registers.pc = 0x100;
         Self {
             registers,
             ime: false,
@@ -31,20 +30,27 @@ impl CPU {
 
     pub fn run(&mut self, mmu: &mut MMU) -> Result<(), io::Error> {
         loop {
+            println!("New instruction:");
+            println!("PC: {:#06x}", self.registers.pc);
+            println!("Opcode");
             let word = self.fetch_next_word(mmu)?;
-            eprintln!("{:#010b}", word);
+            println!("Instruction:");
             instructions::execute(word, self, mmu)?;
+            println!("{:#?}", self.registers);
+            print!("\n");
         }
     }
 
     pub fn fetch_next_word(&mut self, mmu: &mut MMU) -> Result<u8, io::Error> {
         let word = mmu.get_word(self.registers.pc as usize)?;
+        println!("word: {:#04x} = {:#010b}", word, word);
         self.registers.pc += mem::size_of::<Word>() as DWord;
         Ok(word)
     }
 
     pub fn fetch_next_dword(&mut self, mmu: &mut MMU) -> Result<u16, io::Error> {
         let dword = mmu.get_dword(self.registers.pc as usize)?;
+        println!("dword: {:#06x} = {:#018b}", dword, dword);
         self.registers.pc += mem::size_of::<DWord>() as DWord;
         Ok(dword)
     }
