@@ -110,7 +110,7 @@ fn ld_r16mem_a(opcode: u8, registers: &mut Registers, mmu: &mut MMU) -> Result<(
 fn ld_a_r16mem(opcode: u8, registers: &mut Registers, mmu: &mut MMU) -> Result<(), io::Error> {
     let r16_code = super::get_r16_code(opcode);
     let word_address = registers.get_dword(r16_code)? as usize;
-    registers.a = *mmu.fetch_word_address(word_address)?;
+    registers.a = mmu.get_word(word_address)?;
     Ok(())
 }
 
@@ -122,7 +122,7 @@ fn ld_r16_imm16(opcode: u8, cpu: &mut CPU, mmu: &mut MMU) -> Result<(), io::Erro
 
 fn ld_imm16mem_sp(cpu: &mut CPU, mmu: &mut MMU) -> Result<(), io::Error> {
     let address = cpu.fetch_next_dword(mmu)?;
-    *mmu.fetch_dword_address(address as usize)? = cpu.registers.sp;
+    mmu.set_dword(address as usize, cpu.registers.sp);
     Ok(())
 }
 

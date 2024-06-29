@@ -38,7 +38,10 @@ impl<'a> MMU<'a> {
     }
 
     pub fn get_dword(&mut self, address: usize) -> Result<u16, io::Error> {
-        Ok(*(self.fetch_dword_address(address)?))
+        let mut dword = self.get_word(address)? as u16;
+        dword <<= 8;
+        dword |= self.get_word(address + 1)? as u16;
+        Ok(dword)
     }
 
     pub fn set_word(&mut self, address: usize, value: u8) -> Result<(), io::Error> {
@@ -47,26 +50,15 @@ impl<'a> MMU<'a> {
     }
 
     pub fn set_dword(&mut self, address: usize, value: u16) -> Result<(), io::Error> {
-        *self.fetch_dword_address(address)? = value;
+        self.set_word(address, (value >> 8) as u8)?;
+        self.set_word(address + 1, value as u8)?;
         Ok(())
     }
 
-    pub fn fetch_word_address(&mut self, address: usize) -> Result<&mut u8, io::Error> {
+    fn fetch_word_address(&mut self, address: usize) -> Result<&mut u8, io::Error> {
         match address {
             ROM_START..=ROM_END => Ok(self.mbc.get_address(address)),
             WRAM_START..=WRAM_END => Ok(self.wram.get_address(address - WRAM_START)),
-            _ => Err(error::invalid_address()),
-        }
-    }
-
-    pub fn fetch_dword_address(&mut self, address: usize) -> Result<&mut u16, io::Error> {
-        match address {
-            ROM_START..=ROM_DWORD_END => unsafe {
-                Ok(&mut *(self.mbc.get_address(address) as *mut u8 as *mut u16))
-            },
-            WRAM_START..=WRAM_DWORD_END => unsafe {
-                Ok(&mut *(self.wram.get_address(address - WRAM_START) as *mut u8 as *mut u16))
-            },
             _ => Err(error::invalid_address()),
         }
     }
