@@ -1,5 +1,10 @@
 use std::io;
 
+pub fn invalid_argument() -> io::Error {
+    io::Error::new(io::ErrorKind::InvalidInput, "Invalid argument")
+}
+
+
 pub fn unsupported_instruction() -> io::Error {
     io::Error::new(io::ErrorKind::Unsupported, "Instruction is unsupported")
 }
