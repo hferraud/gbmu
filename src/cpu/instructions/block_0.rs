@@ -40,14 +40,14 @@ pub fn execute(opcode: u8, cpu: &mut CPU, mmu: &mut MMU) -> Result<(), io::Error
         LD_R16MEM_A_OPCODE => return ld_r16mem_a(opcode, &mut cpu.registers, mmu),
         LD_A_R16MEM_OPCODE => return ld_a_r16mem(opcode, &mut cpu.registers, mmu),
         LD_IMM16MEM_SP_OPCODE => return ld_imm16mem_sp(cpu, mmu),
-        INC_R16_OPCODE => return inc_r16(opcode, &mut cpu.registers),
-        DEC_R16_OPCODE => return dec_r16(opcode, &mut cpu.registers),
         ADD_HL_R16_OPCODE => return add_hl_r16(opcode, &mut cpu.registers),
+        INC_R8_OPCODE => return inc_r8(opcode, &mut cpu.registers, mmu),
+        DEC_R8_OPCODE => return dec_r8(opcode, &mut cpu.registers, mmu),
         _ => {}
     };
     match opcode & EXTENDED_INSTRUCTION_TYPE_MASK {
-        INC_R8_OPCODE => return inc_r8(opcode, &mut cpu.registers, mmu),
-        DEC_R8_OPCODE => return dec_r8(opcode, &mut cpu.registers, mmu),
+        INC_R16_OPCODE => return inc_r16(opcode, &mut cpu.registers),
+        DEC_R16_OPCODE => return dec_r16(opcode, &mut cpu.registers),
         _ => {}
     };
     match opcode {
