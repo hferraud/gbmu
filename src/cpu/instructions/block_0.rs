@@ -97,7 +97,7 @@ fn inc_r8(opcode: u8, registers: &mut Registers, mmu: &mut MMU) -> Result<(), io
     let register_value = registers.get_word(register, mmu)?;
 
     registers.set_h_flag(register_value, 1);
-    registers.set_word(register, register_value + 1, mmu)
+    registers.set_word(register, register_value.wrapping_add(1), mmu)
 }
 
 fn dec_r8(opcode: u8, registers: &mut Registers, mmu: &mut MMU) -> Result<(), io::Error> {
@@ -105,7 +105,7 @@ fn dec_r8(opcode: u8, registers: &mut Registers, mmu: &mut MMU) -> Result<(), io
     let register_value = registers.get_word(register, mmu)?;
 
     registers.set_h_flag(register_value, !1);
-    registers.set_word(register, register_value - 1, mmu)
+    registers.set_word(register, register_value.wrapping_sub(1), mmu)
 }
 
 fn ld_r16mem_a(opcode: u8, registers: &mut Registers, mmu: &mut MMU) -> Result<(), io::Error> {
