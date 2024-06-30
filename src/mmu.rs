@@ -39,8 +39,7 @@ impl<'a> MMU<'a> {
 
     pub fn get_dword(&mut self, address: usize) -> Result<u16, io::Error> {
         let mut dword = self.get_word(address)? as u16;
-        dword <<= 8;
-        dword |= self.get_word(address + 1)? as u16;
+        dword |= (self.get_word(address + 1)? as u16) << 8;
         Ok(dword)
     }
 
