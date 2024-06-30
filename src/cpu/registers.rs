@@ -17,8 +17,8 @@ pub const SP_REGISTER_CODE: u8 = 0x3;
 pub const AF_REGISTER_CODE: u8 = 0x3;
 pub const BC_MEM_REGISTER_CODE: u8 = 0x0;
 pub const DE_MEM_REGISTER_CODE: u8 = 0x1;
-pub const HL_INC_REGISTER_CODE: u8 = 0x2;
-pub const HL_DEC_REGISTER_CODE: u8 = 0x3;
+pub const HLI_MEM_REGISTER_CODE: u8 = 0x2;
+pub const HLD_MEM_REGISTER_CODE: u8 = 0x3;
 
 #[derive(Debug)]
 pub struct Registers {
@@ -82,6 +82,18 @@ impl Registers {
 
     pub fn get_hl(&self) -> u16 {
         (self.h as u16) << 8 | self.l as u16
+    }
+
+    pub fn get_hli(&mut self) -> u16 {
+        let hl = self.get_hl();
+        self.set_hl(hl.wrapping_add(1));
+        hl
+    }
+    
+    pub fn get_hld(&mut self) -> u16 {
+        let hl = self.get_hl();
+        self.set_hl(hl.wrapping_sub(1));
+        hl
     }
 
     pub fn set_sp(&mut self, value: u16) {
@@ -152,6 +164,16 @@ impl Registers {
             HL_REGISTER_CODE => Ok(self.get_hl()),
             DE_REGISTER_CODE => Ok(self.get_de()),
             AF_REGISTER_CODE => Ok(self.get_af()),
+            _ => Err(error::invalid_r16_code()),
+        }
+    }
+
+    pub fn get_dword_mem(&mut self, r16_code: u8) -> Result<u16, io::Error> {
+        match r16_code {
+            BC_MEM_REGISTER_CODE => Ok(self.get_bc()),
+            DE_MEM_REGISTER_CODE => Ok(self.get_de()),
+            HLI_MEM_REGISTER_CODE => Ok(self.get_hli()),
+            HLD_MEM_REGISTER_CODE => Ok(self.get_hld()),
             _ => Err(error::invalid_r16_code()),
         }
     }

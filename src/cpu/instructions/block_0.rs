@@ -110,7 +110,7 @@ fn dec_r8(opcode: u8, registers: &mut Registers, mmu: &mut MMU) -> Result<(), io
 
 fn ld_r16mem_a(opcode: u8, registers: &mut Registers, mmu: &mut MMU) -> Result<(), io::Error> {
     let r16_code = super::get_r16_code(opcode);
-    mmu.set_word(registers.get_dword(r16_code)? as usize, registers.a)
+    mmu.set_word(registers.get_dword_mem(r16_code)? as usize, registers.a)
 }
 
 fn ld_a_r16mem(opcode: u8, registers: &mut Registers, mmu: &mut MMU) -> Result<(), io::Error> {
