@@ -73,13 +73,13 @@ pub fn execute(opcode: u8, cpu: &mut CPU, mmu: &mut MMU) -> Result<(), io::Error
 fn inc_r16(opcode: u8, registers: &mut Registers) -> Result<(), io::Error> {
     let register = super::get_r16_code(opcode);
     let register_value = registers.get_dword(register)?;
-    registers.set_dword(register, register_value + 1)
+    registers.set_dword(register, register_value.wrapping_add(1))
 }
 
 fn dec_r16(opcode: u8, registers: &mut Registers) -> Result<(), io::Error> {
     let register = super::get_r16_code(opcode);
     let register_value = registers.get_dword(register)?;
-    registers.set_dword(register, register_value - 1)
+    registers.set_dword(register, register_value.wrapping_sub(1))
 }
 
 fn add_hl_r16(opcode: u8, registers: &mut Registers) -> Result<(), io::Error> {
