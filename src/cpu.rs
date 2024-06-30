@@ -36,9 +36,16 @@ impl CPU {
             let word = self.fetch_next_word(mmu)?;
             println!("Instruction:");
             instructions::execute(word, self, mmu)?;
-            println!("{:#?}", self.registers);
+            println!("{:#x?}", self.registers);
             print!("\n");
+            let mut input = String::new();
+            io::stdin().read_line(&mut input)
+                .expect("Erreur de lecture");
+            if input.trim() == "q" {
+                break;
+            }
         }
+        Ok(())
     }
 
     pub fn fetch_next_word(&mut self, mmu: &mut MMU) -> Result<u8, io::Error> {
