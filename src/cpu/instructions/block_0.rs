@@ -44,7 +44,8 @@ pub fn execute(opcode: u8, cpu: &mut CPU, mmu: &mut MMU) -> Result<(), io::Error
         LD_IMM16MEM_SP_OPCODE => return ld_imm16mem_sp(cpu, mmu),
         INC_R8_OPCODE => return inc_r8(opcode, &mut cpu.registers, mmu),
         DEC_R8_OPCODE => return dec_r8(opcode, &mut cpu.registers, mmu),
-        _ => {}
+        LD_R8_IMM8_OPCODE => return ld_r8_imm8(opcode, cpu, mmu),
+            _ => {}
     };
     match opcode & EXTENDED_INSTRUCTION_TYPE_MASK {
         INC_R16_OPCODE => return inc_r16(opcode, &mut cpu.registers),
@@ -123,6 +124,12 @@ fn ld_r16_imm16(opcode: u8, cpu: &mut CPU, mmu: &mut MMU) -> Result<(), io::Erro
     let register = super::get_r16_code(opcode);
     let imm16 = cpu.fetch_next_dword(mmu)?;
     cpu.registers.set_dword(register, imm16)
+}
+
+fn ld_r8_imm8(opcode: u8, cpu: &mut CPU, mmu: &mut MMU) -> Result<(), io::Error> {
+    let register = super::get_r8_code(opcode);
+    let imm8 = cpu.fetch_next_word(mmu)?;
+    cpu.registers.set_word(register, imm8, mmu)
 }
 
 fn ld_imm16mem_sp(cpu: &mut CPU, mmu: &mut MMU) -> Result<(), io::Error> {
