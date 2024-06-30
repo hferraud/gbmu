@@ -94,18 +94,24 @@ fn add_hl_r16(opcode: u8, registers: &mut Registers) -> Result<(), io::Error> {
 
 fn inc_r8(opcode: u8, registers: &mut Registers, mmu: &mut MMU) -> Result<(), io::Error> {
     let register = super::get_r8_code(opcode);
-    let register_value = registers.get_word(register, mmu)?;
+    let mut register_value = registers.get_word(register, mmu)?;
 
-    registers.set_h_flag(register_value, 1);
-    registers.set_word(register, register_value.wrapping_add(1), mmu)
+    registers.set_h_flag_add(register_value, 1);
+    register_value = register_value.wrapping_add(1);
+    registers.set_flags(Flags::Z, register_value == 0);
+    registers.set_flags(Flags::N, false);
+    registers.set_word(register, register_value, mmu)
 }
 
 fn dec_r8(opcode: u8, registers: &mut Registers, mmu: &mut MMU) -> Result<(), io::Error> {
     let register = super::get_r8_code(opcode);
-    let register_value = registers.get_word(register, mmu)?;
+    let mut register_value = registers.get_word(register, mmu)?;
 
-    registers.set_h_flag(register_value, !1);
-    registers.set_word(register, register_value.wrapping_sub(1), mmu)
+    registers.set_h_flag_sub(register_value, !1);
+    register_value = register_value.wrapping_sub(1);
+    registers.set_flags(Flags::Z, register_value == 0);
+    registers.set_flags(Flags::N, true);
+    registers.set_word(register, register_value, mmu)
 }
 
 fn ld_r16mem_a(opcode: u8, registers: &mut Registers, mmu: &mut MMU) -> Result<(), io::Error> {
