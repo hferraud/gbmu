@@ -81,13 +81,20 @@ fn add(operand: u8, carry: bool, registers: &mut Registers) -> Result<u8, io::Er
     if carry {
         registers.set_flags(Flags::C, overflow);
     }
-    registers.set_h_flag(operand, a);
+    registers.set_h_flag_add(operand, a);
     Ok(result)
 }
 
 fn sub(operand: u8, carry: bool, registers: &mut Registers) -> Result<u8, io::Error> {
+    let a = registers.a;
+    let (result, overflow) = a.overflowing_sub(operand);
+    
+    if carry {
+        registers.set_flags(Flags::C, overflow)
+    }
     registers.set_flags(Flags::N, true);
-    add(!operand, carry, registers)
+    registers.set_h_flag_sub(a, operand);
+    Ok(result)
 }
 
 fn and(operand: u8, registers: &mut Registers) -> Result<u8, io::Error> {

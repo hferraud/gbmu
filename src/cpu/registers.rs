@@ -128,10 +128,16 @@ impl Registers {
         self.f & (flag as u8) != 0
     }
 
-    pub fn set_h_flag(&mut self, rhs: u8, lhs: u8) {
+    pub fn set_h_flag_add(&mut self, lhs: u8, rhs: u8) {
         let value = ((lhs & 0x0F) + (rhs & 0x0F)) & 0x10 != 0;
 
         self.set_flags(Flags::H, value);
+    }
+
+    pub fn set_h_flag_sub(&mut self, lhs: u8, rhs: u8) {
+        let (_, overflow) = (lhs & 0x0F).overflowing_sub(rhs & 0x0F);
+
+        self.set_flags(Flags::H, overflow);
     }
 
     pub fn get_word(&self, r8_code: u8, mmu: &mut MMU) -> Result<u8, io::Error> {

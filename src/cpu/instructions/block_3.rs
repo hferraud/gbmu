@@ -235,7 +235,7 @@ fn add_sp_imm8(cpu: &mut CPU, mmu: &mut MMU) -> Result<(), io::Error> {
     cpu.registers.reset_flags();
     let (result, overflow) = cpu.registers.sp.overflowing_add(value as u16);
     cpu.registers.set_flags(Flags::C, overflow);
-    cpu.registers.set_h_flag(cpu.registers.sp as u8, value);
+    cpu.registers.set_h_flag_add(cpu.registers.sp as u8, value);
     cpu.registers.sp = result;
     Ok(())
 }
