@@ -27,7 +27,7 @@ impl WRAM {
         if (address) < BANK_WIDTH {
             &mut self.data[address]
         } else {
-            &mut self.data[address + self.bank as usize * BANK_WIDTH]
+            &mut self.data[address + (self.bank - 1) as usize * BANK_WIDTH]
         }
     }
 }

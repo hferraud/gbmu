@@ -205,7 +205,7 @@ fn jr_cc_imm8(cpu: &mut CPU, mmu: &mut MMU, cc: bool) -> Result<(), io::Error> {
     if !cc {
         return Ok(());
     } else if relative < 0 {
-        cpu.registers.pc -= (-relative) as u16;
+        cpu.registers.pc -= -relative as u16;
     } else {
         cpu.registers.pc += relative as u16;
     }

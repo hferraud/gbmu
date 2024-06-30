@@ -76,7 +76,7 @@ impl Registers {
     }
 
     pub fn set_hl(&mut self, value: u16) {
-        self.h = (value & 0xff00 >> 8) as u8;
+        self.h = ((value & 0xff00) >> 8) as u8;
         self.l = value as u8;
     }
 
