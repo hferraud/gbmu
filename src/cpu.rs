@@ -29,20 +29,32 @@ impl CPU {
     }
 
     pub fn run(&mut self, mmu: &mut MMU) -> Result<(), io::Error> {
+        let mut breakpoint: bool = false;
         loop {
-            println!("New instruction:");
-            println!("PC: {:#06x}", self.registers.pc);
-            println!("Opcode");
+            if breakpoint {
+                println!("New instruction:");
+                println!("PC: {:#06x}", self.registers.pc);
+                println!("Opcode");
+            }
             let word = self.fetch_next_word(mmu)?;
-            println!("Instruction:");
+            if breakpoint {
+                println!("Instruction:");
+            }
             instructions::execute(word, self, mmu)?;
-            println!("{:#x?}", self.registers);
-            print!("\n");
-            let mut input = String::new();
-            io::stdin().read_line(&mut input)
-                .expect("Erreur de lecture");
-            if input.trim() == "q" {
-                break;
+            if breakpoint {
+                println!("{:#x?}", self.registers);
+                println!();
+            }
+            if self.registers.pc == 0x29a {
+                breakpoint = true;
+            }
+            if breakpoint {
+                let mut input = String::new();
+                io::stdin().read_line(&mut input)
+                    .expect("Erreur de lecture");
+                if input.trim() == "q" {
+                    break;
+                }
             }
         }
         Ok(())
