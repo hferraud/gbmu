@@ -206,7 +206,7 @@ fn jr_imm8(cpu: &mut CPU, mmu: &mut MMU) -> Result<(), io::Error> {
 }
 
 fn jr_cc_imm8(cpu: &mut CPU, mmu: &mut MMU, cc: bool) -> Result<(), io::Error> {
-    let relative = imm8_to_jr(cpu, mmu)?;
+    let relative = cpu.fetch_next_word(mmu)? as i8;
 
     if !cc {
         return Ok(());
@@ -216,14 +216,4 @@ fn jr_cc_imm8(cpu: &mut CPU, mmu: &mut MMU, cc: bool) -> Result<(), io::Error> {
         cpu.registers.pc += relative as u16;
     }
     Ok(())
-}
-
-fn imm8_to_jr(cpu: &mut CPU, mmu: &mut MMU) -> Result<i16, io::Error> {
-    let mut imm8 = cpu.fetch_next_word(mmu)? as i16;
-
-    imm8 -= 127;
-    if imm8 >= 0 {
-        imm8 += 1;
-    }
-    Ok(imm8)
 }
