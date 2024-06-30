@@ -36,6 +36,10 @@ const LDH_A_CMEM_OPCODE: u8 = 0b11110010;
 const LDH_A_IMM8_OPCODE: u8 = 0b11110000;
 const LD_A_IMM16_OPCODE: u8 = 0b11111010;
 
+const ADD_SP_IMM8_OPCODE: u8 = 0b11101000;
+const LD_HL_SP_IMM8_OPCODE: u8 = 0b11111000;
+const LD_SP_HL_OPCODE: u8 = 0b11111001;
+
 const DI_OPCODE: u8 = 0b11110011;
 const EI_OPCODE: u8 = 0b11111011;
 
@@ -78,6 +82,10 @@ pub fn execute(opcode: u8, cpu: &mut CPU, mmu: &mut MMU) -> Result<(), io::Error
         LDH_A_CMEM_OPCODE => return ldh_a_cmem(registers, mmu),
         LDH_A_IMM8_OPCODE => return ldh_a_imm8(cpu, mmu),
         LD_A_IMM16_OPCODE => return ld_a_imm16(cpu, mmu),
+
+        ADD_SP_IMM8_OPCODE => return add_sp_imm8(cpu, mmu),
+        LD_HL_SP_IMM8_OPCODE => return ld_hl_sp_imm8(cpu, mmu),
+        LD_SP_HL_OPCODE => ld_sp_hl(registers),
 
         DI_OPCODE => di(cpu),
         EI_OPCODE => ei(cpu),

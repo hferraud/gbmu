@@ -21,9 +21,8 @@ pub struct CPU {
 
 impl CPU {
     pub fn new() -> Self {
-        let mut registers = registers::Registers::new();
         Self {
-            registers,
+            registers: registers::Registers::new(),
             ime: false,
         }
     }

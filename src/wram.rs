@@ -5,7 +5,6 @@ const BANK_WIDTH: usize = 0x1000;
 pub struct WRAM {
     data: Vec<u8>,
     bank: u8,
-    cgb_mode: bool,
 }
 
 impl WRAM {
@@ -19,7 +18,6 @@ impl WRAM {
         WRAM {
             data,
             bank: 1,
-            cgb_mode: cbg_mode,
         }
     }
 

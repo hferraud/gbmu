@@ -140,7 +140,7 @@ fn ld_r8_imm8(opcode: u8, cpu: &mut CPU, mmu: &mut MMU) -> Result<(), io::Error>
 
 fn ld_imm16mem_sp(cpu: &mut CPU, mmu: &mut MMU) -> Result<(), io::Error> {
     let address = cpu.fetch_next_dword(mmu)?;
-    mmu.set_dword(address as usize, cpu.registers.sp);
+    let _ = mmu.set_dword(address as usize, cpu.registers.sp);
     Ok(())
 }
 
