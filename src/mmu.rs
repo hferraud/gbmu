@@ -73,7 +73,7 @@ impl<'a> MMU<'a> {
         match address {
             ROM_START..=ROM_END => Ok(self.mbc.get_address(address)),
             WRAM_START..=WRAM_END => Ok(self.wram.get_address(address - WRAM_START)),
-            _ => Err(error::invalid_address()),
+            _ => Err(error::invalid_address(address)),
         }
     }
 }
