@@ -1,3 +1,5 @@
+use std::ops::{Index, IndexMut};
+
 const DMG_WRAM_SIZE: usize = 1 << 13; //  8 192
 const CBG_WRAM_SIZE: usize = 1 << 15; // 32 768
 const BANK_WIDTH: usize = 0x1000;
@@ -20,12 +22,26 @@ impl WRAM {
             bank: 1,
         }
     }
+}
 
-    pub fn get_address(&mut self, address: usize) -> &mut u8 {
-        if (address) < BANK_WIDTH {
-            &mut self.data[address]
+impl Index<usize> for WRAM {
+    type Output = u8;
+
+    fn index(&self, index: usize) -> &Self::Output {
+        if (index) < BANK_WIDTH {
+            &self.data[index]
         } else {
-            &mut self.data[address + (self.bank - 1) as usize * BANK_WIDTH]
+            &self.data[index + (self.bank - 1) as usize * BANK_WIDTH]
+        }
+    }
+}
+
+impl IndexMut<usize> for WRAM {
+    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
+        if (index) < BANK_WIDTH {
+            &mut self.data[index]
+        } else {
+            &mut self.data[index + (self.bank - 1) as usize * BANK_WIDTH]
         }
     }
 }
