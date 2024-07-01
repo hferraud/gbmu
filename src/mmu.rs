@@ -31,9 +31,7 @@ const OAM_END: usize = 0xFE9F;
 const IO_START: usize = 0xFF00;
 #[allow(unused)]
 const IO_END: usize = 0xFF7F;
-#[allow(unused)]
 const HRAM_START: usize = 0xFF80;
-#[allow(unused)]
 const HRAM_END: usize = 0xFFFE;
 #[allow(unused)]
 const IE_REGISTER: usize = 0xFFFF;
@@ -41,11 +39,17 @@ const IE_REGISTER: usize = 0xFFFF;
 pub struct MMU<'a> {
     mbc: &'a mut MBC0,
     wram: &'a mut WRAM,
+    hram: HRAM,
 }
 
 impl<'a> MMU<'a> {
     pub fn new(mbc: &'a mut MBC0, wram: &'a mut WRAM) -> Self {
-        MMU { mbc, wram }
+        let hram = HRAM::new();
+        MMU {
+            mbc,
+            wram,
+            hram,
+        }
     }
 
     pub fn get_word(&mut self, address: usize) -> Result<u8, io::Error> {
@@ -73,6 +77,8 @@ impl<'a> MMU<'a> {
         match address {
             ROM_START..=ROM_END => Ok(&mut self.mbc[address]),
             WRAM_START..=WRAM_END => Ok(&mut self.wram[address - WRAM_START]),
+            HRAM_START..=HRAM_END => Ok(&mut self.hram[address - HRAM_START]),
+            IE_REGISTER => Ok(&mut self.ie),
             _ => Err(error::invalid_address(address)),
         }
     }
