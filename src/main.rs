@@ -1,7 +1,6 @@
 use gbmu::cartridge;
 use std::env;
 use gbmu::mmu::MMU;
-use gbmu::wram::WRAM;
 use gbmu::cpu::CPU;
 use gbmu::error;
 
@@ -15,9 +14,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
     let rom_path = &args[1];
     let mut cartridge = cartridge::Cartridge::load_rom(rom_path).unwrap();
-    // println!("{:#x?}", cartridge);
-    let mut wram = WRAM::new(false);
-    let mut mmu = MMU::new(&mut cartridge.mbc, &mut wram);
+    let mut mmu = MMU::new(&mut cartridge.mbc, false);
     let mut cpu = CPU::new();
     cpu.run(&mut mmu)?;
     Ok(())

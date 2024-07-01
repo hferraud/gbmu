@@ -38,12 +38,14 @@ const IE_REGISTER: usize = 0xFFFF;
 
 pub struct MMU<'a> {
     mbc: &'a mut MBC0,
-    wram: &'a mut WRAM,
+    wram: WRAM,
     hram: HRAM,
+    ie: u8,
 }
 
 impl<'a> MMU<'a> {
-    pub fn new(mbc: &'a mut MBC0, wram: &'a mut WRAM) -> Self {
+    pub fn new(mbc: &'a mut MBC0, cbg_mode: bool) -> Self {
+        let wram = WRAM::new(cbg_mode);
         let hram = HRAM::new();
         MMU {
             mbc,
