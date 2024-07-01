@@ -71,8 +71,8 @@ impl<'a> MMU<'a> {
 
     fn fetch_word_address(&mut self, address: usize) -> Result<&mut u8, io::Error> {
         match address {
-            ROM_START..=ROM_END => Ok(self.mbc.get_address(address)),
             WRAM_START..=WRAM_END => Ok(self.wram.get_address(address - WRAM_START)),
+            ROM_START..=ROM_END => Ok(&mut self.mbc[address]),
             _ => Err(error::invalid_address(address)),
         }
     }
