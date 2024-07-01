@@ -3,6 +3,7 @@ use std::io;
 use crate::cartridge::mbc0::MBC0;
 use crate::error;
 use crate::wram::WRAM;
+use crate::hram::HRAM;
 
 #[allow(unused)]
 const MEMORY_SIZE: usize = 0xFFFF;
@@ -33,7 +34,6 @@ const IO_START: usize = 0xFF00;
 const IO_END: usize = 0xFF7F;
 const HRAM_START: usize = 0xFF80;
 const HRAM_END: usize = 0xFFFE;
-#[allow(unused)]
 const IE_REGISTER: usize = 0xFFFF;
 
 pub struct MMU<'a> {
@@ -51,6 +51,7 @@ impl<'a> MMU<'a> {
             mbc,
             wram,
             hram,
+            ie: u8::default()
         }
     }
 
