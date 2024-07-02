@@ -104,14 +104,13 @@ fn prefix(cpu: &mut CPU, mmu: &mut MMU) -> Result<(), io::Error> {
 }
 
 fn push(value: u16, registers: &mut Registers, mmu: &mut MMU) -> Result<(), io::Error> {
-    mmu.set_dword(registers.sp as usize, value)?;
-    registers.sp += mem::size_of::<DWord>() as u16;
-    Ok(())
+    registers.sp -= mem::size_of::<DWord>() as u16;
+    mmu.set_dword(registers.sp as usize, value)
 }
 
 fn pop(registers: &mut Registers, mmu: &mut MMU) -> Result<u16, io::Error> {
     let result = mmu.get_dword(registers.sp as usize)?;
-    registers.sp -= mem::size_of::<DWord>() as u16;
+    registers.sp += mem::size_of::<DWord>() as u16;
     Ok(result)
 }
 
