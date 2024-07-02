@@ -9,8 +9,9 @@ use crate::mmu::MMU;
 
 const LDH_ADDRESS_START: usize = 0xff00;
 
-const INSTRUCTION_TYPE_MASK: u8 = 0b111;
-const STK_INSTRUCTION_TYPE_MASK: u8 = 0b1111;
+const INSTRUCTION_TYPE_MASK: u8 = 0b00100111;
+const STK_INSTRUCTION_TYPE_MASK: u8 = 0b00001111;
+const RST_INSTRUCTION_MASK: u8 = 0b00000111;
 
 const RET_CC_OPCODE: u8 = 0b000;
 const JP_CC_IMM16_OPCODE: u8 = 0b010;
@@ -55,12 +56,14 @@ const TGT_MASK: u8 = 0b00111000;
 
 pub fn execute(opcode: u8, cpu: &mut CPU, mmu: &mut MMU) -> Result<(), io::Error> {
     let registers = &mut cpu.registers;
+    if opcode & RST_INSTRUCTION_MASK == RST_OPCODE {
+        return rst_tgt3(opcode, registers, mmu);
+    }
     match opcode & INSTRUCTION_TYPE_MASK {
         RET_CC_OPCODE => return ret_cc(opcode, registers, mmu),
         JP_CC_IMM16_OPCODE => return jp_cc_imm16(opcode, cpu, mmu),
         CALL_CC_IMM16_OPCODE => return call_cc_imm16(opcode, cpu, mmu),
         ALU_OPCODE => return alu_imm8(opcode, cpu, mmu),
-        RST_OPCODE => return rst_tgt3(opcode, registers, mmu),
         _ => {}
     };
     match opcode & STK_INSTRUCTION_TYPE_MASK {
