@@ -96,13 +96,13 @@ impl Registers {
         hl
     }
 
-    pub fn set_sp(&mut self, value: u16) {
-        self.sp = value
-    }
-
-    pub fn get_sp(&self) -> u16 {
-        self.sp
-    }
+    // pub fn set_sp(&mut self, value: u16) {
+    //     self.sp = value
+    // }
+    //
+    // pub fn get_sp(&self) -> u16 {
+    //     self.sp
+    // }
 
     pub fn set_af(&mut self, value: u16) {
         self.a = (value & 0xff00 >> 8) as u8;
@@ -159,7 +159,7 @@ impl Registers {
             BC_REGISTER_CODE => Ok(self.get_bc()),
             HL_REGISTER_CODE => Ok(self.get_hl()),
             DE_REGISTER_CODE => Ok(self.get_de()),
-            SP_REGISTER_CODE => Ok(self.get_sp()),
+            SP_REGISTER_CODE => Ok(self.sp),
             _ => Err(error::invalid_r16_code()),
         }
     }
@@ -204,7 +204,7 @@ impl Registers {
             BC_REGISTER_CODE => self.set_bc(value),
             HL_REGISTER_CODE => self.set_hl(value),
             DE_REGISTER_CODE => self.set_de(value),
-            SP_REGISTER_CODE => self.set_sp(value),
+            SP_REGISTER_CODE => self.sp = value,
             _ => return Err(error::invalid_r16_code()),
         }
         Ok(())
