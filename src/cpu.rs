@@ -28,7 +28,7 @@ impl CPU {
     }
 
     pub fn run(&mut self, mmu: &mut MMU) -> Result<(), io::Error> {
-        let mut breakpoint: bool = false;
+        let mut breakpoint: bool = true;
         loop {
             if breakpoint {
                 println!("New instruction:");
@@ -44,9 +44,9 @@ impl CPU {
                 println!("{:#x?}", self.registers);
                 println!();
             }
-            if self.registers.pc == 0x29a {
-                breakpoint = true;
-            }
+            // if self.registers.pc == 0x29a {
+            //     breakpoint = true;
+            // }
             if breakpoint {
                 let mut input = String::new();
                 io::stdin().read_line(&mut input)
