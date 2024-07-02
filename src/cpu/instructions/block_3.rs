@@ -9,8 +9,9 @@ use crate::mmu::MMU;
 
 const LDH_ADDRESS_START: usize = 0xff00;
 
-const INSTRUCTION_TYPE_MASK: u8 = 0b111;
-const STK_INSTRUCTION_TYPE_MASK: u8 = 0b1111;
+const INSTRUCTION_TYPE_MASK: u8 = 0b00100111;
+const STK_INSTRUCTION_TYPE_MASK: u8 = 0b00001111;
+const RST_INSTRUCTION_MASK: u8 = 0b00000111;
 
 const RET_CC_OPCODE: u8 = 0b000;
 const JP_CC_IMM16_OPCODE: u8 = 0b010;
@@ -36,6 +37,10 @@ const LDH_A_CMEM_OPCODE: u8 = 0b11110010;
 const LDH_A_IMM8_OPCODE: u8 = 0b11110000;
 const LD_A_IMM16_OPCODE: u8 = 0b11111010;
 
+const ADD_SP_IMM8_OPCODE: u8 = 0b11101000;
+const LD_HL_SP_IMM8_OPCODE: u8 = 0b11111000;
+const LD_SP_HL_OPCODE: u8 = 0b11111001;
+
 const DI_OPCODE: u8 = 0b11110011;
 const EI_OPCODE: u8 = 0b11111011;
 
@@ -51,12 +56,14 @@ const TGT_MASK: u8 = 0b00111000;
 
 pub fn execute(opcode: u8, cpu: &mut CPU, mmu: &mut MMU) -> Result<(), io::Error> {
     let registers = &mut cpu.registers;
+    if opcode & RST_INSTRUCTION_MASK == RST_OPCODE {
+        return rst_tgt3(opcode, registers, mmu);
+    }
     match opcode & INSTRUCTION_TYPE_MASK {
         RET_CC_OPCODE => return ret_cc(opcode, registers, mmu),
         JP_CC_IMM16_OPCODE => return jp_cc_imm16(opcode, cpu, mmu),
         CALL_CC_IMM16_OPCODE => return call_cc_imm16(opcode, cpu, mmu),
         ALU_OPCODE => return alu_imm8(opcode, cpu, mmu),
-        RST_OPCODE => return rst_tgt3(opcode, registers, mmu),
         _ => {}
     };
     match opcode & STK_INSTRUCTION_TYPE_MASK {
@@ -79,6 +86,10 @@ pub fn execute(opcode: u8, cpu: &mut CPU, mmu: &mut MMU) -> Result<(), io::Error
         LDH_A_IMM8_OPCODE => return ldh_a_imm8(cpu, mmu),
         LD_A_IMM16_OPCODE => return ld_a_imm16(cpu, mmu),
 
+        ADD_SP_IMM8_OPCODE => return add_sp_imm8(cpu, mmu),
+        LD_HL_SP_IMM8_OPCODE => return ld_hl_sp_imm8(cpu, mmu),
+        LD_SP_HL_OPCODE => ld_sp_hl(registers),
+
         DI_OPCODE => di(cpu),
         EI_OPCODE => ei(cpu),
         _ => return Err(error::invalid_opcode()),
@@ -96,14 +107,13 @@ fn prefix(cpu: &mut CPU, mmu: &mut MMU) -> Result<(), io::Error> {
 }
 
 fn push(value: u16, registers: &mut Registers, mmu: &mut MMU) -> Result<(), io::Error> {
-    mmu.set_dword(registers.get_sp() as usize, value)?;
-    registers.set_sp(registers.get_sp() + mem::size_of::<DWord>() as u16);
-    Ok(())
+    registers.sp -= mem::size_of::<DWord>() as u16;
+    mmu.set_dword(registers.sp as usize, value)
 }
 
 fn pop(registers: &mut Registers, mmu: &mut MMU) -> Result<u16, io::Error> {
-    let result = mmu.get_dword(registers.get_sp() as usize)?;
-    registers.set_sp(registers.get_sp() - mem::size_of::<DWord>() as u16);
+    let result = mmu.get_dword(registers.sp as usize)?;
+    registers.sp += mem::size_of::<DWord>() as u16;
     Ok(result)
 }
 
@@ -235,7 +245,7 @@ fn add_sp_imm8(cpu: &mut CPU, mmu: &mut MMU) -> Result<(), io::Error> {
     cpu.registers.reset_flags();
     let (result, overflow) = cpu.registers.sp.overflowing_add(value as u16);
     cpu.registers.set_flags(Flags::C, overflow);
-    cpu.registers.set_h_flag(cpu.registers.sp as u8, value);
+    cpu.registers.set_h_flag_add(cpu.registers.sp as u8, value);
     cpu.registers.sp = result;
     Ok(())
 }

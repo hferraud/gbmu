@@ -1,8 +1,8 @@
-use crate::mmu::MMU;
-use std::{io, mem};
-
 mod instructions;
 mod registers;
+
+use crate::mmu::MMU;
+use std::{io, mem};
 
 pub const BLOCK_MASK: u8 = 0b11000000;
 pub const BLOCK_SHIFT: u8 = 6;
@@ -20,6 +20,20 @@ pub struct CPU {
 }
 
 impl CPU {
+    pub fn new() -> Self {
+        Self {
+            registers: registers::Registers::new(),
+            ime: false,
+        }
+    }
+
+    pub fn run(&mut self, mmu: &mut MMU) -> Result<(), io::Error> {
+        loop {
+            let word = self.fetch_next_word(mmu)?;
+            instructions::execute(word, self, mmu)?;
+        }
+    }
+
     pub fn fetch_next_word(&mut self, mmu: &mut MMU) -> Result<u8, io::Error> {
         let word = mmu.get_word(self.registers.pc as usize)?;
         self.registers.pc += mem::size_of::<Word>() as DWord;

@@ -13,10 +13,6 @@ const NEGATION_MASK: u8 = 0b010;
 const CARRY_FLAG_MASK: u8 = 0b001;
 const SUM_OPERATION: u8 = 0b000;
 const BITWISE_OPERATION: u8 = 0b100;
-const ADD_OPERATION: u8 = 0b000;
-const ADC_OPERATION: u8 = 0b001;
-const SUB_OPERATION: u8 = 0b010;
-const SBC_OPERATION: u8 = 0b011;
 const AND_OPERATION: u8 = 0b100;
 const XOR_OPERATION: u8 = 0b101;
 const OR_OPERATION: u8 = 0b110;
@@ -81,13 +77,20 @@ fn add(operand: u8, carry: bool, registers: &mut Registers) -> Result<u8, io::Er
     if carry {
         registers.set_flags(Flags::C, overflow);
     }
-    registers.set_h_flag(operand, a);
+    registers.set_h_flag_add(operand, a);
     Ok(result)
 }
 
 fn sub(operand: u8, carry: bool, registers: &mut Registers) -> Result<u8, io::Error> {
+    let a = registers.a;
+    let (result, overflow) = a.overflowing_sub(operand);
+
+    if carry {
+        registers.set_flags(Flags::C, overflow)
+    }
     registers.set_flags(Flags::N, true);
-    add(!operand, carry, registers)
+    registers.set_h_flag_sub(a, operand);
+    Ok(result)
 }
 
 fn and(operand: u8, registers: &mut Registers) -> Result<u8, io::Error> {

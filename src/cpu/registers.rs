@@ -17,9 +17,10 @@ pub const SP_REGISTER_CODE: u8 = 0x3;
 pub const AF_REGISTER_CODE: u8 = 0x3;
 pub const BC_MEM_REGISTER_CODE: u8 = 0x0;
 pub const DE_MEM_REGISTER_CODE: u8 = 0x1;
-pub const HL_INC_REGISTER_CODE: u8 = 0x2;
-pub const HL_DEC_REGISTER_CODE: u8 = 0x3;
+pub const HLI_MEM_REGISTER_CODE: u8 = 0x2;
+pub const HLD_MEM_REGISTER_CODE: u8 = 0x3;
 
+#[derive(Debug)]
 pub struct Registers {
     pub a: u8,
     f: u8,
@@ -43,16 +44,16 @@ pub enum Flags {
 impl Registers {
     pub fn new() -> Self {
         Self {
-            a: 0,
-            f: 0,
-            b: 0,
-            c: 0,
-            d: 0,
-            e: 0,
-            h: 0,
-            l: 0,
-            pc: 0,
-            sp: 0,
+            a: 0x01,
+            f: 0x80,
+            b: 0x00,
+            c: 0x13,
+            d: 0x00,
+            e: 0xd8,
+            h: 0x01,
+            l: 0x4d,
+            pc: 0x0100,
+            sp: 0xfffe,
         }
     }
 
@@ -75,7 +76,7 @@ impl Registers {
     }
 
     pub fn set_hl(&mut self, value: u16) {
-        self.h = (value & 0xff00 >> 8) as u8;
+        self.h = ((value & 0xff00) >> 8) as u8;
         self.l = value as u8;
     }
 
@@ -83,12 +84,16 @@ impl Registers {
         (self.h as u16) << 8 | self.l as u16
     }
 
-    pub fn set_sp(&mut self, value: u16) {
-        self.sp = value
+    pub fn get_hli(&mut self) -> u16 {
+        let hl = self.get_hl();
+        self.set_hl(hl.wrapping_add(1));
+        hl
     }
 
-    pub fn get_sp(&self) -> u16 {
-        self.sp
+    pub fn get_hld(&mut self) -> u16 {
+        let hl = self.get_hl();
+        self.set_hl(hl.wrapping_sub(1));
+        hl
     }
 
     pub fn set_af(&mut self, value: u16) {
@@ -115,10 +120,16 @@ impl Registers {
         self.f & (flag as u8) != 0
     }
 
-    pub fn set_h_flag(&mut self, rhs: u8, lhs: u8) {
+    pub fn set_h_flag_add(&mut self, lhs: u8, rhs: u8) {
         let value = ((lhs & 0x0F) + (rhs & 0x0F)) & 0x10 != 0;
 
         self.set_flags(Flags::H, value);
+    }
+
+    pub fn set_h_flag_sub(&mut self, lhs: u8, rhs: u8) {
+        let (_, overflow) = (lhs & 0x0F).overflowing_sub(rhs & 0x0F);
+
+        self.set_flags(Flags::H, overflow);
     }
 
     pub fn get_word(&self, r8_code: u8, mmu: &mut MMU) -> Result<u8, io::Error> {
@@ -140,7 +151,7 @@ impl Registers {
             BC_REGISTER_CODE => Ok(self.get_bc()),
             HL_REGISTER_CODE => Ok(self.get_hl()),
             DE_REGISTER_CODE => Ok(self.get_de()),
-            SP_REGISTER_CODE => Ok(self.get_sp()),
+            SP_REGISTER_CODE => Ok(self.sp),
             _ => Err(error::invalid_r16_code()),
         }
     }
@@ -151,6 +162,16 @@ impl Registers {
             HL_REGISTER_CODE => Ok(self.get_hl()),
             DE_REGISTER_CODE => Ok(self.get_de()),
             AF_REGISTER_CODE => Ok(self.get_af()),
+            _ => Err(error::invalid_r16_code()),
+        }
+    }
+
+    pub fn get_dword_mem(&mut self, r16_code: u8) -> Result<u16, io::Error> {
+        match r16_code {
+            BC_MEM_REGISTER_CODE => Ok(self.get_bc()),
+            DE_MEM_REGISTER_CODE => Ok(self.get_de()),
+            HLI_MEM_REGISTER_CODE => Ok(self.get_hli()),
+            HLD_MEM_REGISTER_CODE => Ok(self.get_hld()),
             _ => Err(error::invalid_r16_code()),
         }
     }
@@ -175,7 +196,7 @@ impl Registers {
             BC_REGISTER_CODE => self.set_bc(value),
             HL_REGISTER_CODE => self.set_hl(value),
             DE_REGISTER_CODE => self.set_de(value),
-            SP_REGISTER_CODE => self.set_sp(value),
+            SP_REGISTER_CODE => self.sp = value,
             _ => return Err(error::invalid_r16_code()),
         }
         Ok(())

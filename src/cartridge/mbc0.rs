@@ -9,10 +9,6 @@ impl MBC0 {
     pub fn new(data: Vec<u8>) -> Self {
         MBC0 { rom: data }
     }
-
-    pub fn get_address(&mut self, address: usize) -> &mut u8 {
-        &mut self.rom[address]
-    }
 }
 
 impl Index<usize> for MBC0 {
