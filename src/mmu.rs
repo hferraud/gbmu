@@ -1,6 +1,8 @@
 use std::io;
+use std::mem::size_of;
 
 use crate::cartridge::mbc0::MBC0;
+use crate::cpu::Word;
 use crate::error;
 use crate::wram::WRAM;
 use crate::hram::HRAM;
@@ -61,7 +63,7 @@ impl<'a> MMU<'a> {
 
     pub fn get_dword(&mut self, address: usize) -> Result<u16, io::Error> {
         let mut dword = self.get_word(address)? as u16;
-        dword |= (self.get_word(address + 1)? as u16) << 8;
+        dword |= (self.get_word(address + 1)? as u16) << size_of::<Word>();
         Ok(dword)
     }
 
@@ -71,8 +73,8 @@ impl<'a> MMU<'a> {
     }
 
     pub fn set_dword(&mut self, address: usize, value: u16) -> Result<(), io::Error> {
-        self.set_word(address, (value >> 8) as u8)?;
-        self.set_word(address + 1, value as u8)?;
+        self.set_word(address, (value & 0x00FF) as u8)?;
+        self.set_word(address + 1, (value >> size_of::<Word>()) as u8)?;
         Ok(())
     }
 
