@@ -96,14 +96,6 @@ impl Registers {
         hl
     }
 
-    // pub fn set_sp(&mut self, value: u16) {
-    //     self.sp = value
-    // }
-    //
-    // pub fn get_sp(&self) -> u16 {
-    //     self.sp
-    // }
-
     pub fn set_af(&mut self, value: u16) {
         self.a = (value & 0xff00 >> 8) as u8;
         self.f = value as u8;
