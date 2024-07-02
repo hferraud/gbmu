@@ -4,8 +4,8 @@ pub mod mbc0;
 use std::io::Read;
 
 use crate::cartridge::header::CartridgeHeader;
-use crate::cartridge::mbc0::MBC0;
 use crate::cartridge::header::{HEADER_END, HEADER_OFFSET};
+use crate::cartridge::mbc0::MBC0;
 
 #[derive(Debug)]
 pub struct Cartridge {

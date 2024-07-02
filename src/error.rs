@@ -4,7 +4,6 @@ pub fn invalid_argument() -> io::Error {
     io::Error::new(io::ErrorKind::InvalidInput, "Invalid argument")
 }
 
-
 pub fn unsupported_instruction() -> io::Error {
     io::Error::new(io::ErrorKind::Unsupported, "Instruction is unsupported")
 }
@@ -34,5 +33,8 @@ pub fn invalid_opcode() -> io::Error {
 }
 
 pub fn invalid_address(address: usize) -> io::Error {
-    io::Error::new(io::ErrorKind::InvalidInput, format!("Invalid address {:#x}", address))
+    io::Error::new(
+        io::ErrorKind::InvalidInput,
+        format!("Invalid address {:#x}", address),
+    )
 }

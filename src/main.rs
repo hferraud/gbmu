@@ -1,8 +1,8 @@
 use gbmu::cartridge;
-use std::env;
-use gbmu::mmu::MMU;
 use gbmu::cpu::CPU;
 use gbmu::error;
+use gbmu::mmu::MMU;
+use std::env;
 
 use std::error::Error;
 

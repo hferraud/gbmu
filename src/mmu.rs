@@ -2,8 +2,8 @@ use std::io;
 
 use crate::cartridge::mbc0::MBC0;
 use crate::error;
-use crate::wram::WRAM;
 use crate::hram::HRAM;
+use crate::wram::WRAM;
 
 #[allow(unused)]
 const MEMORY_SIZE: usize = 0xFFFF;
@@ -51,7 +51,7 @@ impl<'a> MMU<'a> {
             mbc,
             wram,
             hram,
-            ie: u8::default()
+            ie: u8::default(),
         }
     }
 

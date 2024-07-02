@@ -45,7 +45,7 @@ pub fn execute(opcode: u8, cpu: &mut CPU, mmu: &mut MMU) -> Result<(), io::Error
         INC_R8_OPCODE => return inc_r8(opcode, &mut cpu.registers, mmu),
         DEC_R8_OPCODE => return dec_r8(opcode, &mut cpu.registers, mmu),
         LD_R8_IMM8_OPCODE => return ld_r8_imm8(opcode, cpu, mmu),
-            _ => {}
+        _ => {}
     };
     match opcode & EXTENDED_INSTRUCTION_TYPE_MASK {
         INC_R16_OPCODE => return inc_r16(opcode, &mut cpu.registers),

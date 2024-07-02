@@ -17,10 +17,7 @@ impl WRAM {
             vec![0; DMG_WRAM_SIZE]
         };
 
-        WRAM {
-            data,
-            bank: 1,
-        }
+        WRAM { data, bank: 1 }
     }
 }
 

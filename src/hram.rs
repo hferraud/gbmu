@@ -10,7 +10,7 @@ pub struct HRAM {
 impl HRAM {
     pub fn new() -> Self {
         HRAM {
-            data: vec![0; HRAM_SIZE]
+            data: vec![0; HRAM_SIZE],
         }
     }
 }

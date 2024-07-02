@@ -84,7 +84,7 @@ fn add(operand: u8, carry: bool, registers: &mut Registers) -> Result<u8, io::Er
 fn sub(operand: u8, carry: bool, registers: &mut Registers) -> Result<u8, io::Error> {
     let a = registers.a;
     let (result, overflow) = a.overflowing_sub(operand);
-    
+
     if carry {
         registers.set_flags(Flags::C, overflow)
     }

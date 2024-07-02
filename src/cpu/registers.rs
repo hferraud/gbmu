@@ -89,7 +89,7 @@ impl Registers {
         self.set_hl(hl.wrapping_add(1));
         hl
     }
-    
+
     pub fn get_hld(&mut self) -> u16 {
         let hl = self.get_hl();
         self.set_hl(hl.wrapping_sub(1));
