@@ -1,17 +1,23 @@
 #![warn(clippy::all, rust_2018_idioms)]
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")] // hide console window on Windows in release
 
-use gbmu::gui::GUI;
+use std::{env, error::Error};
+use gbmu::cartridge::Cartridge;
+use gbmu::app::App;
+use gbmu::mmu::MMU;
+use gbmu::error;
 
 // When compiling natively:
 #[cfg(not(target_arch = "wasm32"))]
-fn main() {
+fn main() -> Result<(), Box<dyn Error>> {
     let native_options = eframe::NativeOptions::default();
     eframe::run_native(
         "GBMU",
         native_options,
-        Box::new(|cc| Box::new(GUI::new(cc)))
-    ).expect("Something went wrong when creating the GUI");
+        Box::new(|cc| Box::new(App::new(cc)))
+    )?;
+
+    Ok(())
 }
 
 // When compiling to web using trunk:

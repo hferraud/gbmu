@@ -36,15 +36,15 @@ const HRAM_START: usize = 0xFF80;
 const HRAM_END: usize = 0xFFFE;
 const IE_REGISTER: usize = 0xFFFF;
 
-pub struct MMU<'a> {
-    mbc: &'a mut MBC0,
+pub struct MMU {
+    mbc:  MBC0,
     wram: WRAM,
     hram: HRAM,
     ie: u8,
 }
 
-impl<'a> MMU<'a> {
-    pub fn new(mbc: &'a mut MBC0, cbg_mode: bool) -> Self {
+impl MMU {
+    pub fn new(mbc: MBC0, cbg_mode: bool) -> Self {
         let wram = WRAM::new(cbg_mode);
         let hram = HRAM::new();
         MMU {
