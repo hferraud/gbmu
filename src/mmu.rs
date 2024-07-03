@@ -2,6 +2,7 @@ use std::io;
 
 use crate::cartridge::mbc0::MBC0;
 use crate::error;
+use crate::gpio::GPIO;
 use crate::hram::HRAM;
 use crate::wram::WRAM;
 
@@ -28,10 +29,8 @@ const WRAM_DWORD_END: usize = WRAM_END - 1;
 const OAM_START: usize = 0xFE00;
 #[allow(unused)]
 const OAM_END: usize = 0xFE9F;
-#[allow(unused)]
-const IO_START: usize = 0xFF00;
-#[allow(unused)]
-const IO_END: usize = 0xFF7F;
+const GPIO_START: usize = 0xFF00;
+const GPIO_END: usize = 0xFF7F;
 const HRAM_START: usize = 0xFF80;
 const HRAM_END: usize = 0xFFFE;
 const IE_REGISTER: usize = 0xFFFF;
@@ -40,6 +39,7 @@ pub struct MMU<'a> {
     mbc: &'a mut MBC0,
     wram: WRAM,
     hram: HRAM,
+    gpio: GPIO,
     ie: u8,
 }
 
@@ -47,10 +47,12 @@ impl<'a> MMU<'a> {
     pub fn new(mbc: &'a mut MBC0, cbg_mode: bool) -> Self {
         let wram = WRAM::new(cbg_mode);
         let hram = HRAM::new();
+        let gpio = GPIO::new();
         MMU {
             mbc,
             wram,
             hram,
+            gpio,
             ie: u8::default(),
         }
     }
@@ -81,6 +83,7 @@ impl<'a> MMU<'a> {
             ROM_START..=ROM_END => Ok(&mut self.mbc[address]),
             WRAM_START..=WRAM_END => Ok(&mut self.wram[address - WRAM_START]),
             HRAM_START..=HRAM_END => Ok(&mut self.hram[address - HRAM_START]),
+            GPIO_START..=GPIO_END => Ok(&mut self.gpio[address - GPIO_START]),
             IE_REGISTER => Ok(&mut self.ie),
             _ => Err(error::invalid_address(address)),
         }
