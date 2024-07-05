@@ -1,14 +1,13 @@
-
 use crate::gameboy::Gameboy;
 use anyhow::Result;
-use egui::{Pos2, Ui, Vec2};
+use egui::{Pos2, Ui, Vec2, vec2};
 use crate::error;
 use std::env;
 
 const GAMEBOY_SCREEN_WIDTH: u32 = 160;
 const GAMEBOY_SCREEN_HEIGHT: u32 = 144;
 
-
+const DEFAULT_GAME_PANEL_WIDTH_RATIO: f32 = 0.7;
 
 pub struct App {
     gameboy: Option<Gameboy>,
@@ -29,7 +28,7 @@ impl App {
         let gameboy = Gameboy::new(rom_path)
             .expect("Invalid ROM file");
         // !
-    
+
         Self {
             // TODO set gameboy to None at creation
             gameboy: Some(gameboy),
@@ -40,8 +39,8 @@ impl App {
 impl eframe::App for App {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         self.render_top_panel(ctx);
-        self.render_central_panet(ctx);
         self.render_bottom_panel(ctx);
+        self.render_central_panel(ctx);
     }
 }
 
@@ -63,18 +62,6 @@ impl App {
         });
     }
 
-    fn render_central_panet(&mut self, ctx: &egui::Context) {
-        let Some(gameboy) = &self.gameboy else {
-            // TODO handle gameboy is not loaded
-            return;
-        };
-
-        egui::CentralPanel::default().show(ctx, |ui| {
-            ui.heading("Debugger");
-            self.render_game_window(ctx, ui);
-        });
-    }
-
     fn render_bottom_panel(&mut self, ctx: &egui::Context) {
         egui::TopBottomPanel::bottom("bottom_panel").show(ctx, |ui| {
             ui.add(egui::github_link_file!(
@@ -85,20 +72,30 @@ impl App {
         });
     }
 
-    fn render_game_window(&mut self, ctx: &egui::Context, ui: &mut Ui) {
-        let available_size = ui.available_size();
+    fn render_central_panel(&mut self, ctx: &egui::Context) {
+        egui::CentralPanel::default().show(ctx, |ui| {
+            self.render_game_panel(ctx, ui);
+            self.render_debugger_panel(ctx, ui);
+        });
+    }
 
-        
-        egui::Window::new("Game container")
-            .movable(false)
-            .collapsible(false)
-            .title_bar(false)
-            .resizable([true, false])
-            .current_pos([0., 0.])
-            // TODO do not hard code 0.7 it will depend on debugger size
-            .default_size([available_size.x * 0.7, available_size.y])
+    fn render_game_panel(&mut self, ctx: &egui::Context, ui: &mut Ui) {
+        egui::SidePanel::left("Game panel")
+            .resizable(true)
+            .default_width(ui.available_width() * DEFAULT_GAME_PANEL_WIDTH_RATIO)
             .show(ctx, |ui| {
                 ui.label("Game");
+                ui.allocate_space(ui.available_size());
+            });
+    }
+
+    fn render_debugger_panel(&mut self, ctx: &egui::Context, _ui: &mut Ui) {
+        egui::SidePanel::right("Debugger panel")
+            .resizable(false)
+            .default_width(f32::MAX)
+            .show(ctx, |ui| {
+                ui.label("Debugger");
+                ui.set_width(f32::MAX);
                 ui.allocate_space(ui.available_size());
             });
     }
