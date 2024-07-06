@@ -1,11 +1,12 @@
 #![warn(clippy::all, rust_2018_idioms)]
-#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")] // hide console window on Windows in release
+#![cfg_attr(
+    not(debug_assertions),
+    windows_subsystem = "windows"
+)] // hide console window on Windows in release
 
-use std::{env, error::Error};
-use gbmu::cartridge::Cartridge;
+#[cfg(not(target_arch = "wasm32"))]
+use std::error::Error;
 use gbmu::app::App;
-use gbmu::mmu::MMU;
-use gbmu::error;
 
 // When compiling natively:
 #[cfg(not(target_arch = "wasm32"))]
@@ -14,7 +15,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     eframe::run_native(
         "GBMU",
         native_options,
-        Box::new(|cc| Box::new(App::new(cc)))
+        Box::new(|cc| Box::new(App::new(cc))),
     )?;
 
     Ok(())
@@ -24,16 +25,17 @@ fn main() -> Result<(), Box<dyn Error>> {
 #[cfg(target_arch = "wasm32")]
 fn main() {
     // Redirect `log` message to `console.log` and friends:
-    eframe::WebLogger::init(log::LevelFilter::Debug).ok();
+    eframe::WebLogger::init(log::LevelFilter::Debug).ok(); // TODO why .ok()
 
     let web_options = eframe::WebOptions::default();
 
     wasm_bindgen_futures::spawn_local(async {
         let start_result = eframe::WebRunner::new()
             .start(
-                "the_canvas_id", // hardcode it
+                "gbmu_canvas",
                 web_options,
-                Box::new(|cc| Box::new(MyEguiApp::new(cc))),
+                // TODO web version does not work yet as the rom can't be read
+                Box::new(|cc| Box::new(App::new(cc))),
             )
             .await;
         let loading_text = web_sys::window()

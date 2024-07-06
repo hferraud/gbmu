@@ -11,23 +11,30 @@ env:
 
 jobs:
 
-  build:
+  build_native:
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v4
-    - name: Build
-      run: cargo build --verbose
+      - uses: actions/checkout@v4
+      - name: Build
+        run: cargo build --verbose
+
+  build_wasm:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: cargo build --target wasm32-unknown-unknown --verbose
 
   tests:
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v4
-    - name: Run tests
-      run: cargo test --verbose
+      - uses: actions/checkout@v4
+      - name: Run tests
+        run: cargo test --verbose
 
   format:
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v4
-    - name: Format
-      run: cargo fmt -- --check
+      - uses: actions/checkout@v4
+      - name: Format
+        run: cargo fmt -- --check
