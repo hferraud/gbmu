@@ -2,7 +2,7 @@ use std::ops::{Index, IndexMut};
 
 #[derive(Debug)]
 pub struct MBC0 {
-    rom: Vec<u8>,
+    pub rom: Vec<u8>,
 }
 
 impl MBC0 {

@@ -203,20 +203,28 @@ impl App {
 
                 ui.label("RAM: {}");
                 ui.add(egui::Separator::default().horizontal());
-                
-                ui.add(egui::Separator::default().horizontal());
 
                 egui::ScrollArea::both().show(ui, |ui| {
-                    if let Some(gameboy) = &self.gameboy {
-                        self.render_ram(ui, gameboy);
-                    } else {
-                        ui.label(ROM_IS_NOT_INSERTED);
-                    }
+                    self.render_ram(ui);
                 });
 
                 ui.allocate_space(ui.available_size());
             });
     }
 
-    fn render_ram(&self, ram_panel: &mut Ui, gameboy: &Gameboy) {}
+    fn render_ram(&mut self, ram_panel: &mut Ui) {
+        let Some(gameboy) = &mut self.gameboy else {
+            ram_panel.label(ROM_IS_NOT_INSERTED);
+            return;
+        };
+
+        for address in 0..0xFFFF {
+
+            let Ok(word) = gameboy.mmu.get_word(address) else {
+                ram_panel.label(format!("{:04X}: None", address));
+                continue;
+            };
+            ram_panel.label(format!("{:04X}: {:04X}", address, word));
+        }
+    }
 }

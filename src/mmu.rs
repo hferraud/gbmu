@@ -37,9 +37,9 @@ const HRAM_END: usize = 0xFFFE;
 const IE_REGISTER: usize = 0xFFFF;
 
 pub struct MMU {
-    mbc: MBC0,
-    wram: WRAM,
-    hram: HRAM,
+    pub mbc: MBC0,
+    pub wram: WRAM,
+    pub hram: HRAM,
     ie: u8,
 }
 
