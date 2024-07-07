@@ -107,7 +107,7 @@ fn dec_r8(opcode: u8, registers: &mut Registers, mmu: &mut MMU) -> Result<(), io
     let register = super::get_r8_code(opcode);
     let mut register_value = registers.get_word(register, mmu)?;
 
-    registers.set_h_flag_sub(register_value, !1);
+    registers.set_h_flag_sub(register_value, 1);
     register_value = register_value.wrapping_sub(1);
     registers.set_flags(Flags::Z, register_value == 0);
     registers.set_flags(Flags::N, true);
