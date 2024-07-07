@@ -9,8 +9,8 @@ edition = "2021"
 # Error handling
 anyhow = "1.0.86"
 
-egui = "0.27.2"
-eframe = { version = "0.27.2", features = ["default"] }
+egui = "0.28.1"
+eframe = { version = "0.28.1", features = ["default"] }
 wasm-bindgen = "0.2.92"
 log = "0.4"
 

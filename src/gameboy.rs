@@ -5,8 +5,8 @@ use anyhow::Result;
 
 // TODO create a gameboy folder with all the gameboy modules
 pub struct Gameboy {
-    cpu: CPU,
-    mmu: MMU,
+    pub cpu: CPU,
+    pub mmu: MMU,
 }
 
 impl Gameboy {

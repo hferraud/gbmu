@@ -1,12 +1,9 @@
 #![warn(clippy::all, rust_2018_idioms)]
-#![cfg_attr(
-    not(debug_assertions),
-    windows_subsystem = "windows"
-)] // hide console window on Windows in release
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")] // hide console window on Windows in release
 
+use gbmu::app::App;
 #[cfg(not(target_arch = "wasm32"))]
 use std::error::Error;
-use gbmu::app::App;
 
 // When compiling natively:
 #[cfg(not(target_arch = "wasm32"))]
@@ -15,7 +12,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     eframe::run_native(
         "GBMU",
         native_options,
-        Box::new(|cc| Box::new(App::new(cc))),
+        Box::new(|cc| Ok(Box::new(App::new(cc)))),
     )?;
 
     Ok(())
@@ -35,7 +32,7 @@ fn main() {
                 "gbmu_canvas",
                 web_options,
                 // TODO web version does not work yet as the rom can't be read
-                Box::new(|cc| Box::new(App::new(cc))),
+                Box::new(|cc| Ok(Box::new(App::new(cc)))),
             )
             .await;
         let loading_text = web_sys::window()

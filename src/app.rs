@@ -1,10 +1,12 @@
+use crate::error;
 use crate::gameboy::Gameboy;
 use anyhow::Result;
-use egui::{Pos2, Ui, Vec2, vec2};
-use crate::error;
+use egui::{vec2, Pos2, ScrollArea, Ui, Vec2};
 use std::env;
 
 const SOURCE_CODE_LINK: &str = "https://github.com/hferraud/gbmu/";
+
+const ROM_IS_NOT_INSERTED: &str = "ROM is not inserted";
 
 const GAMEBOY_SCREEN_WIDTH: u32 = 160;
 const GAMEBOY_SCREEN_HEIGHT: u32 = 144;
@@ -13,15 +15,27 @@ const DEFAULT_GAME_PANEL_WIDTH_RATIO: f32 = 0.55;
 const DEFAULT_INSTRUCTION_PANEL_WIDTH_RATIO: f32 = 0.55;
 const DEFAULT_REGISTERS_PANEL_HEIGHT_RATIO: f32 = 0.3;
 
+#[derive(Default)]
 pub struct App {
     gameboy: Option<Gameboy>,
+
+    selected_ram: RamTypes,
+}
+
+enum RamTypes {
+    MBC0,
+    WRAM,
+    HRAM,
+}
+
+impl Default for RamTypes {
+    fn default() -> Self {
+        Self::MBC0
+    }
 }
 
 impl App {
-    pub fn new(
-        _cc: &eframe::CreationContext<'_>,
-    ) -> Self {
-
+    pub fn new(_cc: &eframe::CreationContext<'_>) -> Self {
         // TODO remove this
         let args: Vec<String> = env::args().collect();
         if args.len() < 2 {
@@ -29,13 +43,13 @@ impl App {
             panic!("{}", error::invalid_argument());
         }
         let rom_path = &args[1];
-        let gameboy = Gameboy::new(rom_path)
-            .expect("Invalid ROM file");
+        let gameboy = Gameboy::new(rom_path).expect("Invalid ROM file");
         // !
 
         Self {
             // TODO set gameboy to None at creation
             gameboy: Some(gameboy),
+            ..Default::default()
         }
     }
 }
@@ -52,7 +66,8 @@ impl App {
     fn render_top_panel(&mut self, ctx: &egui::Context) {
         egui::TopBottomPanel::top("top_panel").show(ctx, |ui| {
             egui::menu::bar(ui, |ui| {
-                #[cfg(not(target_arch = "wasm32"))] {
+                #[cfg(not(target_arch = "wasm32"))]
+                {
                     ui.menu_button("File", |ui| {
                         if ui.button("Quit").clicked() {
                             ctx.send_viewport_cmd(egui::ViewportCommand::Close);
@@ -138,10 +153,44 @@ impl App {
             .resizable(true)
             .default_height(memory_panel.available_height() * DEFAULT_REGISTERS_PANEL_HEIGHT_RATIO)
             .show_inside(memory_panel, |ui| {
-                ui.label("Registers");
+                ui.style_mut().wrap_mode = Some(egui::TextWrapMode::Extend);
 
-                ui.allocate_space(ui.available_size());
+                ui.label("Registers");
+                ui.add(egui::Separator::default().horizontal());
+
+                egui::ScrollArea::both().show(ui, |ui| {
+                    if let Some(gameboy) = &self.gameboy {
+                        self.render_cpu_registers(ui, gameboy);
+                    } else {
+                        ui.label(ROM_IS_NOT_INSERTED);
+                    }
+                });
             });
+    }
+
+    fn render_cpu_registers(&self, registers_panel: &mut Ui, gameboy: &Gameboy) {
+        registers_panel.label(format!(
+            "a: {:02X}\t\tb: {:02X}",
+            gameboy.cpu.registers.a, gameboy.cpu.registers.b
+        ));
+        registers_panel.label(format!(
+            "c: {:02X}\t\td: {:02X}",
+            gameboy.cpu.registers.c, gameboy.cpu.registers.d
+        ));
+        registers_panel.label(format!(
+            "e: {:02X}\t\tf: {:02X}",
+            gameboy.cpu.registers.e, gameboy.cpu.registers.f
+        ));
+        registers_panel.label(format!(
+            "h: {:02X}\t\tl: {:02X}",
+            gameboy.cpu.registers.h, gameboy.cpu.registers.l
+        ));
+
+        registers_panel.label(format!(
+            "pc: {:04X}\tsp: {:04X}",
+            gameboy.cpu.registers.pc, gameboy.cpu.registers.sp
+        ));
+        registers_panel.label(format!("ime: {}", gameboy.cpu.ime));
     }
 
     fn render_ram_panel(&mut self, memory_panel: &mut Ui) {
@@ -152,9 +201,22 @@ impl App {
             .show_inside(memory_panel, |ui| {
                 ui.set_height(available_height);
 
-                ui.label("RAM");
+                ui.label("RAM: {}");
+                ui.add(egui::Separator::default().horizontal());
+                
+                ui.add(egui::Separator::default().horizontal());
+
+                egui::ScrollArea::both().show(ui, |ui| {
+                    if let Some(gameboy) = &self.gameboy {
+                        self.render_ram(ui, gameboy);
+                    } else {
+                        ui.label(ROM_IS_NOT_INSERTED);
+                    }
+                });
 
                 ui.allocate_space(ui.available_size());
             });
     }
+
+    fn render_ram(&self, ram_panel: &mut Ui, gameboy: &Gameboy) {}
 }
