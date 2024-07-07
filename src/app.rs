@@ -1,5 +1,6 @@
 use crate::error;
 use crate::gameboy::Gameboy;
+use crate::parse_instruction_map::parse_instruction_map;
 use anyhow::Result;
 use egui::{vec2, Pos2, ScrollArea, Ui, Vec2};
 use std::env;
@@ -19,19 +20,9 @@ const DEFAULT_REGISTERS_PANEL_HEIGHT_RATIO: f32 = 0.3;
 pub struct App {
     gameboy: Option<Gameboy>,
 
+    instruction_map: InstructionMap,
+
     selected_ram: RamTypes,
-}
-
-enum RamTypes {
-    MBC0,
-    WRAM,
-    HRAM,
-}
-
-impl Default for RamTypes {
-    fn default() -> Self {
-        Self::MBC0
-    }
 }
 
 impl App {
@@ -201,7 +192,7 @@ impl App {
             .show_inside(memory_panel, |ui| {
                 ui.set_height(available_height);
 
-                ui.label("RAM: {}");
+                ui.label("RAM:");
                 ui.add(egui::Separator::default().horizontal());
 
                 egui::ScrollArea::both().show(ui, |ui| {
@@ -218,13 +209,15 @@ impl App {
             return;
         };
 
-        for address in 0..0xFFFF {
+        let mut output = "".to_string();
 
-            let Ok(word) = gameboy.mmu.get_word(address) else {
-                ram_panel.label(format!("{:04X}: None", address));
+        for address in (0..0xFFFF).step_by(2) {
+            let Ok(word) = gameboy.mmu.get_dword(address) else {
                 continue;
             };
-            ram_panel.label(format!("{:04X}: {:04X}", address, word));
+            output += &format!("{:04X}: {:04X}\n", address, word);
         }
+
+        ram_panel.label(output);
     }
 }
