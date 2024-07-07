@@ -20,6 +20,34 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut cartridge = cartridge::Cartridge::load_rom(rom_path).unwrap();
     let mut mmu = MMU::new(&mut cartridge.mbc, false);
     let mut cpu = CPU::new();
-    cpu.run(&mut mmu)?;
+
+    let mut breakpoint: bool = false;
+    loop {
+        if breakpoint {
+            println!("New instruction:");
+            println!("PC: {:#06x}", cpu.registers.pc);
+            println!("Opcode");
+        }
+        if breakpoint {
+            println!("Instruction: {:#06x}", mmu.get_word(cpu.registers.pc as usize)?);
+        }
+        cpu.run(&mut mmu);
+        unsafe { ppu::run(&mut mmu); }
+        if breakpoint {
+            println!("{:#x?}", cpu.registers);
+            println!();
+        }
+        if cpu.registers.pc == 0x08e {
+            breakpoint = true;
+        }
+        if breakpoint {
+            let mut input = String::new();
+            io::stdin().read_line(&mut input)
+                .expect("Erreur de lecture");
+            if input.trim() == "q" {
+                break;
+            }
+        }
+    }
     Ok(())
 }

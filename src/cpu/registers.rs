@@ -44,16 +44,16 @@ pub enum Flags {
 impl Registers {
     pub fn new() -> Self {
         Self {
-            a: 0x01,
-            f: 0x80,
-            b: 0x00,
-            c: 0x13,
-            d: 0x00,
-            e: 0xd8,
-            h: 0x01,
-            l: 0x4d,
-            pc: 0x0100,
-            sp: 0xfffe,
+            a: 0x0,
+            f: 0x0,
+            b: 0x0,
+            c: 0x0,
+            d: 0x0,
+            e: 0x0,
+            h: 0x0,
+            l: 0x0,
+            pc: 0x0,
+            sp: 0x0,
         }
     }
 
