@@ -2,9 +2,13 @@ use gbmu::cartridge;
 use gbmu::cpu::CPU;
 use gbmu::error;
 use gbmu::mmu::MMU;
+use gbmu::ppu;
 use std::env;
 
 use std::error::Error;
+use std::io;
+use std::io::Read;
+use gbmu::cartridge::Cartridge;
 
 fn main() -> Result<(), Box<dyn Error>> {
     let args: Vec<String> = env::args().collect();
