@@ -58,13 +58,11 @@ fn convert_keys_to_u8(map: HashMap<String, Instruction>) -> Result<HashMap<u8, I
 
 impl Display for Instruction {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), std::fmt::Error> {
-        write!(f, "{}\t{}", self.mnemonic, self.operands)
-    }
-}
-
-impl Display for Vec<Operands> {
-    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), std::fmt::Error> {
-        let mut message = String::new();
+        write!(f, "{}", self.mnemonic)?;
+        for operand in &self.operands {
+            write!(f, "\t{}", operand)?;
+        }
+        Ok(())
     }
 }
 

@@ -135,7 +135,10 @@ impl App {
         let mut instructions = String::new();
 
         for (pc, instruction) in game_data.instructions.iter() {
-            instructions += &format!("{:04x}/t{}\n", pc, instruction);
+            // if *pc == 0x100 {
+            //     dbg!(instruction);
+            // }
+            instructions += &format!("{:04x}\t{}\n", pc, instruction);
         }
         instructions_panel.label(instructions);
     }
