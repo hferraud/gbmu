@@ -5,7 +5,9 @@ use crate::app::instruction_map::Instruction;
 use crate::error;
 use crate::gameboy::Gameboy;
 use anyhow::Result;
-use egui::{vec2, Pos2, ScrollArea, Ui, Vec2};
+use egui::{
+    pos2, vec2, Align2, FontDefinitions, Pos2, Rect, ScrollArea, Sense, TextStyle, Ui, Vec2,
+};
 use game_data::GameData;
 use instruction_map::InstructionMap;
 use std::env;
@@ -20,6 +22,8 @@ const GAMEBOY_SCREEN_HEIGHT: u32 = 144;
 const DEFAULT_GAME_PANEL_WIDTH_RATIO: f32 = 0.55;
 const DEFAULT_INSTRUCTION_PANEL_WIDTH_RATIO: f32 = 0.55;
 const DEFAULT_REGISTERS_PANEL_HEIGHT_RATIO: f32 = 0.3;
+
+const RAM_DUMP_STEP: usize = 16;
 
 pub struct App {
     game_data: Option<GameData>,
@@ -40,6 +44,26 @@ impl App {
 
 impl eframe::App for App {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        let mut fonts = FontDefinitions::default();
+        // println!("{:?}", fonts);
+        fonts
+            .families
+            .get_mut(&egui::FontFamily::Proportional)
+            .unwrap()
+            .clear();
+        fonts
+            .families
+            .get_mut(&egui::FontFamily::Proportional)
+            .unwrap()
+            .push("Hack".to_string());
+        fonts
+            .families
+            .get_mut(&egui::FontFamily::Proportional)
+            .unwrap()
+            .push("emoji-icon-font".to_string());
+        // .push("Ubuntu-Light".to_string());
+        // .push("NotoEmoji-Regular".to_string());
+        ctx.set_fonts(fonts);
         self.render_top_panel(ctx);
         self.render_central_panel(ctx);
         self.render_bottom_panel(ctx);
@@ -120,27 +144,50 @@ impl App {
             .resizable(true)
             .default_width(debugger_panel.available_width() * DEFAULT_INSTRUCTION_PANEL_WIDTH_RATIO)
             .show_inside(debugger_panel, |ui| {
+                ui.style_mut().wrap_mode = Some(egui::TextWrapMode::Extend);
+
                 ui.label("Instructions:");
                 ui.add(egui::Separator::default().horizontal());
 
-                egui::ScrollArea::both().show(ui, |ui| {
-                    Self::render_instructions(ui, game_data);
-                });
+                Self::render_instructions(ui, game_data);
 
                 ui.allocate_space(ui.available_size());
             });
     }
 
     fn render_instructions(instructions_panel: &mut Ui, game_data: &GameData) {
-        let mut instructions = String::new();
+        let font_id = TextStyle::Body.resolve(instructions_panel.style());
+        let row_height = instructions_panel.fonts(|f| f.row_height(&font_id))
+            + instructions_panel.spacing().item_spacing.y;
+        let num_rows = game_data.instructions.len();
 
-        for (pc, instruction) in game_data.instructions.iter() {
-            // if *pc == 0x100 {
-            //     dbg!(instruction);
-            // }
-            instructions += &format!("{:04x}\t{}\n", pc, instruction);
-        }
-        instructions_panel.label(instructions);
+        egui::ScrollArea::both()
+            .auto_shrink([false; 2])
+            .show_viewport(instructions_panel, |ui, viewport| {
+                ui.set_height(row_height * num_rows as f32);
+
+                let first_item = (viewport.min.y / row_height).max(0.0) as usize;
+                let limit = (viewport.max.y / row_height).ceil() as usize + 1;
+                let limit = limit.min(num_rows);
+
+                let mut used_rect = Rect::NOTHING;
+
+                for i in first_item..limit {
+                    let y = ui.min_rect().top() + i as f32 * row_height;
+                    let (pc, instruction) = &game_data.instructions[i];
+                    let text = format!("{:04x}\t{}", pc, instruction);
+                    let text_rect = ui.painter().text(
+                        pos2(ui.min_rect().left(), y),
+                        Align2::LEFT_TOP,
+                        text,
+                        font_id.clone(),
+                        ui.visuals().text_color(),
+                    );
+                    used_rect = used_rect.union(text_rect);
+                }
+
+                ui.allocate_rect(used_rect, Sense::hover());
+            });
     }
 
     fn render_memory_panel(debugger_panel: &mut Ui, game_data: &mut GameData) {
@@ -210,24 +257,77 @@ impl App {
                 ui.label("RAM:");
                 ui.add(egui::Separator::default().horizontal());
 
-                egui::ScrollArea::both().show(ui, |ui| {
-                    Self::render_ram(ui, &mut game_data.gameboy);
-                });
+                egui::ScrollArea::both()
+                    .auto_shrink([false, false])
+                    .show(ui, |ui| {
+                        Self::render_ram(ui, &mut game_data.gameboy);
+                    });
 
                 ui.allocate_space(ui.available_size());
             });
     }
 
     fn render_ram(ram_panel: &mut Ui, gameboy: &mut Gameboy) {
-        let mut output = "".to_string();
+        let font_id = TextStyle::Body.resolve(ram_panel.style());
+        let row_height =
+            ram_panel.fonts(|f| f.row_height(&font_id)) + ram_panel.spacing().item_spacing.y;
+        const NUM_ROWS: usize = 0xFFFF / RAM_DUMP_STEP;
 
-        for address in (0..0xFFFF).step_by(2) {
-            let Ok(word) = gameboy.mmu.get_dword(address) else {
-                continue;
-            };
-            output += &format!("{:04X}: {:04X}\n", address, word);
-        }
+        egui::ScrollArea::both()
+            .auto_shrink([false; 2])
+            .show_viewport(ram_panel, |ui, viewport| {
+                ui.set_height(row_height * NUM_ROWS as f32);
 
-        ram_panel.label(output);
+                let first_item = (viewport.min.y / row_height).max(0.0) as usize;
+                let limit = (viewport.max.y / row_height).ceil() as usize + 1;
+                let limit = limit.min(NUM_ROWS);
+
+                let mut used_rect = Rect::NOTHING;
+
+                for i in first_item..limit {
+                    let y = ui.min_rect().top() + i as f32 * row_height;
+                    let text = Self::ram_display_line(gameboy, i * RAM_DUMP_STEP);
+                    let text_rect = ui.painter().text(
+                        pos2(ui.min_rect().left(), y),
+                        Align2::LEFT_TOP,
+                        text,
+                        font_id.clone(),
+                        ui.visuals().text_color(),
+                    );
+                    used_rect = used_rect.union(text_rect);
+                }
+
+                ui.allocate_rect(used_rect, Sense::hover());
+            });
+    }
+
+    fn ram_display_line(gameboy: &mut Gameboy, address: usize) -> String {
+        let memory = (address..(address + RAM_DUMP_STEP))
+            .into_iter()
+            .map(|address| Ok(gameboy.mmu.get_word(address)?))
+            .collect::<Result<Vec<u8>>>();
+
+        let Ok(memory) = memory else {
+            return format!("{address:04X}: Unavailable");
+        };
+
+        let fold_fn = |acc, elem| acc + format!(" {elem:02X}").as_str();
+        let data = memory
+            .iter()
+            .take(RAM_DUMP_STEP / 2)
+            .fold(String::new(), fold_fn)
+            + " "
+            + &memory
+                .iter()
+                .skip(RAM_DUMP_STEP / 2)
+                .fold(String::new(), fold_fn);
+
+        let ascii = memory.iter().fold(String::new(), |mut acc, elem| {
+            let c = *elem as char;
+            let c = if c.is_ascii_graphic() { c } else { '.' };
+            acc.push(c);
+            acc
+        });
+        format!("{address:04X} {data}  |{ascii}|")
     }
 }
