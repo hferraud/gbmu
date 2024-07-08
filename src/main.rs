@@ -12,7 +12,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     eframe::run_native(
         "GBMU",
         native_options,
-        Box::new(|cc| Ok(Box::new(App::new(cc)))),
+        Box::new(|cc| Ok(Box::new(App::new(cc)?))),
     )?;
 
     Ok(())
@@ -32,7 +32,7 @@ fn main() {
                 "gbmu_canvas",
                 web_options,
                 // TODO web version does not work yet as the rom can't be read
-                Box::new(|cc| Ok(Box::new(App::new(cc)))),
+                Box::new(|cc| Ok(Box::new(App::new(cc)?))),
             )
             .await;
         let loading_text = web_sys::window()

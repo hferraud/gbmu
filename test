@@ -1,0 +1,3420 @@
+warning: unused manifest key: target.cfg(target_arch = "wasm32").dependencies.web-sys.egui_extras
+warning: unused import: `io`
+ --> src/app/game_data.rs:1:16
+  |
+1 | use std::{env, io};
+  |                ^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+warning: unused import: `crate::error`
+ --> src/app.rs:4:5
+  |
+4 | use crate::error;
+  |     ^^^^^^^^^^^^
+
+warning: unused imports: `Pos2`, `ScrollArea`, `Vec2`, `vec2`
+ --> src/app.rs:7:12
+  |
+7 | use egui::{vec2, Pos2, ScrollArea, Ui, Vec2};
+  |            ^^^^  ^^^^  ^^^^^^^^^^      ^^^^
+
+warning: unused import: `std::env`
+ --> src/app.rs:9:5
+  |
+9 | use std::env;
+  |     ^^^^^^^^
+
+warning: unused import: `crate::app::instruction_map::Instruction`
+  --> src/app.rs:10:5
+   |
+10 | use crate::app::instruction_map::Instruction;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `GAMEBOY_SCREEN_WIDTH` is never used
+  --> src/app.rs:17:7
+   |
+17 | const GAMEBOY_SCREEN_WIDTH: u32 = 160;
+   |       ^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` on by default
+
+warning: constant `GAMEBOY_SCREEN_HEIGHT` is never used
+  --> src/app.rs:18:7
+   |
+18 | const GAMEBOY_SCREEN_HEIGHT: u32 = 144;
+   |       ^^^^^^^^^^^^^^^^^^^^^
+
+warning: field `instruction_map` is never read
+  --> src/app.rs:27:5
+   |
+24 | pub struct App {
+   |            --- field in this struct
+...
+27 |     instruction_map: InstructionMap,
+   |     ^^^^^^^^^^^^^^^
+
+warning: fields `mnemonic` and `operands` are never read
+  --> src/app/instruction_map.rs:23:9
+   |
+22 | pub struct Instruction {
+   |            ----------- fields in this struct
+23 |     pub mnemonic: String,
+   |         ^^^^^^^^
+24 |     pub bytes: usize,
+25 |     pub operands: Vec<Operands>,
+   |         ^^^^^^^^
+   |
+   = note: `Instruction` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: fields `name` and `bytes` are never read
+  --> src/app/instruction_map.rs:30:5
+   |
+29 | pub struct Operands {
+   |            -------- fields in this struct
+30 |     name: String,
+   |     ^^^^
+31 |     bytes: Option<usize>,
+   |     ^^^^^
+   |
+   = note: `Operands` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: `gbmu` (lib) generated 10 warnings (run `cargo fix --lib -p gbmu` to apply 5 suggestions)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.20s
+     Running `target/debug/gbmu roms/Tetris.gb`
+[src/app/instruction_map.rs:41:9] &t = Ok(
+    InstructionMap {
+        cbprefixed: {
+            157: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "3",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "L",
+                        bytes: None,
+                    },
+                ],
+            },
+            24: Instruction {
+                mnemonic: "RR",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "B",
+                        bytes: None,
+                    },
+                ],
+            },
+            211: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "2",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "E",
+                        bytes: None,
+                    },
+                ],
+            },
+            44: Instruction {
+                mnemonic: "SRA",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "H",
+                        bytes: None,
+                    },
+                ],
+            },
+            84: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "2",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "H",
+                        bytes: None,
+                    },
+                ],
+            },
+            144: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "2",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "B",
+                        bytes: None,
+                    },
+                ],
+            },
+            0: Instruction {
+                mnemonic: "RLC",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "B",
+                        bytes: None,
+                    },
+                ],
+            },
+            110: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "5",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "HL",
+                        bytes: None,
+                    },
+                ],
+            },
+            206: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "1",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "HL",
+                        bytes: None,
+                    },
+                ],
+            },
+            221: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "3",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "L",
+                        bytes: None,
+                    },
+                ],
+            },
+            50: Instruction {
+                mnemonic: "SWAP",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "D",
+                        bytes: None,
+                    },
+                ],
+            },
+            254: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "7",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "HL",
+                        bytes: None,
+                    },
+                ],
+            },
+            37: Instruction {
+                mnemonic: "SLA",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "L",
+                        bytes: None,
+                    },
+                ],
+            },
+            7: Instruction {
+                mnemonic: "RLC",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "A",
+                        bytes: None,
+                    },
+                ],
+            },
+            230: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "4",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "HL",
+                        bytes: None,
+                    },
+                ],
+            },
+            35: Instruction {
+                mnemonic: "SLA",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "E",
+                        bytes: None,
+                    },
+                ],
+            },
+            111: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "5",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "A",
+                        bytes: None,
+                    },
+                ],
+            },
+            252: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "7",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "H",
+                        bytes: None,
+                    },
+                ],
+            },
+            25: Instruction {
+                mnemonic: "RR",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "C",
+                        bytes: None,
+                    },
+                ],
+            },
+            87: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "2",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "A",
+                        bytes: None,
+                    },
+                ],
+            },
+            209: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "2",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "C",
+                        bytes: None,
+                    },
+                ],
+            },
+            66: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "0",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "D",
+                        bytes: None,
+                    },
+                ],
+            },
+            239: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "5",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "A",
+                        bytes: None,
+                    },
+                ],
+            },
+            150: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "2",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "HL",
+                        bytes: None,
+                    },
+                ],
+            },
+            244: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "6",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "H",
+                        bytes: None,
+                    },
+                ],
+            },
+            219: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "3",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "E",
+                        bytes: None,
+                    },
+                ],
+            },
+            1: Instruction {
+                mnemonic: "RLC",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "C",
+                        bytes: None,
+                    },
+                ],
+            },
+            202: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "1",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "D",
+                        bytes: None,
+                    },
+                ],
+            },
+            15: Instruction {
+                mnemonic: "RRC",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "A",
+                        bytes: None,
+                    },
+                ],
+            },
+            241: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "6",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "C",
+                        bytes: None,
+                    },
+                ],
+            },
+            155: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "3",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "E",
+                        bytes: None,
+                    },
+                ],
+            },
+            107: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "5",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "E",
+                        bytes: None,
+                    },
+                ],
+            },
+            93: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "3",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "L",
+                        bytes: None,
+                    },
+                ],
+            },
+            114: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "6",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "D",
+                        bytes: None,
+                    },
+                ],
+            },
+            136: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "1",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "B",
+                        bytes: None,
+                    },
+                ],
+            },
+            200: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "1",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "B",
+                        bytes: None,
+                    },
+                ],
+            },
+            228: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "4",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "H",
+                        bytes: None,
+                    },
+                ],
+            },
+            48: Instruction {
+                mnemonic: "SWAP",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "B",
+                        bytes: None,
+                    },
+                ],
+            },
+            19: Instruction {
+                mnemonic: "RL",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "E",
+                        bytes: None,
+                    },
+                ],
+            },
+            151: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "2",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "A",
+                        bytes: None,
+                    },
+                ],
+            },
+            60: Instruction {
+                mnemonic: "SRL",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "H",
+                        bytes: None,
+                    },
+                ],
+            },
+            176: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "6",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "B",
+                        bytes: None,
+                    },
+                ],
+            },
+            246: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "6",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "HL",
+                        bytes: None,
+                    },
+                ],
+            },
+            3: Instruction {
+                mnemonic: "RLC",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "E",
+                        bytes: None,
+                    },
+                ],
+            },
+            133: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "0",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "L",
+                        bytes: None,
+                    },
+                ],
+            },
+            218: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "3",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "D",
+                        bytes: None,
+                    },
+                ],
+            },
+            178: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "6",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "D",
+                        bytes: None,
+                    },
+                ],
+            },
+            245: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "6",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "L",
+                        bytes: None,
+                    },
+                ],
+            },
+            104: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "5",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "B",
+                        bytes: None,
+                    },
+                ],
+            },
+            232: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "5",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "B",
+                        bytes: None,
+                    },
+                ],
+            },
+            183: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "6",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "A",
+                        bytes: None,
+                    },
+                ],
+            },
+            139: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "1",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "E",
+                        bytes: None,
+                    },
+                ],
+            },
+            195: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "0",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "E",
+                        bytes: None,
+                    },
+                ],
+            },
+            145: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "2",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "C",
+                        bytes: None,
+                    },
+                ],
+            },
+            119: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "6",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "A",
+                        bytes: None,
+                    },
+                ],
+            },
+            122: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "7",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "D",
+                        bytes: None,
+                    },
+                ],
+            },
+            85: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "2",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "L",
+                        bytes: None,
+                    },
+                ],
+            },
+            160: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "4",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "B",
+                        bytes: None,
+                    },
+                ],
+            },
+            141: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "1",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "L",
+                        bytes: None,
+                    },
+                ],
+            },
+            134: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "0",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "HL",
+                        bytes: None,
+                    },
+                ],
+            },
+            91: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "3",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "E",
+                        bytes: None,
+                    },
+                ],
+            },
+            92: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "3",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "H",
+                        bytes: None,
+                    },
+                ],
+            },
+            81: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "2",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "C",
+                        bytes: None,
+                    },
+                ],
+            },
+            177: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "6",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "C",
+                        bytes: None,
+                    },
+                ],
+            },
+            174: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "5",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "HL",
+                        bytes: None,
+                    },
+                ],
+            },
+            149: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "2",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "L",
+                        bytes: None,
+                    },
+                ],
+            },
+            167: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "4",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "A",
+                        bytes: None,
+                    },
+                ],
+            },
+            135: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "0",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "A",
+                        bytes: None,
+                    },
+                ],
+            },
+            137: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "1",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "C",
+                        bytes: None,
+                    },
+                ],
+            },
+            216: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "3",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "B",
+                        bytes: None,
+                    },
+                ],
+            },
+            142: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "1",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "HL",
+                        bytes: None,
+                    },
+                ],
+            },
+            69: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "0",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "L",
+                        bytes: None,
+                    },
+                ],
+            },
+            194: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "0",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "D",
+                        bytes: None,
+                    },
+                ],
+            },
+            199: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "0",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "A",
+                        bytes: None,
+                    },
+                ],
+            },
+            124: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "7",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "H",
+                        bytes: None,
+                    },
+                ],
+            },
+            108: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "5",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "H",
+                        bytes: None,
+                    },
+                ],
+            },
+            237: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "5",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "L",
+                        bytes: None,
+                    },
+                ],
+            },
+            188: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "7",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "H",
+                        bytes: None,
+                    },
+                ],
+            },
+            171: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "5",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "E",
+                        bytes: None,
+                    },
+                ],
+            },
+            29: Instruction {
+                mnemonic: "RR",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "L",
+                        bytes: None,
+                    },
+                ],
+            },
+            205: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "1",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "L",
+                        bytes: None,
+                    },
+                ],
+            },
+            78: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "1",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "HL",
+                        bytes: None,
+                    },
+                ],
+            },
+            45: Instruction {
+                mnemonic: "SRA",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "L",
+                        bytes: None,
+                    },
+                ],
+            },
+            51: Instruction {
+                mnemonic: "SWAP",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "E",
+                        bytes: None,
+                    },
+                ],
+            },
+            184: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "7",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "B",
+                        bytes: None,
+                    },
+                ],
+            },
+            106: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "5",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "D",
+                        bytes: None,
+                    },
+                ],
+            },
+            153: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "3",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "C",
+                        bytes: None,
+                    },
+                ],
+            },
+            96: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "4",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "B",
+                        bytes: None,
+                    },
+                ],
+            },
+            128: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "0",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "B",
+                        bytes: None,
+                    },
+                ],
+            },
+            186: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "7",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "D",
+                        bytes: None,
+                    },
+                ],
+            },
+            26: Instruction {
+                mnemonic: "RR",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "D",
+                        bytes: None,
+                    },
+                ],
+            },
+            109: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "5",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "L",
+                        bytes: None,
+                    },
+                ],
+            },
+            68: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "0",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "H",
+                        bytes: None,
+                    },
+                ],
+            },
+            147: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "2",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "E",
+                        bytes: None,
+                    },
+                ],
+            },
+            140: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "1",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "H",
+                        bytes: None,
+                    },
+                ],
+            },
+            67: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "0",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "E",
+                        bytes: None,
+                    },
+                ],
+            },
+            102: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "4",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "HL",
+                        bytes: None,
+                    },
+                ],
+            },
+            18: Instruction {
+                mnemonic: "RL",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "D",
+                        bytes: None,
+                    },
+                ],
+            },
+            52: Instruction {
+                mnemonic: "SWAP",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "H",
+                        bytes: None,
+                    },
+                ],
+            },
+            193: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "0",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "C",
+                        bytes: None,
+                    },
+                ],
+            },
+            225: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "4",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "C",
+                        bytes: None,
+                    },
+                ],
+            },
+            138: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "1",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "D",
+                        bytes: None,
+                    },
+                ],
+            },
+            100: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "4",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "H",
+                        bytes: None,
+                    },
+                ],
+            },
+            185: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "7",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "C",
+                        bytes: None,
+                    },
+                ],
+            },
+            223: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "3",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "A",
+                        bytes: None,
+                    },
+                ],
+            },
+            55: Instruction {
+                mnemonic: "SWAP",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "A",
+                        bytes: None,
+                    },
+                ],
+            },
+            88: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "3",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "B",
+                        bytes: None,
+                    },
+                ],
+            },
+            10: Instruction {
+                mnemonic: "RRC",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "D",
+                        bytes: None,
+                    },
+                ],
+            },
+            41: Instruction {
+                mnemonic: "SRA",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "C",
+                        bytes: None,
+                    },
+                ],
+            },
+            222: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "3",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "HL",
+                        bytes: None,
+                    },
+                ],
+            },
+            162: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "4",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "D",
+                        bytes: None,
+                    },
+                ],
+            },
+            86: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "2",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "HL",
+                        bytes: None,
+                    },
+                ],
+            },
+            161: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "4",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "C",
+                        bytes: None,
+                    },
+                ],
+            },
+            238: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "5",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "HL",
+                        bytes: None,
+                    },
+                ],
+            },
+            172: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "5",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "H",
+                        bytes: None,
+                    },
+                ],
+            },
+            59: Instruction {
+                mnemonic: "SRL",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "E",
+                        bytes: None,
+                    },
+                ],
+            },
+            152: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "3",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "B",
+                        bytes: None,
+                    },
+                ],
+            },
+            220: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "3",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "H",
+                        bytes: None,
+                    },
+                ],
+            },
+            250: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "7",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "D",
+                        bytes: None,
+                    },
+                ],
+            },
+            116: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "6",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "H",
+                        bytes: None,
+                    },
+                ],
+            },
+            95: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "3",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "A",
+                        bytes: None,
+                    },
+                ],
+            },
+            22: Instruction {
+                mnemonic: "RL",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "HL",
+                        bytes: None,
+                    },
+                ],
+            },
+            163: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "4",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "E",
+                        bytes: None,
+                    },
+                ],
+            },
+            73: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "1",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "C",
+                        bytes: None,
+                    },
+                ],
+            },
+            210: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "2",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "D",
+                        bytes: None,
+                    },
+                ],
+            },
+            251: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "7",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "E",
+                        bytes: None,
+                    },
+                ],
+            },
+            146: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "2",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "D",
+                        bytes: None,
+                    },
+                ],
+            },
+            2: Instruction {
+                mnemonic: "RLC",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "D",
+                        bytes: None,
+                    },
+                ],
+            },
+            189: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "7",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "L",
+                        bytes: None,
+                    },
+                ],
+            },
+            6: Instruction {
+                mnemonic: "RLC",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "HL",
+                        bytes: None,
+                    },
+                ],
+            },
+            126: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "7",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "HL",
+                        bytes: None,
+                    },
+                ],
+            },
+            80: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "2",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "B",
+                        bytes: None,
+                    },
+                ],
+            },
+            120: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "7",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "B",
+                        bytes: None,
+                    },
+                ],
+            },
+            105: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "5",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "C",
+                        bytes: None,
+                    },
+                ],
+            },
+            192: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "0",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "B",
+                        bytes: None,
+                    },
+                ],
+            },
+            56: Instruction {
+                mnemonic: "SRL",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "B",
+                        bytes: None,
+                    },
+                ],
+            },
+            89: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "3",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "C",
+                        bytes: None,
+                    },
+                ],
+            },
+            131: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "0",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "E",
+                        bytes: None,
+                    },
+                ],
+            },
+            229: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "4",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "L",
+                        bytes: None,
+                    },
+                ],
+            },
+            97: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "4",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "C",
+                        bytes: None,
+                    },
+                ],
+            },
+            215: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "2",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "A",
+                        bytes: None,
+                    },
+                ],
+            },
+            30: Instruction {
+                mnemonic: "RR",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "HL",
+                        bytes: None,
+                    },
+                ],
+            },
+            143: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "1",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "A",
+                        bytes: None,
+                    },
+                ],
+            },
+            217: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "3",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "C",
+                        bytes: None,
+                    },
+                ],
+            },
+            94: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "3",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "HL",
+                        bytes: None,
+                    },
+                ],
+            },
+            40: Instruction {
+                mnemonic: "SRA",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "B",
+                        bytes: None,
+                    },
+                ],
+            },
+            76: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "1",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "H",
+                        bytes: None,
+                    },
+                ],
+            },
+            130: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "0",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "D",
+                        bytes: None,
+                    },
+                ],
+            },
+            198: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "0",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "HL",
+                        bytes: None,
+                    },
+                ],
+            },
+            148: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "2",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "H",
+                        bytes: None,
+                    },
+                ],
+            },
+            64: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "0",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "B",
+                        bytes: None,
+                    },
+                ],
+            },
+            179: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "6",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "E",
+                        bytes: None,
+                    },
+                ],
+            },
+            191: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "7",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "A",
+                        bytes: None,
+                    },
+                ],
+            },
+            253: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "7",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "L",
+                        bytes: None,
+                    },
+                ],
+            },
+            235: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "5",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "E",
+                        bytes: None,
+                    },
+                ],
+            },
+            115: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "6",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "E",
+                        bytes: None,
+                    },
+                ],
+            },
+            112: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "6",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "B",
+                        bytes: None,
+                    },
+                ],
+            },
+            233: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "5",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "C",
+                        bytes: None,
+                    },
+                ],
+            },
+            208: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "2",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "B",
+                        bytes: None,
+                    },
+                ],
+            },
+            113: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "6",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "C",
+                        bytes: None,
+                    },
+                ],
+            },
+            204: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "1",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "H",
+                        bytes: None,
+                    },
+                ],
+            },
+            77: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "1",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "L",
+                        bytes: None,
+                    },
+                ],
+            },
+            168: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "5",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "B",
+                        bytes: None,
+                    },
+                ],
+            },
+            154: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "3",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "D",
+                        bytes: None,
+                    },
+                ],
+            },
+            123: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "7",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "E",
+                        bytes: None,
+                    },
+                ],
+            },
+            49: Instruction {
+                mnemonic: "SWAP",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "C",
+                        bytes: None,
+                    },
+                ],
+            },
+            82: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "2",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "D",
+                        bytes: None,
+                    },
+                ],
+            },
+            79: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "1",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "A",
+                        bytes: None,
+                    },
+                ],
+            },
+            159: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "3",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "A",
+                        bytes: None,
+                    },
+                ],
+            },
+            62: Instruction {
+                mnemonic: "SRL",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "HL",
+                        bytes: None,
+                    },
+                ],
+            },
+            33: Instruction {
+                mnemonic: "SLA",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "C",
+                        bytes: None,
+                    },
+                ],
+            },
+            43: Instruction {
+                mnemonic: "SRA",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "E",
+                        bytes: None,
+                    },
+                ],
+            },
+            54: Instruction {
+                mnemonic: "SWAP",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "HL",
+                        bytes: None,
+                    },
+                ],
+            },
+            65: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "0",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "C",
+                        bytes: None,
+                    },
+                ],
+            },
+            117: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "6",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "L",
+                        bytes: None,
+                    },
+                ],
+            },
+            4: Instruction {
+                mnemonic: "RLC",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "H",
+                        bytes: None,
+                    },
+                ],
+            },
+            38: Instruction {
+                mnemonic: "SLA",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "HL",
+                        bytes: None,
+                    },
+                ],
+            },
+            90: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "3",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "D",
+                        bytes: None,
+                    },
+                ],
+            },
+            180: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "6",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "H",
+                        bytes: None,
+                    },
+                ],
+            },
+            242: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "6",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "D",
+                        bytes: None,
+                    },
+                ],
+            },
+            182: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "6",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "HL",
+                        bytes: None,
+                    },
+                ],
+            },
+            31: Instruction {
+                mnemonic: "RR",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "A",
+                        bytes: None,
+                    },
+                ],
+            },
+            214: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "2",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "HL",
+                        bytes: None,
+                    },
+                ],
+            },
+            158: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "3",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "HL",
+                        bytes: None,
+                    },
+                ],
+            },
+            165: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "4",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "L",
+                        bytes: None,
+                    },
+                ],
+            },
+            203: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "1",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "E",
+                        bytes: None,
+                    },
+                ],
+            },
+            103: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "4",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "A",
+                        bytes: None,
+                    },
+                ],
+            },
+            17: Instruction {
+                mnemonic: "RL",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "C",
+                        bytes: None,
+                    },
+                ],
+            },
+            190: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "7",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "HL",
+                        bytes: None,
+                    },
+                ],
+            },
+            75: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "1",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "E",
+                        bytes: None,
+                    },
+                ],
+            },
+            212: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "2",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "H",
+                        bytes: None,
+                    },
+                ],
+            },
+            23: Instruction {
+                mnemonic: "RL",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "A",
+                        bytes: None,
+                    },
+                ],
+            },
+            224: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "4",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "B",
+                        bytes: None,
+                    },
+                ],
+            },
+            27: Instruction {
+                mnemonic: "RR",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "E",
+                        bytes: None,
+                    },
+                ],
+            },
+            173: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "5",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "L",
+                        bytes: None,
+                    },
+                ],
+            },
+            16: Instruction {
+                mnemonic: "RL",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "B",
+                        bytes: None,
+                    },
+                ],
+            },
+            231: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "4",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "A",
+                        bytes: None,
+                    },
+                ],
+            },
+            98: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "4",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "D",
+                        bytes: None,
+                    },
+                ],
+            },
+            11: Instruction {
+                mnemonic: "RRC",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "E",
+                        bytes: None,
+                    },
+                ],
+            },
+            132: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "0",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "H",
+                        bytes: None,
+                    },
+                ],
+            },
+            28: Instruction {
+                mnemonic: "RR",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "H",
+                        bytes: None,
+                    },
+                ],
+            },
+            34: Instruction {
+                mnemonic: "SLA",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "D",
+                        bytes: None,
+                    },
+                ],
+            },
+            99: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "4",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "E",
+                        bytes: None,
+                    },
+                ],
+            },
+            57: Instruction {
+                mnemonic: "SRL",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "C",
+                        bytes: None,
+                    },
+                ],
+            },
+            13: Instruction {
+                mnemonic: "RRC",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "L",
+                        bytes: None,
+                    },
+                ],
+            },
+            8: Instruction {
+                mnemonic: "RRC",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "B",
+                        bytes: None,
+                    },
+                ],
+            },
+            61: Instruction {
+                mnemonic: "SRL",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "L",
+                        bytes: None,
+                    },
+                ],
+            },
+            5: Instruction {
+                mnemonic: "RLC",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "L",
+                        bytes: None,
+                    },
+                ],
+            },
+            175: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "5",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "A",
+                        bytes: None,
+                    },
+                ],
+            },
+            58: Instruction {
+                mnemonic: "SRL",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "D",
+                        bytes: None,
+                    },
+                ],
+            },
+            249: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "7",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "C",
+                        bytes: None,
+                    },
+                ],
+            },
+            240: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "6",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "B",
+                        bytes: None,
+                    },
+                ],
+            },
+            12: Instruction {
+                mnemonic: "RRC",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "H",
+                        bytes: None,
+                    },
+                ],
+            },
+            36: Instruction {
+                mnemonic: "SLA",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "H",
+                        bytes: None,
+                    },
+                ],
+            },
+            196: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "0",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "H",
+                        bytes: None,
+                    },
+                ],
+            },
+            170: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "5",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "D",
+                        bytes: None,
+                    },
+                ],
+            },
+            53: Instruction {
+                mnemonic: "SWAP",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "L",
+                        bytes: None,
+                    },
+                ],
+            },
+            247: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "6",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "A",
+                        bytes: None,
+                    },
+                ],
+            },
+            20: Instruction {
+                mnemonic: "RL",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "H",
+                        bytes: None,
+                    },
+                ],
+            },
+            164: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "4",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "H",
+                        bytes: None,
+                    },
+                ],
+            },
+            21: Instruction {
+                mnemonic: "RL",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "L",
+                        bytes: None,
+                    },
+                ],
+            },
+            14: Instruction {
+                mnemonic: "RRC",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "HL",
+                        bytes: None,
+                    },
+                ],
+            },
+            243: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "6",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "E",
+                        bytes: None,
+                    },
+                ],
+            },
+            129: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "0",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "C",
+                        bytes: None,
+                    },
+                ],
+            },
+            227: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "4",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "E",
+                        bytes: None,
+                    },
+                ],
+            },
+            248: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "7",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "B",
+                        bytes: None,
+                    },
+                ],
+            },
+            118: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "6",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "HL",
+                        bytes: None,
+                    },
+                ],
+            },
+            156: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "3",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "H",
+                        bytes: None,
+                    },
+                ],
+            },
+            63: Instruction {
+                mnemonic: "SRL",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "A",
+                        bytes: None,
+                    },
+                ],
+            },
+            169: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "5",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "C",
+                        bytes: None,
+                    },
+                ],
+            },
+            47: Instruction {
+                mnemonic: "SRA",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "A",
+                        bytes: None,
+                    },
+                ],
+            },
+            125: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "7",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "L",
+                        bytes: None,
+                    },
+                ],
+            },
+            74: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "1",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "D",
+                        bytes: None,
+                    },
+                ],
+            },
+            207: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "1",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "A",
+                        bytes: None,
+                    },
+                ],
+            },
+            201: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "1",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "C",
+                        bytes: None,
+                    },
+                ],
+            },
+            187: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "7",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "E",
+                        bytes: None,
+                    },
+                ],
+            },
+            127: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "7",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "A",
+                        bytes: None,
+                    },
+                ],
+            },
+            213: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "2",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "L",
+                        bytes: None,
+                    },
+                ],
+            },
+            83: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "2",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "E",
+                        bytes: None,
+                    },
+                ],
+            },
+            226: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "4",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "D",
+                        bytes: None,
+                    },
+                ],
+            },
+            236: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "5",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "H",
+                        bytes: None,
+                    },
+                ],
+            },
+            9: Instruction {
+                mnemonic: "RRC",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "C",
+                        bytes: None,
+                    },
+                ],
+            },
+            42: Instruction {
+                mnemonic: "SRA",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "D",
+                        bytes: None,
+                    },
+                ],
+            },
+            70: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "0",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "HL",
+                        bytes: None,
+                    },
+                ],
+            },
+            101: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "4",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "L",
+                        bytes: None,
+                    },
+                ],
+            },
+            234: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "5",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "D",
+                        bytes: None,
+                    },
+                ],
+            },
+            121: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "7",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "C",
+                        bytes: None,
+                    },
+                ],
+            },
+            197: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "0",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "L",
+                        bytes: None,
+                    },
+                ],
+            },
+            72: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "1",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "B",
+                        bytes: None,
+                    },
+                ],
+            },
+            166: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "4",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "HL",
+                        bytes: None,
+                    },
+                ],
+            },
+            32: Instruction {
+                mnemonic: "SLA",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "B",
+                        bytes: None,
+                    },
+                ],
+            },
+            181: Instruction {
+                mnemonic: "RES",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "6",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "L",
+                        bytes: None,
+                    },
+                ],
+            },
+            39: Instruction {
+                mnemonic: "SLA",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "A",
+                        bytes: None,
+                    },
+                ],
+            },
+            71: Instruction {
+                mnemonic: "BIT",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "0",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "A",
+                        bytes: None,
+                    },
+                ],
+            },
+            46: Instruction {
+                mnemonic: "SRA",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "HL",
+                        bytes: None,
+                    },
+                ],
+            },
+            255: Instruction {
+                mnemonic: "SET",
+                bytes: 2,
+                operands: [
+                    Operands {
+                        name: "7",
+                        bytes: None,
+                    },
+                    Operands {
+                        name: "A",
+                        bytes: None,
+                    },
+                ],
+            },
+        },
+        unprefixed: {},
+    },
+)
+Error: AppCreation(Invalid instruction: index(0), opcode(c3 | 195))

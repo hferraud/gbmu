@@ -1,8 +1,13 @@
+mod game_data;
+mod instruction_map;
+
+use crate::app::instruction_map::Instruction;
 use crate::error;
 use crate::gameboy::Gameboy;
-use crate::parse_instruction_map::parse_instruction_map;
 use anyhow::Result;
 use egui::{vec2, Pos2, ScrollArea, Ui, Vec2};
+use game_data::GameData;
+use instruction_map::InstructionMap;
 use std::env;
 
 const SOURCE_CODE_LINK: &str = "https://github.com/hferraud/gbmu/";
@@ -16,32 +21,20 @@ const DEFAULT_GAME_PANEL_WIDTH_RATIO: f32 = 0.55;
 const DEFAULT_INSTRUCTION_PANEL_WIDTH_RATIO: f32 = 0.55;
 const DEFAULT_REGISTERS_PANEL_HEIGHT_RATIO: f32 = 0.3;
 
-#[derive(Default)]
 pub struct App {
-    gameboy: Option<Gameboy>,
+    game_data: Option<GameData>,
 
     instruction_map: InstructionMap,
-
-    selected_ram: RamTypes,
 }
 
 impl App {
-    pub fn new(_cc: &eframe::CreationContext<'_>) -> Self {
-        // TODO remove this
-        let args: Vec<String> = env::args().collect();
-        if args.len() < 2 {
-            println!("Usage: ./{} <ROM>", args[0]);
-            panic!("{}", error::invalid_argument());
-        }
-        let rom_path = &args[1];
-        let gameboy = Gameboy::new(rom_path).expect("Invalid ROM file");
-        // !
-
-        Self {
-            // TODO set gameboy to None at creation
-            gameboy: Some(gameboy),
-            ..Default::default()
-        }
+    pub fn new(_cc: &eframe::CreationContext<'_>) -> Result<Self> {
+        let instruction_map = InstructionMap::new()?;
+        Ok(Self {
+            // TODO set game_data to None at creation
+            game_data: Some(GameData::new("", &instruction_map)?),
+            instruction_map,
+        })
     }
 }
 
@@ -81,13 +74,22 @@ impl App {
     }
 
     fn render_central_panel(&mut self, ctx: &egui::Context) {
+        let Some(game_data) = &mut self.game_data else {
+            egui::CentralPanel::default().show(ctx, |ui| {
+                ui.centered_and_justified(|ui| {
+                    ui.label(ROM_IS_NOT_INSERTED);
+                });
+            });
+            return;
+        };
+
         egui::CentralPanel::default().show(ctx, |ui| {
-            self.render_game_panel(ui);
-            self.render_debugger_panel(ui);
+            Self::render_game_panel(ui, game_data);
+            Self::render_debugger_panel(ui, game_data);
         });
     }
 
-    fn render_game_panel(&mut self, central_panel: &mut Ui) {
+    fn render_game_panel(central_panel: &mut Ui, game_data: &GameData) {
         egui::SidePanel::left("Game panel")
             .resizable(true)
             .default_width(central_panel.available_width() * DEFAULT_GAME_PANEL_WIDTH_RATIO)
@@ -98,7 +100,7 @@ impl App {
             });
     }
 
-    fn render_debugger_panel(&mut self, central_panel: &mut Ui) {
+    fn render_debugger_panel(central_panel: &mut Ui, game_data: &mut GameData) {
         let available_width = central_panel.available_width();
         egui::SidePanel::right("Debugger panel")
             .resizable(false)
@@ -106,25 +108,39 @@ impl App {
             .show_inside(central_panel, |ui| {
                 ui.set_width(available_width);
 
-                self.render_instructions_panel(ui);
-                self.render_memory_panel(ui);
+                Self::render_instructions_panel(ui, game_data);
+                Self::render_memory_panel(ui, game_data);
 
                 ui.allocate_space(ui.available_size());
             });
     }
 
-    fn render_instructions_panel(&mut self, debugger_panel: &mut Ui) {
+    fn render_instructions_panel(debugger_panel: &mut Ui, game_data: &GameData) {
         egui::SidePanel::left("Instructions panel")
             .resizable(true)
             .default_width(debugger_panel.available_width() * DEFAULT_INSTRUCTION_PANEL_WIDTH_RATIO)
             .show_inside(debugger_panel, |ui| {
-                ui.label("Instructions");
+                ui.label("Instructions:");
+                ui.add(egui::Separator::default().horizontal());
+
+                egui::ScrollArea::both().show(ui, |ui| {
+                    Self::render_instructions(ui, game_data);
+                });
 
                 ui.allocate_space(ui.available_size());
             });
     }
 
-    fn render_memory_panel(&mut self, debugger_panel: &mut Ui) {
+    fn render_instructions(instructions_panel: &mut Ui, game_data: &GameData) {
+        let mut instructions = String::new();
+
+        for (pc, instruction) in game_data.instructions.iter() {
+            instructions += &format!("{:04x}/t{}\n", pc, instruction);
+        }
+        instructions_panel.label(instructions);
+    }
+
+    fn render_memory_panel(debugger_panel: &mut Ui, game_data: &mut GameData) {
         let available_width = debugger_panel.available_width();
         egui::SidePanel::right("Memory panel")
             .resizable(false)
@@ -132,14 +148,14 @@ impl App {
             .show_inside(debugger_panel, |ui| {
                 ui.set_width(available_width);
 
-                self.render_registers_panel(ui);
-                self.render_ram_panel(ui);
+                Self::render_registers_panel(ui, game_data);
+                Self::render_ram_panel(ui, game_data);
 
                 ui.allocate_space(ui.available_size());
             });
     }
 
-    fn render_registers_panel(&mut self, memory_panel: &mut Ui) {
+    fn render_registers_panel(memory_panel: &mut Ui, game_data: &mut GameData) {
         egui::TopBottomPanel::top("Registers panel")
             .resizable(true)
             .default_height(memory_panel.available_height() * DEFAULT_REGISTERS_PANEL_HEIGHT_RATIO)
@@ -150,16 +166,12 @@ impl App {
                 ui.add(egui::Separator::default().horizontal());
 
                 egui::ScrollArea::both().show(ui, |ui| {
-                    if let Some(gameboy) = &self.gameboy {
-                        self.render_cpu_registers(ui, gameboy);
-                    } else {
-                        ui.label(ROM_IS_NOT_INSERTED);
-                    }
+                    Self::render_cpu_registers(ui, &mut game_data.gameboy);
                 });
             });
     }
 
-    fn render_cpu_registers(&self, registers_panel: &mut Ui, gameboy: &Gameboy) {
+    fn render_cpu_registers(registers_panel: &mut Ui, gameboy: &mut Gameboy) {
         registers_panel.label(format!(
             "a: {:02X}\t\tb: {:02X}",
             gameboy.cpu.registers.a, gameboy.cpu.registers.b
@@ -184,7 +196,7 @@ impl App {
         registers_panel.label(format!("ime: {}", gameboy.cpu.ime));
     }
 
-    fn render_ram_panel(&mut self, memory_panel: &mut Ui) {
+    fn render_ram_panel(memory_panel: &mut Ui, game_data: &mut GameData) {
         let available_height = memory_panel.available_height();
         egui::TopBottomPanel::bottom("RAM panel")
             .resizable(false)
@@ -196,19 +208,14 @@ impl App {
                 ui.add(egui::Separator::default().horizontal());
 
                 egui::ScrollArea::both().show(ui, |ui| {
-                    self.render_ram(ui);
+                    Self::render_ram(ui, &mut game_data.gameboy);
                 });
 
                 ui.allocate_space(ui.available_size());
             });
     }
 
-    fn render_ram(&mut self, ram_panel: &mut Ui) {
-        let Some(gameboy) = &mut self.gameboy else {
-            ram_panel.label(ROM_IS_NOT_INSERTED);
-            return;
-        };
-
+    fn render_ram(ram_panel: &mut Ui, gameboy: &mut Gameboy) {
         let mut output = "".to_string();
 
         for address in (0..0xFFFF).step_by(2) {
