@@ -38,16 +38,16 @@ const JR_C_IMM8_OPCODE: u8 = 0b00111000;
 
 pub fn execute(opcode: u8, cpu: &mut CPU, mmu: &mut MMU) -> Result<(), io::Error> {
     match opcode & INSTRUCTION_TYPE_MASK {
-        LD_R16_IMM16_OPCODE => return ld_r16_imm16(opcode, cpu, mmu),
-        LD_R16MEM_A_OPCODE => return ld_r16mem_a(opcode, &mut cpu.registers, mmu),
-        LD_A_R16MEM_OPCODE => return ld_a_r16mem(opcode, &mut cpu.registers, mmu),
-        LD_IMM16MEM_SP_OPCODE => return ld_imm16mem_sp(cpu, mmu),
         INC_R8_OPCODE => return inc_r8(opcode, &mut cpu.registers, mmu),
         DEC_R8_OPCODE => return dec_r8(opcode, &mut cpu.registers, mmu),
         LD_R8_IMM8_OPCODE => return ld_r8_imm8(opcode, cpu, mmu),
         _ => {}
     };
     match opcode & EXTENDED_INSTRUCTION_TYPE_MASK {
+        LD_R16_IMM16_OPCODE => return ld_r16_imm16(opcode, cpu, mmu),
+        LD_R16MEM_A_OPCODE => return ld_r16mem_a(opcode, &mut cpu.registers, mmu),
+        LD_A_R16MEM_OPCODE => return ld_a_r16mem(opcode, &mut cpu.registers, mmu),
+        LD_IMM16MEM_SP_OPCODE => return ld_imm16mem_sp(cpu, mmu),
         INC_R16_OPCODE => return inc_r16(opcode, &mut cpu.registers),
         DEC_R16_OPCODE => return dec_r16(opcode, &mut cpu.registers),
         ADD_HL_R16_OPCODE => return add_hl_r16(opcode, &mut cpu.registers),
