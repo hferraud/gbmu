@@ -4,13 +4,13 @@ const HRAM_SIZE: usize = 0x7F;
 
 #[derive(Debug)]
 pub struct HRAM {
-    data: Vec<u8>,
+    data: Box<[u8]>,
 }
 
 impl HRAM {
     pub fn new() -> Self {
         HRAM {
-            data: vec![0; HRAM_SIZE],
+            data: vec![0; HRAM_SIZE].into_boxed_slice(),
         }
     }
 }

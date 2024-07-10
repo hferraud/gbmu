@@ -44,35 +44,35 @@ pub enum Flags {
 impl Registers {
     pub fn new() -> Self {
         Self {
-            a: 0x01,
-            f: 0x80,
-            b: 0x00,
-            c: 0x13,
-            d: 0x00,
-            e: 0xd8,
-            h: 0x01,
-            l: 0x4d,
-            pc: 0x0100,
-            sp: 0xfffe,
+            a: 0x0,
+            f: 0x0,
+            b: 0x0,
+            c: 0x0,
+            d: 0x0,
+            e: 0x0,
+            h: 0x0,
+            l: 0x0,
+            pc: 0x0,
+            sp: 0x0,
         }
     }
 
     pub fn set_bc(&mut self, value: u16) {
-        self.b = (value & 0xff00 >> 8) as u8;
+        self.b = ((value & 0xff00) >> 8) as u8;
         self.c = value as u8;
     }
 
     pub fn get_bc(&self) -> u16 {
-        (self.b as u16) << 8 | self.c as u16
+        ((self.b as u16) << 8) | (self.c as u16)
     }
 
     pub fn set_de(&mut self, value: u16) {
-        self.d = (value & 0xff00 >> 8) as u8;
+        self.d = ((value & 0xff00) >> 8) as u8;
         self.e = value as u8;
     }
 
     pub fn get_de(&self) -> u16 {
-        (self.d as u16) << 8 | self.e as u16
+        ((self.d as u16) << 8) | (self.e as u16)
     }
 
     pub fn set_hl(&mut self, value: u16) {
@@ -81,7 +81,7 @@ impl Registers {
     }
 
     pub fn get_hl(&self) -> u16 {
-        (self.h as u16) << 8 | self.l as u16
+        ((self.h as u16) << 8) | (self.l as u16)
     }
 
     pub fn get_hli(&mut self) -> u16 {
@@ -97,12 +97,12 @@ impl Registers {
     }
 
     pub fn set_af(&mut self, value: u16) {
-        self.a = (value & 0xff00 >> 8) as u8;
+        self.a = ((value & 0xff00) >> 8) as u8;
         self.f = value as u8;
     }
 
     pub fn get_af(&self) -> u16 {
-        (self.a as u16) << 8 | self.f as u16
+        ((self.a as u16) << 8) | (self.f as u16)
     }
 
     pub fn set_flags(&mut self, flag: Flags, value: bool) {

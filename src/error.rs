@@ -38,3 +38,7 @@ pub fn invalid_address(address: usize) -> io::Error {
         format!("Invalid address {:#x}", address),
     )
 }
+
+pub fn invalid_rom_size() -> io::Error {
+    io::Error::new(io::ErrorKind::InvalidInput, "Invalid rom size")
+}

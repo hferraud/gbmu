@@ -2,9 +2,13 @@ use gbmu::cartridge;
 use gbmu::cpu::CPU;
 use gbmu::error;
 use gbmu::mmu::MMU;
+use gbmu::ppu;
 use std::env;
 
+use gbmu::cartridge::Cartridge;
 use std::error::Error;
+use std::io;
+use std::io::Read;
 
 fn main() -> Result<(), Box<dyn Error>> {
     let args: Vec<String> = env::args().collect();
@@ -16,6 +20,11 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut cartridge = cartridge::Cartridge::load_rom(rom_path).unwrap();
     let mut mmu = MMU::new(&mut cartridge.mbc, false);
     let mut cpu = CPU::new();
-    cpu.run(&mut mmu)?;
-    Ok(())
+
+    loop {
+        cpu.run(&mut mmu);
+        unsafe {
+            ppu::run(&mut mmu);
+        }
+    }
 }

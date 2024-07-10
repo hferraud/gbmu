@@ -66,28 +66,34 @@ fn bitwise_operation(
         AND_OPERATION => and(operand, registers),
         XOR_OPERATION => Ok(registers.a ^ operand),
         OR_OPERATION => Ok(registers.a | operand),
-        CP_OPERATION => cp(operand, true, registers),
+        CP_OPERATION => cp(operand, registers),
         _ => Err(error::invalid_opcode()),
     }
 }
 
 fn add(operand: u8, carry: bool, registers: &mut Registers) -> Result<u8, io::Error> {
     let a = registers.a;
-    let (result, overflow) = a.overflowing_add(operand);
+    let (mut result, mut overflow) = a.overflowing_add(operand);
     if carry {
-        registers.set_flags(Flags::C, overflow);
+        let mut carry_overflow: bool;
+        (result, carry_overflow) = a.overflowing_add(registers.get_flag(Flags::C) as u8);
+        overflow = overflow | carry_overflow;
     }
+    registers.set_flags(Flags::C, overflow);
     registers.set_h_flag_add(operand, a);
     Ok(result)
 }
 
 fn sub(operand: u8, carry: bool, registers: &mut Registers) -> Result<u8, io::Error> {
     let a = registers.a;
-    let (result, overflow) = a.overflowing_sub(operand);
+    let (mut result, mut overflow) = a.overflowing_sub(operand);
 
     if carry {
-        registers.set_flags(Flags::C, overflow)
+        let mut carry_overflow: bool;
+        (result, carry_overflow) = a.overflowing_sub(registers.get_flag(Flags::C) as u8);
+        overflow = overflow | carry_overflow;
     }
+    registers.set_flags(Flags::C, overflow);
     registers.set_flags(Flags::N, true);
     registers.set_h_flag_sub(a, operand);
     Ok(result)
@@ -98,6 +104,6 @@ fn and(operand: u8, registers: &mut Registers) -> Result<u8, io::Error> {
     Ok(registers.a & operand)
 }
 
-fn cp(operand: u8, carry: bool, registers: &mut Registers) -> Result<u8, io::Error> {
-    sub(operand, carry, registers)
+fn cp(operand: u8, registers: &mut Registers) -> Result<u8, io::Error> {
+    sub(operand, false, registers)
 }
