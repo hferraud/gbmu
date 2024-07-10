@@ -182,11 +182,6 @@ impl App {
                     let (pc, instruction) = &game_data.instructions[row];
                     let breakpoint_selected = game_data.breakpoints.contains(pc);
                     ui.horizontal(|ui| {
-                        //     let text = if *pc == game_data.gameboy.cpu.registers.pc {
-                        //         format!("!!!!!!!!! {:04X}\t{}", pc, instruction)
-                        //     } else {
-                        //         format!("{:04X}\t{}", pc, instruction)
-                        //     };
                         let text = format!("{:04X}\t{}", pc, instruction);
 
                         if ui.radio(breakpoint_selected, "").clicked() {
@@ -196,7 +191,18 @@ impl App {
                                 game_data.breakpoints.insert(*pc);
                             }
                         }
-                        ui.label(text);
+                        let color = if game_data.breakpoints.contains(pc) {
+                            egui::Color32::RED
+                        } else if game_data.gameboy.cpu.registers.pc == *pc {
+                            if ui.style().visuals.dark_mode {
+                                egui::Color32::DARK_GRAY
+                            } else {
+                                egui::Color32::GRAY
+                            }
+                        } else {
+                            egui::Color32::TRANSPARENT
+                        };
+                        ui.label(egui::RichText::new(text).background_color(color));
                     });
                 }
             },
