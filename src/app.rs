@@ -1,7 +1,9 @@
+mod instruction_map;
 use crate::gameboy::Gameboy;
 use anyhow::Result;
 use egui::{Pos2, Ui, Vec2, vec2};
 use crate::error;
+use instruction_map::InstructionMap;
 use std::env;
 
 const SOURCE_CODE_LINK: &str = "https://github.com/hferraud/gbmu/";
