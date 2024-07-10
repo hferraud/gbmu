@@ -1,8 +1,8 @@
 pub mod header;
 pub mod mbc0;
 
-use std::io::Read;
 use std::io;
+use std::io::Read;
 use std::ptr;
 
 use crate::cartridge::header::CartridgeHeader;

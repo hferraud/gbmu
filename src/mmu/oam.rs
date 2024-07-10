@@ -12,7 +12,7 @@ impl OAM {
     pub fn new() -> Self {
         OAM {
             data: vec![0; OAM_SIZE],
-            bank: 0
+            bank: 0,
         }
     }
 }

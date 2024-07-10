@@ -4,15 +4,15 @@ use crate::cartridge::mbc0::MBC0;
 use crate::error;
 use gpio::GPIO;
 use hram::HRAM;
-use wram::WRAM;
-use vram::VRAM;
 use oam::OAM;
+use vram::VRAM;
+use wram::WRAM;
 
 pub mod gpio;
 pub mod hram;
-pub mod wram;
-pub mod vram;
 pub mod oam;
+pub mod vram;
+pub mod wram;
 
 #[allow(unused)]
 const MEMORY_SIZE: usize = 0xFFFF;
