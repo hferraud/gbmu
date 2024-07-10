@@ -4,14 +4,14 @@ const OAM_SIZE: usize = 0xa0; //  160
 const BANK_WIDTH: usize = 1 << 13;
 
 pub struct OAM {
-    data: Vec<u8>,
+    data: Box<[u8]>,
     bank: u8,
 }
 
 impl OAM {
     pub fn new() -> Self {
         OAM {
-            data: vec![0; OAM_SIZE],
+            data: vec![0; OAM_SIZE].into_boxed_slice(),
             bank: 0,
         }
     }

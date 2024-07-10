@@ -5,16 +5,16 @@ const CBG_WRAM_SIZE: usize = 1 << 15; // 32 768
 const BANK_WIDTH: usize = 0x1000;
 
 pub struct WRAM {
-    data: Vec<u8>,
+    data: Box<[u8]>,
     bank: u8,
 }
 
 impl WRAM {
     pub fn new(cbg_mode: bool) -> Self {
         let data = if cbg_mode {
-            vec![0; CBG_WRAM_SIZE]
+            vec![0; CBG_WRAM_SIZE].into_boxed_slice()
         } else {
-            vec![0; DMG_WRAM_SIZE]
+            vec![0; DMG_WRAM_SIZE].into_boxed_slice()
         };
 
         WRAM { data, bank: 1 }

@@ -5,16 +5,16 @@ const CBG_VRAM_SIZE: usize = 1 << 14; // 16 384
 const BANK_WIDTH: usize = 1 << 13;
 
 pub struct VRAM {
-    data: Vec<u8>,
+    data: Box<[u8]>,
     bank: u8,
 }
 
 impl VRAM {
     pub fn new(cbg_mode: bool) -> Self {
         let data = if cbg_mode {
-            vec![0; CBG_VRAM_SIZE]
+            vec![0; CBG_VRAM_SIZE].into_boxed_slice()
         } else {
-            vec![0; DMG_VRAM_SIZE]
+            vec![0; DMG_VRAM_SIZE].into_boxed_slice()
         };
         VRAM { data, bank: 0 }
     }
