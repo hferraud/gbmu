@@ -1,9 +1,9 @@
-use std::{env, io, collections::HashSet};
 use crate::app::instruction_map::{Instruction, InstructionMap};
+use crate::error;
 use crate::gameboy::Gameboy;
 use anyhow::{anyhow, Result};
-use crate::error;
 use std::collections::HashMap;
+use std::{collections::HashSet, env, io};
 
 const PREFIXED_OPCODE: u8 = 0xCB;
 
@@ -11,6 +11,13 @@ pub struct GameData {
     pub gameboy: Gameboy,
     pub instructions: Vec<(u16, Instruction)>,
     pub breakpoints: HashSet<u16>,
+    pub run_status: RunStatus,
+}
+
+#[derive(Eq, PartialEq)]
+pub enum RunStatus {
+    Waiting,
+    Running,
 }
 
 impl GameData {
@@ -32,12 +39,13 @@ impl GameData {
             gameboy,
             instructions,
             breakpoints,
+            run_status: RunStatus::Waiting,
         })
     }
 
     fn create_instructions_list(
         gameboy: &Gameboy,
-        instruction_map: &InstructionMap
+        instruction_map: &InstructionMap,
     ) -> Result<Vec<(u16, Instruction)>> {
         let mut result = Vec::new();
         let rom = &gameboy.mmu.mbc.rom;
@@ -67,11 +75,16 @@ impl GameData {
     fn get_instruction(
         opcode: u8,
         index: usize, // TODO remove
-        instruction_map: &HashMap<u8, Instruction>
+        instruction_map: &HashMap<u8, Instruction>,
     ) -> Result<Instruction> {
         instruction_map
             .get(&opcode)
-            .ok_or(anyhow!("Invalid instruction: index({}), opcode({:x} | {})", index, opcode, opcode))
+            .ok_or(anyhow!(
+                "Invalid instruction: index({}), opcode({:x} | {})",
+                index,
+                opcode,
+                opcode
+            ))
             .map(Instruction::clone)
     }
 }
