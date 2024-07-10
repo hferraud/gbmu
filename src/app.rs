@@ -139,7 +139,7 @@ impl App {
             });
     }
 
-    fn render_instructions_panel(debugger_panel: &mut Ui, game_data: &GameData) {
+    fn render_instructions_panel(debugger_panel: &mut Ui, game_data: &mut GameData) {
         egui::SidePanel::left("Instructions panel")
             .resizable(true)
             .default_width(debugger_panel.available_width() * DEFAULT_INSTRUCTION_PANEL_WIDTH_RATIO)
@@ -155,39 +155,62 @@ impl App {
             });
     }
 
-    fn render_instructions(instructions_panel: &mut Ui, game_data: &GameData) {
+    fn render_instructions(instructions_panel: &mut Ui, game_data: &mut GameData) {
         let font_id = TextStyle::Body.resolve(instructions_panel.style());
-        let row_height = instructions_panel.fonts(|f| f.row_height(&font_id))
-            + instructions_panel.spacing().item_spacing.y;
+        let row_height = instructions_panel.fonts(|f| f.row_height(&font_id));
         let num_rows = game_data.instructions.len();
-
         egui::ScrollArea::both()
             .auto_shrink([false; 2])
-            .show_viewport(instructions_panel, |ui, viewport| {
-                ui.set_height(row_height * num_rows as f32);
-
-                let first_item = (viewport.min.y / row_height).max(0.0) as usize;
-                let limit = (viewport.max.y / row_height).ceil() as usize + 1;
-                let limit = limit.min(num_rows);
-
-                let mut used_rect = Rect::NOTHING;
-
-                for i in first_item..limit {
-                    let y = ui.min_rect().top() + i as f32 * row_height;
-                    let (pc, instruction) = &game_data.instructions[i];
-                    let text = format!("{:04x}\t{}", pc, instruction);
-                    let text_rect = ui.painter().text(
-                        pos2(ui.min_rect().left(), y),
-                        Align2::LEFT_TOP,
-                        text,
-                        font_id.clone(),
-                        ui.visuals().text_color(),
-                    );
-                    used_rect = used_rect.union(text_rect);
+            .show_rows(
+                instructions_panel,
+                row_height,
+                num_rows,
+                |ui, row_range| {
+                    for row in row_range {
+                        let (pc, instruction) = &game_data.instructions[row];
+                        let breakpoint_set = game_data.breakpoints.contains(pc);
+                        ui.horizontal(|ui| {
+                            let text = format!("{:04x}\t{}", pc, instruction);
+                            if ui.radio(breakpoint_set, "").clicked() {
+                                if breakpoint_set {
+                                    game_data.breakpoints.remove(pc);
+                                } else {
+                                    game_data.breakpoints.insert(*pc);
+                                }
+                            }
+                            ui.label(text);
+                        });
+                    }
                 }
+            );
 
-                ui.allocate_rect(used_rect, Sense::hover());
-            });
+        // egui::ScrollArea::both()
+        //     .auto_shrink([false; 2])
+        //     .show_viewport(instructions_panel, |ui, viewport| {
+        //         ui.set_height(row_height * num_rows as f32);
+        //
+        //         let first_item = (viewport.min.y / row_height).max(0.0) as usize;
+        //         let limit = (viewport.max.y / row_height).ceil() as usize + 1;
+        //         let limit = limit.min(num_rows);
+        //
+        //         let mut used_rect = Rect::NOTHING;
+        //
+        //         for i in first_item..limit {
+        //             let y = ui.min_rect().top() + i as f32 * row_height;
+        //             let (pc, instruction) = &game_data.instructions[i];
+        //             let text = format!("{:04x}\t{}", pc, instruction);
+        //             let text_rect = ui.painter().text(
+        //                 pos2(ui.min_rect().left(), y),
+        //                 Align2::LEFT_TOP,
+        //                 text,
+        //                 font_id.clone(),
+        //                 ui.visuals().text_color(),
+        //             );
+        //             used_rect = used_rect.union(text_rect);
+        //         }
+        //
+        //         ui.allocate_rect(used_rect, Sense::hover());
+        //     });
     }
 
     fn render_memory_panel(debugger_panel: &mut Ui, game_data: &mut GameData) {

@@ -1,4 +1,4 @@
-use std::{env, io};
+use std::{env, io, collections::HashSet};
 use crate::app::instruction_map::{Instruction, InstructionMap};
 use crate::gameboy::Gameboy;
 use anyhow::{anyhow, Result};
@@ -10,6 +10,7 @@ const PREFIXED_OPCODE: u8 = 0xCB;
 pub struct GameData {
     pub gameboy: Gameboy,
     pub instructions: Vec<(u16, Instruction)>,
+    pub breakpoints: HashSet<u16>,
 }
 
 impl GameData {
@@ -25,10 +26,12 @@ impl GameData {
 
         let gameboy = Gameboy::new(rom_path)?;
         let instructions = Self::create_instructions_list(&gameboy, instruction_map)?;
+        let breakpoints = HashSet::new();
 
         Ok(GameData {
             gameboy,
             instructions,
+            breakpoints,
         })
     }
 
