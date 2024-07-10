@@ -15,8 +15,8 @@ pub type Word = u8;
 pub type DWord = u16;
 
 pub struct CPU {
-    registers: registers::Registers,
-    ime: bool,
+    pub registers: registers::Registers,
+    pub ime: bool,
 }
 
 impl CPU {
@@ -28,10 +28,9 @@ impl CPU {
     }
 
     pub fn run(&mut self, mmu: &mut MMU) -> Result<(), io::Error> {
-        loop {
-            let word = self.fetch_next_word(mmu)?;
-            instructions::execute(word, self, mmu)?;
-        }
+        let word = self.fetch_next_word(mmu)?;
+        instructions::execute(word, self, mmu)?;
+        Ok(())
     }
 
     pub fn fetch_next_word(&mut self, mmu: &mut MMU) -> Result<u8, io::Error> {
