@@ -21,10 +21,11 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut mmu = MMU::new(&mut cartridge.mbc, false);
     let mut cpu = CPU::new();
 
-    loop {
+    while cpu.registers.pc != 0x100 {
         cpu.run(&mut mmu);
         unsafe {
             ppu::run(&mut mmu);
         }
-    }
+  }
+  Ok(())
 }
