@@ -9,6 +9,7 @@ use egui::{pos2, vec2, Align2, FontDefinitions, Pos2, Rect, ScrollArea, Sense, T
 use game_data::{GameData, RunStatus};
 use instruction_map::InstructionMap;
 use std::env;
+use crate::lcd::{GAMEBOY_SCREEN_WIDTH, GAMEBOY_SCREEN_HEIGHT};
 
 const SOURCE_CODE_LINK: &str = "https://github.com/hferraud/gbmu/";
 
@@ -111,15 +112,25 @@ impl App {
             .resizable(true)
             .default_width(central_panel.available_width() * DEFAULT_GAME_PANEL_WIDTH_RATIO)
             .show_inside(central_panel, |ui| {
-                let (response, painter) = ui.allocate_painter(Vec2::new(160., 144.), Sense::focusable_noninteractive());
+                // game_data.gameboy.lcd.display(ui);
+                let available_size = ui.available_size();
+                let ratio_x = (available_size.x / GAMEBOY_SCREEN_WIDTH as f32).floor();
+                let ratio_y = (available_size.y / GAMEBOY_SCREEN_HEIGHT as f32).floor();
+                let ratio = ratio_x.min(ratio_y);
+                let painter_size = Vec2::new(GAMEBOY_SCREEN_WIDTH as f32 * ratio, GAMEBOY_SCREEN_HEIGHT as f32 * ratio);
+                let pixel_size = Vec2::splat(ratio);
+                let (response, painter) = ui.allocate_painter(
+                    painter_size, Sense::focusable_noninteractive()
+                );
+
                 let viewport = response.rect;
                 for (x, line) in game_data.gameboy.lcd.iter().enumerate() {
                     for (y, color) in line.iter().enumerate() {
                         let position = Pos2 {
-                            x: viewport.min.x + x as f32,
-                            y: viewport.min.y + y as f32,
+                            x: viewport.min.x + pixel_size.x * x as f32,
+                            y: viewport.min.y + pixel_size.y * y as f32,
                         };
-                        let pixel = Rect::from_min_size(position, Vec2::splat(1.));
+                        let pixel = Rect::from_min_size(position, pixel_size);
                         let (r, g, b) = color;
                         let fill_color = Color32::from_rgb(*r, *g, *b);
                         painter.rect_filled(pixel, Rounding::ZERO, fill_color);

@@ -1,7 +1,8 @@
 use std::ops::{Index, IndexMut};
+use egui::{Ui, Sense, Vec2, Pos2, Rect, Color32, Rounding};
 
-const GAMEBOY_SCREEN_WIDTH: usize = 160;
-const GAMEBOY_SCREEN_HEIGHT: usize = 144;
+pub const GAMEBOY_SCREEN_WIDTH: usize = 160;
+pub const GAMEBOY_SCREEN_HEIGHT: usize = 144;
 
 type Pixel = (u8, u8, u8);
 
@@ -26,7 +27,7 @@ impl IndexMut<(usize, usize)> for LCD {
 impl LCD {
     pub fn new() -> Self {
         Self {
-            image: [[(0, 0, 0); GAMEBOY_SCREEN_HEIGHT]; GAMEBOY_SCREEN_WIDTH]
+            image: [[(0, 0, 0); GAMEBOY_SCREEN_HEIGHT]; GAMEBOY_SCREEN_WIDTH],
         }
     }
 
