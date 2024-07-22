@@ -5,9 +5,7 @@ use crate::app::instruction_map::Instruction;
 use crate::error;
 use crate::gameboy::Gameboy;
 use anyhow::Result;
-use egui::{
-    pos2, vec2, Align2, FontDefinitions, Pos2, Rect, ScrollArea, Sense, TextStyle, Ui, Vec2,
-};
+use egui::{pos2, vec2, Align2, FontDefinitions, Pos2, Rect, ScrollArea, Sense, TextStyle, Ui, Vec2, Stroke, Color32, Rounding};
 use game_data::{GameData, RunStatus};
 use instruction_map::InstructionMap;
 use std::env;
@@ -15,9 +13,6 @@ use std::env;
 const SOURCE_CODE_LINK: &str = "https://github.com/hferraud/gbmu/";
 
 const ROM_IS_NOT_INSERTED: &str = "ROM is not inserted";
-
-const GAMEBOY_SCREEN_WIDTH: u32 = 160;
-const GAMEBOY_SCREEN_HEIGHT: u32 = 144;
 
 const DEFAULT_GAME_PANEL_WIDTH_RATIO: f32 = 0.55;
 const DEFAULT_INSTRUCTION_PANEL_WIDTH_RATIO: f32 = 0.55;
@@ -116,7 +111,20 @@ impl App {
             .resizable(true)
             .default_width(central_panel.available_width() * DEFAULT_GAME_PANEL_WIDTH_RATIO)
             .show_inside(central_panel, |ui| {
-                ui.label("Game");
+                let (response, painter) = ui.allocate_painter(Vec2::new(160., 144.), Sense::focusable_noninteractive());
+                let viewport = response.rect;
+                for (x, line) in game_data.gameboy.lcd.iter().enumerate() {
+                    for (y, color) in line.iter().enumerate() {
+                        let position = Pos2 {
+                            x: viewport.min.x + x as f32,
+                            y: viewport.min.y + y as f32,
+                        };
+                        let pixel = Rect::from_min_size(position, Vec2::splat(1.));
+                        let (r, g, b) = color;
+                        let fill_color = Color32::from_rgb(*r, *g, *b);
+                        painter.rect_filled(pixel, Rounding::ZERO, fill_color);
+                    }
+                }
 
                 ui.allocate_space(ui.available_size());
             });
