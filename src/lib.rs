@@ -6,3 +6,4 @@ pub mod gameboy;
 pub mod hram;
 pub mod mmu;
 pub mod wram;
+pub mod lcd;
