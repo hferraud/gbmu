@@ -56,12 +56,11 @@ impl GameData {
 
             let instruction = if opcode == PREFIXED_OPCODE {
                 // TODO crashes if rom ends with PREFIXED_OPCODE
-                i += 1;
-                opcode = rom[i];
-                Self::get_instruction(opcode, i, &instruction_map.cbprefixed)
+                opcode = rom[i + 1];
+                Self::get_instruction(opcode, i, &instruction_map.cbprefixed)?
             } else {
-                Self::get_instruction(opcode, i, &instruction_map.unprefixed)
-            }?;
+                Self::get_instruction(opcode, i, &instruction_map.unprefixed)?
+            };
 
             let instruction_size = instruction.bytes;
             result.push((i as u16, instruction));
