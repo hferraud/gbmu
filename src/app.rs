@@ -163,7 +163,7 @@ impl App {
                     ui.label("Instructions:");
                     if game_data.run_status == RunStatus::Running {
                         // TODO handle error
-                        let _ = game_data.gameboy.cpu.run(&mut game_data.gameboy.mmu);
+                        let _ = game_data.gameboy.run_instruction();
                         if game_data
                             .breakpoints
                             .contains(&game_data.gameboy.cpu.registers.pc)
@@ -172,7 +172,7 @@ impl App {
                         }
                     } else if ui.button("🔁").clicked() {
                         // TODO handle error
-                        let _ = game_data.gameboy.cpu.run(&mut game_data.gameboy.mmu);
+                        let _ = game_data.gameboy.run_instruction();
                     } else if ui.button("▶️").clicked() {
                         game_data.run_status = RunStatus::Running;
                     }

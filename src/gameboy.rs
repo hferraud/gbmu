@@ -2,7 +2,10 @@ use crate::cartridge::Cartridge;
 use crate::cpu::CPU;
 use crate::lcd::LCD;
 use crate::mmu::MMU;
+use crate::ppu;
 use anyhow::Result;
+
+use std::io;
 
 // TODO create a gameboy folder with all the gameboy modules
 pub struct Gameboy {
@@ -19,5 +22,10 @@ impl Gameboy {
             cpu: CPU::default(),
             lcd: LCD::default(),
         })
+    }
+
+    pub fn run_instruction(&mut self) -> Result<(), io::Error> {
+        self.cpu.run(&mut self.mmu)?;
+        ppu::run(&mut self.mmu)
     }
 }

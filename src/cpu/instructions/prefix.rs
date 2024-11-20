@@ -28,13 +28,13 @@ const BIT_INDEX_MASK: u8 = 0b00111000;
 const BIT_INDEX_SHIFT: u8 = 3;
 
 pub fn execute(opcode: u8, cpu: &mut CPU, mmu: &mut MMU) -> Result<(), io::Error> {
-    match opcode & INSTRUCTION_TYPE_MASK >> INSTRUCTION_TYPE_SHIFT {
+    match (opcode & INSTRUCTION_TYPE_MASK) >> INSTRUCTION_TYPE_SHIFT {
         BIT_OPCODE => return bit_b3_r8(opcode, &mut cpu.registers, mmu),
         RES_OPCODE => return res_b3_r8(opcode, &mut cpu.registers, mmu),
         SET_OPCODE => return set_b3_r8(opcode, &mut cpu.registers, mmu),
         _ => {}
     };
-    match opcode & EXTENDED_INSTRUCTION_TYPE_MASK >> EXTENDED_INSTRUCTION_TYPE_SHIFT {
+    match (opcode & EXTENDED_INSTRUCTION_TYPE_MASK) >> EXTENDED_INSTRUCTION_TYPE_SHIFT {
         RLC_OPCODE => rlc_r8(opcode, &mut cpu.registers, mmu),
         RRC_OPCODE => rrc_r8(opcode, &mut cpu.registers, mmu),
         RL_OPCODE => rl_r8(opcode, &mut cpu.registers, mmu),

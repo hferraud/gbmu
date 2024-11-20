@@ -20,7 +20,7 @@ pub const DE_MEM_REGISTER_CODE: u8 = 0x1;
 pub const HLI_MEM_REGISTER_CODE: u8 = 0x2;
 pub const HLD_MEM_REGISTER_CODE: u8 = 0x3;
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct Registers {
     pub a: u8,
     pub b: u8,
@@ -39,23 +39,6 @@ pub enum Flags {
     N = 0b01000000,
     H = 0b00100000,
     C = 0b00010000,
-}
-
-impl Default for Registers {
-    fn default() -> Self {
-        Self {
-            a: 0x01,
-            f: 0x80,
-            b: 0x00,
-            c: 0x13,
-            d: 0x00,
-            e: 0xd8,
-            h: 0x01,
-            l: 0x4d,
-            pc: 0x0100,
-            sp: 0xfffe,
-        }
-    }
 }
 
 impl Registers {
