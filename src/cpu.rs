@@ -14,19 +14,13 @@ pub const BLOCK_3: u8 = 0b11;
 pub type Word = u8;
 pub type DWord = u16;
 
+#[derive(Default)]
 pub struct CPU {
     pub registers: registers::Registers,
     pub ime: bool,
 }
 
 impl CPU {
-    pub fn new() -> Self {
-        Self {
-            registers: registers::Registers::new(),
-            ime: false,
-        }
-    }
-
     pub fn run(&mut self, mmu: &mut MMU) -> Result<(), io::Error> {
         let word = self.fetch_next_word(mmu)?;
         instructions::execute(word, self, mmu)?;

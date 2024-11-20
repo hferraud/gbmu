@@ -41,8 +41,8 @@ pub enum Flags {
     C = 0b00010000,
 }
 
-impl Registers {
-    pub fn new() -> Self {
+impl Default for Registers {
+    fn default() -> Self {
         Self {
             a: 0x01,
             f: 0x80,
@@ -56,7 +56,9 @@ impl Registers {
             sp: 0xfffe,
         }
     }
+}
 
+impl Registers {
     pub fn set_bc(&mut self, value: u16) {
         self.b = (value & 0xff00 >> 8) as u8;
         self.c = value as u8;

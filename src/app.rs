@@ -1,15 +1,12 @@
 mod game_data;
 mod instruction_map;
 
-use crate::app::instruction_map::Instruction;
-use crate::error;
 use crate::gameboy::Gameboy;
+use crate::lcd::{GAMEBOY_SCREEN_HEIGHT, GAMEBOY_SCREEN_WIDTH};
 use anyhow::Result;
-use egui::{pos2, vec2, Align2, FontDefinitions, Pos2, Rect, ScrollArea, Sense, TextStyle, Ui, Vec2, Stroke, Color32, Rounding};
+use egui::{Color32, FontDefinitions, Pos2, Rect, Rounding, Sense, TextStyle, Ui, Vec2};
 use game_data::{GameData, RunStatus};
 use instruction_map::InstructionMap;
-use std::env;
-use crate::lcd::{GAMEBOY_SCREEN_WIDTH, GAMEBOY_SCREEN_HEIGHT};
 
 const SOURCE_CODE_LINK: &str = "https://github.com/hferraud/gbmu/";
 
@@ -23,8 +20,6 @@ const RAM_DUMP_STEP: usize = 16;
 
 pub struct App {
     game_data: Option<GameData>,
-
-    instruction_map: InstructionMap,
 }
 
 impl App {
@@ -33,7 +28,6 @@ impl App {
         Ok(Self {
             // TODO set game_data to None at creation
             game_data: Some(GameData::new("", &instruction_map)?),
-            instruction_map,
         })
     }
 }
@@ -117,11 +111,13 @@ impl App {
                 let ratio_x = (available_size.x / GAMEBOY_SCREEN_WIDTH as f32).floor();
                 let ratio_y = (available_size.y / GAMEBOY_SCREEN_HEIGHT as f32).floor();
                 let ratio = ratio_x.min(ratio_y);
-                let painter_size = Vec2::new(GAMEBOY_SCREEN_WIDTH as f32 * ratio, GAMEBOY_SCREEN_HEIGHT as f32 * ratio);
-                let pixel_size = Vec2::splat(ratio);
-                let (response, painter) = ui.allocate_painter(
-                    painter_size, Sense::focusable_noninteractive()
+                let painter_size = Vec2::new(
+                    GAMEBOY_SCREEN_WIDTH as f32 * ratio,
+                    GAMEBOY_SCREEN_HEIGHT as f32 * ratio,
                 );
+                let pixel_size = Vec2::splat(ratio);
+                let (response, painter) =
+                    ui.allocate_painter(painter_size, Sense::focusable_noninteractive());
 
                 let viewport = response.rect;
                 for (x, line) in game_data.gameboy.lcd.iter().enumerate() {
@@ -325,7 +321,6 @@ impl App {
 
     fn create_ram_display_line(gameboy: &mut Gameboy, address: usize) -> String {
         let memory = (address..(address + RAM_DUMP_STEP))
-            .into_iter()
             .map(|address| Ok(gameboy.mmu.get_word(address)?))
             .collect::<Result<Vec<u8>>>();
 

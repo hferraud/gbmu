@@ -1,7 +1,6 @@
 use anyhow::Result;
 use serde::Deserialize;
 use std::collections::HashMap;
-use std::fmt::write;
 use std::fmt::Display;
 use std::fmt::Formatter;
 use std::fs::File;
@@ -30,7 +29,6 @@ pub struct Instruction {
 #[derive(Deserialize, Clone, Debug)]
 pub struct Operands {
     name: String,
-    bytes: Option<usize>,
 }
 
 impl InstructionMap {

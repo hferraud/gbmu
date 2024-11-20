@@ -46,7 +46,7 @@ pub struct MMU {
 impl MMU {
     pub fn new(mbc: MBC0, cbg_mode: bool) -> Self {
         let wram = WRAM::new(cbg_mode);
-        let hram = HRAM::new();
+        let hram = HRAM::default();
         MMU {
             mbc,
             wram,

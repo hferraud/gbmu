@@ -3,7 +3,7 @@ use crate::error;
 use crate::gameboy::Gameboy;
 use anyhow::{anyhow, Result};
 use std::collections::HashMap;
-use std::{collections::HashSet, env, io};
+use std::{collections::HashSet, env};
 
 const PREFIXED_OPCODE: u8 = 0xCB;
 
@@ -85,6 +85,6 @@ impl GameData {
                 opcode,
                 opcode
             ))
-            .map(Instruction::clone)
+            .cloned()
     }
 }

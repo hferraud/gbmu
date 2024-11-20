@@ -1,5 +1,4 @@
 use std::ops::{Index, IndexMut};
-use egui::{Ui, Sense, Vec2, Pos2, Rect, Color32, Rounding};
 
 pub const GAMEBOY_SCREEN_WIDTH: usize = 160;
 pub const GAMEBOY_SCREEN_HEIGHT: usize = 144;
@@ -24,13 +23,15 @@ impl IndexMut<(usize, usize)> for LCD {
     }
 }
 
-impl LCD {
-    pub fn new() -> Self {
+impl Default for LCD {
+    fn default() -> Self {
         Self {
             image: [[(0, 0, 0); GAMEBOY_SCREEN_HEIGHT]; GAMEBOY_SCREEN_WIDTH],
         }
     }
+}
 
+impl LCD {
     pub fn iter(&self) -> std::slice::Iter<[Pixel; GAMEBOY_SCREEN_HEIGHT]> {
         self.image.iter()
     }
