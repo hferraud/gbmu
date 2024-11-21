@@ -9,6 +9,7 @@ use gbmu::cartridge::Cartridge;
 use std::error::Error;
 use std::io;
 use std::io::Read;
+use gbmu::ppu::print_bg;
 
 fn main() -> Result<(), Box<dyn Error>> {
     let args: Vec<String> = env::args().collect();
@@ -26,6 +27,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         unsafe {
             ppu::run(&mut mmu);
         }
-  }
-  Ok(())
+    }
+    print_bg(&mut mmu);
+    Ok(())
 }
