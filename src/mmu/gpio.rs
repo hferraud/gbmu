@@ -9,7 +9,9 @@ pub struct GPIO {
 
 impl Default for GPIO {
     fn default() -> Self {
-        Self { data: [0; GPIO_SIZE] }
+        Self {
+            data: [0; GPIO_SIZE],
+        }
     }
 }
 

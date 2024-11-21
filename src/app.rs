@@ -1,13 +1,13 @@
 mod game_data;
 mod instruction_map;
 
-use std::sync::{Arc, Mutex};
 use crate::gameboy::Gameboy;
 use crate::lcd::{GAMEBOY_SCREEN_HEIGHT, GAMEBOY_SCREEN_WIDTH};
 use anyhow::Result;
 use egui::{Color32, FontDefinitions, Pos2, Rect, Rounding, Sense, TextStyle, Ui, Vec2};
 use game_data::{GameData, RunStatus};
 use instruction_map::InstructionMap;
+use std::sync::{Arc, Mutex};
 
 const SOURCE_CODE_LINK: &str = "https://github.com/hferraud/gbmu/";
 
@@ -96,9 +96,7 @@ impl App {
             return;
         };
 
-        let mut game_data = game_data
-            .lock()
-            .expect("game_data mutex poisoned");
+        let mut game_data = game_data.lock().expect("game_data mutex poisoned");
         egui::CentralPanel::default().show(ctx, |ui| {
             Self::render_game_panel(ui, &game_data);
             Self::render_debugger_panel(ui, &mut game_data);

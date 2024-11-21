@@ -3,9 +3,9 @@ use crate::error;
 use crate::gameboy::Gameboy;
 use anyhow::{anyhow, Result};
 use std::collections::HashMap;
-use std::{collections::HashSet, env, thread};
 use std::sync::{Arc, Mutex};
 use std::thread::JoinHandle;
+use std::{collections::HashSet, env, thread};
 
 const PREFIXED_OPCODE: u8 = 0xCB;
 
@@ -14,7 +14,7 @@ pub struct GameData {
     pub instructions: Vec<(u16, Instruction)>,
     pub breakpoints: HashSet<u16>,
     pub run_status: RunStatus,
-    pub join_handle: Option<JoinHandle<Result<()>>>
+    pub join_handle: Option<JoinHandle<Result<()>>>,
 }
 
 #[derive(Eq, PartialEq)]
@@ -47,19 +47,19 @@ impl GameData {
             run_status: RunStatus::Waiting,
             join_handle: None,
         }));
-       
+
         let thread_game_data = Arc::clone(&game_data);
-        game_data.lock().expect("game_data mutex is poisoned")
+        game_data
+            .lock()
+            .expect("game_data mutex is poisoned")
             .join_handle = Some(thread::spawn(move || Self::routine(thread_game_data)));
 
         Ok(game_data)
     }
-    
+
     fn routine(game_data___: Arc<Mutex<GameData>>) -> Result<()> {
         loop {
-            let mut game_data = game_data___
-                .lock()
-                .expect("game_data mutex is poisoned");
+            let mut game_data = game_data___.lock().expect("game_data mutex is poisoned");
 
             match game_data.run_status {
                 RunStatus::Running => {
@@ -67,7 +67,7 @@ impl GameData {
                     game_data.gameboy.run_instruction().inspect_err(|_| {
                         game_data.run_status = RunStatus::Error;
                     })?;
-                    
+
                     if game_data
                         .breakpoints
                         .contains(&game_data.gameboy.cpu.registers.pc)
@@ -75,9 +75,9 @@ impl GameData {
                         game_data.run_status = RunStatus::Waiting;
                     }
                     // TODO sleep()
-                },
+                }
                 RunStatus::Waiting => continue,
-                RunStatus::Stop => return Ok(()) ,
+                RunStatus::Stop => return Ok(()),
                 RunStatus::Error => return Err(anyhow!("Undefined error")),
             }
         }
