@@ -23,13 +23,13 @@ pub const HLD_MEM_REGISTER_CODE: u8 = 0x3;
 #[derive(Debug)]
 pub struct Registers {
     pub a: u8,
-    f: u8,
-    b: u8,
+    pub f: u8,
+    pub b: u8,
     pub c: u8,
-    d: u8,
-    e: u8,
-    h: u8,
-    l: u8,
+    pub d: u8,
+    pub e: u8,
+    pub h: u8,
+    pub l: u8,
     pub pc: u16,
     pub sp: u16,
 }
@@ -44,16 +44,16 @@ pub enum Flags {
 impl Registers {
     pub fn new() -> Self {
         Self {
-            a: 0x0,
-            f: 0x0,
+            a: 0x01,
+            f: 0xb0,
             b: 0x0,
-            c: 0x0,
+            c: 0x13,
             d: 0x0,
-            e: 0x0,
-            h: 0x0,
-            l: 0x0,
-            pc: 0x0,
-            sp: 0x0,
+            e: 0xd8,
+            h: 0x01,
+            l: 0x4d,
+            pc: 0x100,
+            sp: 0xFFFE,
         }
     }
 
@@ -122,6 +122,12 @@ impl Registers {
 
     pub fn set_h_flag_add(&mut self, lhs: u8, rhs: u8) {
         let value = ((lhs & 0x0F) + (rhs & 0x0F)) & 0x10 != 0;
+
+        self.set_flags(Flags::H, value);
+    }
+
+    pub fn set_h_flag_add_u16(&mut self, lhs: u16, rhs: u16) {
+        let value = ((lhs & 0x0FF) + (rhs & 0x0FF)) & 0x100 != 0;
 
         self.set_flags(Flags::H, value);
     }

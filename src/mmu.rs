@@ -72,6 +72,9 @@ impl<'a> MMU<'a> {
     }
 
     pub fn get_word(&mut self, address: usize) -> Result<u8, io::Error> {
+        if (address == 0xFF44) {
+            return Ok(0x90);
+        }
         Ok(*(self.fetch_word_address(address)?))
     }
 

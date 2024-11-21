@@ -76,7 +76,7 @@ fn add(operand: u8, carry: bool, registers: &mut Registers) -> Result<u8, io::Er
     let (mut result, mut overflow) = a.overflowing_add(operand);
     if carry {
         let mut carry_overflow: bool;
-        (result, carry_overflow) = a.overflowing_add(registers.get_flag(Flags::C) as u8);
+        (result, carry_overflow) = result.overflowing_add(registers.get_flag(Flags::C) as u8);
         overflow = overflow | carry_overflow;
     }
     registers.set_flags(Flags::C, overflow);

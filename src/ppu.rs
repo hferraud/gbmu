@@ -23,23 +23,26 @@ pub unsafe fn run(mmu: &mut MMU) -> Result<(), io::Error> {
 
 pub fn print_bg(mmu: &mut MMU) -> Result<(), io::Error> {
     for row in 0..32 {
-        for i in 0..(32 * 8 * 2 + 33) {
-            print!("-");
-        }
-        println!();
+        // for i in 0..(32 * 8 * 2 + 33) {
+        //     print!("-");
+        // }
+        // println!();
         for line in 0..8 {
-            print!("|");
+            // print!("|");
             for col in 0..32 {
                 let tile_index = mmu.get_word(0x9800 + 32 * row + col)?;
-                print_tile_line(mmu, tile_index, line);
-                print!("|");
+                // if (tile_index != 0) {
+                    println!("tile index: {:X}, X: {:X}, Y:{:X}", tile_index, row, col);
+                // }
+                // print_tile_line(mmu, tile_index, line);
+                // print!("|");
             }
-            println!();
+            // println!();
         }
     }
-    for i in 0..(32 * 8 * 2 + 33) {
-        print!("-");
-    }
+    // for i in 0..(32 * 8 * 2 + 33) {
+    //     print!("-");
+    // }
     println!();
     println!();
     println!();
@@ -51,8 +54,8 @@ fn print_tile_line(mmu: &mut MMU, tile_id: u8, line: u8) -> Result<(), io::Error
 
 
     for j in 0..8 {
-        let left = tile_line >> 8;
-        let right = tile_line;
+        let left: u8 = (tile_line >> 8) as u8;
+        let right: u8 = (tile_line) as u8;
         let char_sets = " ###";
         let mut bit = (right >> (7 - j) & 1) + ((left >> (7 - j) & 1) << 1);
 

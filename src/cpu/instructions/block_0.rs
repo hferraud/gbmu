@@ -88,7 +88,11 @@ fn dec_r16(opcode: u8, registers: &mut Registers) -> Result<(), io::Error> {
 fn add_hl_r16(opcode: u8, registers: &mut Registers) -> Result<(), io::Error> {
     let register = super::get_r16_code(opcode);
     let register_value = registers.get_dword(register)?;
-    registers.set_hl(registers.get_hl() + register_value);
+    let (result, overflow) = registers.get_hl().overflowing_add(register_value);
+    registers.set_flags(Flags::N, false);
+    registers.set_flags(Flags::C, overflow);
+    registers.set_h_flag_add_u16(registers.get_hl(), register_value);
+    registers.set_hl(result);
     Ok(())
 }
 
@@ -121,7 +125,7 @@ fn ld_r16mem_a(opcode: u8, registers: &mut Registers, mmu: &mut MMU) -> Result<(
 
 fn ld_a_r16mem(opcode: u8, registers: &mut Registers, mmu: &mut MMU) -> Result<(), io::Error> {
     let r16_code = super::get_r16_code(opcode);
-    let word_address = registers.get_dword(r16_code)? as usize;
+    let word_address = registers.get_dword_mem(r16_code)? as usize;
     registers.a = mmu.get_word(word_address)?;
     Ok(())
 }
@@ -144,23 +148,27 @@ fn ld_imm16mem_sp(cpu: &mut CPU, mmu: &mut MMU) -> Result<(), io::Error> {
 }
 
 fn rlca(registers: &mut Registers) {
+    registers.reset_flags();
     registers.set_flags(Flags::C, registers.a & 0b10000000 != 0);
     registers.a <<= 1;
 }
 
 fn rrca(registers: &mut Registers) {
+    registers.reset_flags();
     registers.set_flags(Flags::C, registers.a & 0b00000001 != 0);
     registers.a >>= 1;
 }
 
 fn rla(registers: &mut Registers) {
     let carry = registers.get_flag(Flags::C) as u8;
+    registers.reset_flags();
     registers.set_flags(Flags::C, registers.a & 0b10000000 != 0);
     registers.a = (registers.a << 1) | carry;
 }
 
 fn rra(registers: &mut Registers) {
     let carry = registers.get_flag(Flags::C) as u8;
+    registers.reset_flags();
     registers.set_flags(Flags::C, registers.a & 0b00000001 != 0);
     registers.a = (registers.a >> 1) | (carry << 7);
 }
