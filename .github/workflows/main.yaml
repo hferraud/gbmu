@@ -26,16 +26,17 @@ jobs:
             profile: minimal
             toolchain: stable
             components: rustfmt, clippy
-            targets: wasm32-unknown-unknown
 
         - name: Run rustfmt
           run: cargo fmt -- --check
 
+        - name: Build wasm
+          run: |
+            rustup target add wasm32-unknown-unknown
+            cargo clippy --target wasm32-unknown-unknown --verbose -- -D warnings
+
         - name: Build native
           run: cargo clippy --verbose -- -D warnings
-
-        - name: Build wasm
-          run: cargo clippy --target wasm32-unknown-unknown --verbose -- -D warnings
 
         - name: Run tests
           run: cargo test --verbose
