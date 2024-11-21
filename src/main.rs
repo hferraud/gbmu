@@ -40,10 +40,10 @@ fn main() {
             .and_then(|d| d.get_element_by_id("loading_text"));
         match start_result {
             Ok(_) => {
-                loading_text.map(|e| e.remove());
+                loading_text.inspect(|e| e.remove());
             }
             Err(e) => {
-                loading_text.map(|e| {
+                loading_text.inspect(|e| {
                     e.set_inner_html(
                         "<p> The app has crashed. See the developer console for details. </p>",
                     )
