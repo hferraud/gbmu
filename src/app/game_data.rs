@@ -21,7 +21,8 @@ pub struct GameData {
 pub enum RunStatus {
     Running,
     Waiting,
-    Stop,
+    #[allow(dead_code)]
+    Stop, // TODO use this when changing rom
     Error,
 }
 

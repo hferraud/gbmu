@@ -170,10 +170,10 @@ impl App {
                         } else if ui.button("Start").clicked() {
                             game_data.run_status = RunStatus::Running;
                         }
-                    } else if game_data.run_status == RunStatus::Running {
-                        if ui.button("Stop").clicked() {
-                            game_data.run_status = RunStatus::Waiting;
-                        }
+                    } else if game_data.run_status == RunStatus::Running
+                        && ui.button("Stop").clicked()
+                    {
+                        game_data.run_status = RunStatus::Waiting;
                     }
                 });
                 ui.add(egui::Separator::default().horizontal());
