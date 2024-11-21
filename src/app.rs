@@ -1,6 +1,7 @@
 mod game_data;
 mod instruction_map;
 
+use std::sync::{Arc, Mutex};
 use crate::gameboy::Gameboy;
 use crate::lcd::{GAMEBOY_SCREEN_HEIGHT, GAMEBOY_SCREEN_WIDTH};
 use anyhow::Result;
@@ -19,7 +20,7 @@ const DEFAULT_REGISTERS_PANEL_HEIGHT_RATIO: f32 = 0.3;
 const RAM_DUMP_STEP: usize = 16;
 
 pub struct App {
-    game_data: Option<GameData>,
+    game_data: Option<Arc<Mutex<GameData>>>,
 }
 
 impl App {
@@ -95,9 +96,12 @@ impl App {
             return;
         };
 
+        let mut game_data = game_data
+            .lock()
+            .expect("game_data mutex poisoned");
         egui::CentralPanel::default().show(ctx, |ui| {
-            Self::render_game_panel(ui, game_data);
-            Self::render_debugger_panel(ui, game_data);
+            Self::render_game_panel(ui, &game_data);
+            Self::render_debugger_panel(ui, &mut game_data);
         });
     }
 
@@ -161,20 +165,17 @@ impl App {
 
                 ui.horizontal(|ui| {
                     ui.label("Instructions:");
-                    if game_data.run_status == RunStatus::Running {
-                        // TODO handle error
-                        let _ = game_data.gameboy.run_instruction();
-                        if game_data
-                            .breakpoints
-                            .contains(&game_data.gameboy.cpu.registers.pc)
-                        {
+                    if game_data.run_status == RunStatus::Waiting {
+                        if ui.button("Step").clicked() {
+                            // TODO handle error
+                            let _ = game_data.gameboy.run_instruction();
+                        } else if ui.button("Start").clicked() {
+                            game_data.run_status = RunStatus::Running;
+                        }
+                    } else if game_data.run_status == RunStatus::Running {
+                        if ui.button("Stop").clicked() {
                             game_data.run_status = RunStatus::Waiting;
                         }
-                    } else if ui.button("🔁").clicked() {
-                        // TODO handle error
-                        let _ = game_data.gameboy.run_instruction();
-                    } else if ui.button("▶️").clicked() {
-                        game_data.run_status = RunStatus::Running;
                     }
                 });
                 ui.add(egui::Separator::default().horizontal());
