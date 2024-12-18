@@ -11,23 +11,32 @@ env:
 
 jobs:
 
-  build:
-    runs-on: ubuntu-22.04
-    steps:
-    - uses: actions/checkout@v4
-    - name: Build
-      run: cargo build --verbose
+  actions:
+      runs-on: ubuntu-latest
 
-  tests:
-    runs-on: ubuntu-22.04
-    steps:
-    - uses: actions/checkout@v4
-    - name: Run tests
-      run: cargo test --verbose
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v3
+          with:
+            submodules: recursive
 
-  format:
-    runs-on: ubuntu-22.04
-    steps:
-    - uses: actions/checkout@v4
-    - name: Format
-      run: cargo fmt -- --check
+        - name: Install Rust
+          uses: actions-rs/toolchain@v1
+          with:
+            profile: minimal
+            toolchain: stable
+            components: rustfmt, clippy
+
+        - name: Run rustfmt
+          run: cargo fmt -- --check
+
+        - name: Build wasm
+          run: |
+            rustup target add wasm32-unknown-unknown
+            cargo clippy --target wasm32-unknown-unknown --verbose -- -D warnings
+
+        - name: Build native
+          run: cargo clippy --verbose -- -D warnings
+
+        - name: Run tests
+          run: cargo test --verbose

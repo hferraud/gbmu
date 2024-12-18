@@ -75,9 +75,9 @@ fn add(operand: u8, carry: bool, registers: &mut Registers) -> Result<u8, io::Er
     let a = registers.a;
     let (mut result, mut overflow) = a.overflowing_add(operand);
     if carry {
-        let mut carry_overflow: bool;
+        let carry_overflow: bool;
         (result, carry_overflow) = a.overflowing_add(registers.get_flag(Flags::C) as u8);
-        overflow = overflow | carry_overflow;
+        overflow |= carry_overflow;
     }
     registers.set_flags(Flags::C, overflow);
     registers.set_h_flag_add(operand, a);
@@ -89,9 +89,9 @@ fn sub(operand: u8, carry: bool, registers: &mut Registers) -> Result<u8, io::Er
     let (mut result, mut overflow) = a.overflowing_sub(operand);
 
     if carry {
-        let mut carry_overflow: bool;
+        let carry_overflow: bool;
         (result, carry_overflow) = a.overflowing_sub(registers.get_flag(Flags::C) as u8);
-        overflow = overflow | carry_overflow;
+        overflow |= carry_overflow;
     }
     registers.set_flags(Flags::C, overflow);
     registers.set_flags(Flags::N, true);

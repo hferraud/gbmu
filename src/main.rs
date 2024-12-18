@@ -1,30 +1,55 @@
-use gbmu::cartridge;
-use gbmu::cpu::CPU;
-use gbmu::error;
-use gbmu::mmu::MMU;
-use gbmu::ppu;
-use std::env;
+#![warn(clippy::all, rust_2018_idioms)]
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")] // hide console window on Windows in release
 
-use gbmu::cartridge::Cartridge;
+use gbmu::app::App;
+#[cfg(not(target_arch = "wasm32"))]
 use std::error::Error;
-use std::io;
-use std::io::Read;
 
+// When compiling natively:
+#[cfg(not(target_arch = "wasm32"))]
 fn main() -> Result<(), Box<dyn Error>> {
-    let args: Vec<String> = env::args().collect();
-    if args.len() < 2 {
-        println!("Usage: ./{} <ROM>", args[0]);
-        return Err(Box::new(error::invalid_argument()));
-    }
-    let rom_path = &args[1];
-    let mut cartridge = cartridge::Cartridge::load_rom(rom_path).unwrap();
-    let mut mmu = MMU::new(&mut cartridge.mbc, false);
-    let mut cpu = CPU::new();
+    let native_options = eframe::NativeOptions::default();
+    eframe::run_native(
+        "GBMU",
+        native_options,
+        Box::new(|cc| Ok(Box::new(App::new(cc)?))),
+    )?;
 
-    loop {
-        cpu.run(&mut mmu);
-        unsafe {
-            ppu::run(&mut mmu);
+    Ok(())
+}
+
+// When compiling to web using trunk:
+#[cfg(target_arch = "wasm32")]
+fn main() {
+    // Redirect `log` message to `console.log` and friends:
+    eframe::WebLogger::init(log::LevelFilter::Debug).ok(); // TODO why .ok()
+
+    let web_options = eframe::WebOptions::default();
+
+    wasm_bindgen_futures::spawn_local(async {
+        let start_result = eframe::WebRunner::new()
+            .start(
+                "gbmu_canvas",
+                web_options,
+                // TODO web version does not work yet as the rom can't be read
+                Box::new(|cc| Ok(Box::new(App::new(cc)?))),
+            )
+            .await;
+        let loading_text = web_sys::window()
+            .and_then(|w| w.document())
+            .and_then(|d| d.get_element_by_id("loading_text"));
+        match start_result {
+            Ok(_) => {
+                loading_text.inspect(|e| e.remove());
+            }
+            Err(e) => {
+                loading_text.inspect(|e| {
+                    e.set_inner_html(
+                        "<p> The app has crashed. See the developer console for details. </p>",
+                    )
+                });
+                panic!("failed to start eframe: {e:?}");
+            }
         }
-    }
+    });
 }

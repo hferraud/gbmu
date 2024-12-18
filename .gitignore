@@ -10,3 +10,6 @@ roms/
 # IDE
 .vscode
 .idea
+
+# Build
+dist/

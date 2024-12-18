@@ -58,7 +58,7 @@ fn get_bit_index(opcode: u8) -> u8 {
 fn rlc_r8(opcode: u8, registers: &mut Registers, mmu: &mut MMU) -> Result<(), io::Error> {
     let register = get_r8_code(opcode);
     let value = registers.get_word(register, mmu)?;
-    let shifted_value = (value << 1) | (value >> 7);
+    let shifted_value = value.rotate_left(1);
 
     registers.reset_flags();
     registers.set_flags(Flags::Z, shifted_value == 0);
@@ -69,7 +69,7 @@ fn rlc_r8(opcode: u8, registers: &mut Registers, mmu: &mut MMU) -> Result<(), io
 fn rrc_r8(opcode: u8, registers: &mut Registers, mmu: &mut MMU) -> Result<(), io::Error> {
     let register = get_r8_code(opcode);
     let value = registers.get_word(register, mmu)?;
-    let shifted_value = (value >> 1) | (value << 7);
+    let shifted_value = value.rotate_right(1);
 
     registers.reset_flags();
     registers.set_flags(Flags::Z, shifted_value == 0);
@@ -124,7 +124,7 @@ fn sra_r8(opcode: u8, registers: &mut Registers, mmu: &mut MMU) -> Result<(), io
 fn swap_r8(opcode: u8, registers: &mut Registers, mmu: &mut MMU) -> Result<(), io::Error> {
     let register = get_r8_code(opcode);
     let value = registers.get_word(register, mmu)?;
-    let swap_value = (value << 4) | (value >> 4);
+    let swap_value = value.rotate_right(4);
 
     registers.reset_flags();
     registers.set_flags(Flags::Z, swap_value == 0);

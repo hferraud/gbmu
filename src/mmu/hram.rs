@@ -7,8 +7,8 @@ pub struct HRAM {
     data: Box<[u8]>,
 }
 
-impl HRAM {
-    pub fn new() -> Self {
+impl Default for HRAM {
+    fn default() -> Self {
         HRAM {
             data: vec![0; HRAM_SIZE].into_boxed_slice(),
         }

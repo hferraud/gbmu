@@ -4,13 +4,13 @@ const GPIO_SIZE: usize = 0x80;
 
 #[derive(Debug)]
 pub struct GPIO {
-    data: Box<[u8]>,
+    data: [u8; GPIO_SIZE],
 }
 
-impl GPIO {
-    pub fn new() -> Self {
+impl Default for GPIO {
+    fn default() -> Self {
         Self {
-            data: vec![0; GPIO_SIZE].into_boxed_slice(),
+            data: [0; GPIO_SIZE],
         }
     }
 }
