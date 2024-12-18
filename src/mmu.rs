@@ -45,8 +45,8 @@ const IE_REGISTER: usize = 0xFFFF;
 
 pub struct MMU {
     pub mbc: MBC0,
-    pub wram: WRAM,
-    pub hram: HRAM,
+    wram: WRAM,
+    hram: HRAM,
     gpio: GPIO,
     vram: VRAM,
     oam: OAM,
