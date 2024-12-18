@@ -58,9 +58,9 @@ impl GameData {
         Ok(game_data)
     }
 
-    fn routine(game_data___: Arc<Mutex<GameData>>) -> Result<()> {
+    fn routine(game_data_mutex: Arc<Mutex<GameData>>) -> Result<()> {
         loop {
-            let mut game_data = game_data___.lock().expect("game_data mutex is poisoned");
+            let mut game_data = game_data_mutex.lock().expect("game_data mutex is poisoned");
 
             match game_data.run_status {
                 RunStatus::Running => {
