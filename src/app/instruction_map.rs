@@ -9,7 +9,7 @@ use std::io::BufReader;
 const INSTRUCTION_MAP_PATH: &str = "assets/instruction_map.json";
 
 #[derive(Deserialize)]
-pub struct InstructionMapRaw {
+struct InstructionMapRaw {
     unprefixed: HashMap<String, Instruction>,
     cbprefixed: HashMap<String, Instruction>,
 }
@@ -37,10 +37,14 @@ impl InstructionMap {
         let reader = BufReader::new(file);
         let instruction_map_raw: InstructionMapRaw = serde_json::from_reader(reader)?;
 
-        InstructionMap::from_instruction_map_raw(instruction_map_raw)
+        instruction_map_raw.try_into()
     }
+}
 
-    fn from_instruction_map_raw(value: InstructionMapRaw) -> Result<Self> {
+impl TryFrom<InstructionMapRaw> for InstructionMap {
+    type Error = anyhow::Error;
+
+    fn try_from(value: InstructionMapRaw) -> Result<Self, Self::Error> {
         Ok(Self {
             unprefixed: convert_keys_to_u8(value.unprefixed)?,
             cbprefixed: convert_keys_to_u8(value.cbprefixed)?,
