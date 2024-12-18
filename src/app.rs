@@ -17,7 +17,7 @@ const DEFAULT_GAME_PANEL_WIDTH_RATIO: f32 = 0.55;
 const DEFAULT_INSTRUCTION_PANEL_WIDTH_RATIO: f32 = 0.55;
 const DEFAULT_REGISTERS_PANEL_HEIGHT_RATIO: f32 = 0.3;
 
-const RAM_DUMP_STEP: usize = 16;
+const MEMORY_MAP_DUMP_STEP: usize = 16;
 
 pub struct App {
     game_data: Option<Arc<Mutex<GameData>>>,
@@ -232,7 +232,7 @@ impl App {
                 ui.set_width(available_width);
 
                 Self::render_registers_panel(ui, game_data);
-                Self::render_ram_panel(ui, game_data);
+                Self::render_memory_map_panel(ui, game_data);
 
                 ui.allocate_space(ui.available_size());
             });
@@ -279,31 +279,31 @@ impl App {
         registers_panel.label(format!("ime: {}", gameboy.cpu.ime));
     }
 
-    fn render_ram_panel(memory_panel: &mut Ui, game_data: &mut GameData) {
+    fn render_memory_map_panel(memory_panel: &mut Ui, game_data: &mut GameData) {
         let available_height = memory_panel.available_height();
-        egui::TopBottomPanel::bottom("RAM panel")
+        egui::TopBottomPanel::bottom("Memory map panel")
             .resizable(false)
             .default_height(available_height)
             .show_inside(memory_panel, |ui| {
                 ui.set_height(available_height);
 
-                ui.label("RAM:");
+                ui.label("Memory map:");
                 ui.add(egui::Separator::default().horizontal());
 
                 egui::ScrollArea::both()
                     .auto_shrink([false, false])
                     .show(ui, |ui| {
-                        Self::render_ram(ui, &mut game_data.gameboy);
+                        Self::render_memory_map(ui, &mut game_data.gameboy);
                     });
 
                 ui.allocate_space(ui.available_size());
             });
     }
 
-    fn render_ram(ram_panel: &mut Ui, gameboy: &mut Gameboy) {
+    fn render_memory_map(ram_panel: &mut Ui, gameboy: &mut Gameboy) {
         let font_id = TextStyle::Body.resolve(ram_panel.style());
         let row_height = ram_panel.fonts(|f| f.row_height(&font_id));
-        const NUM_ROWS: usize = 0xFFFF / RAM_DUMP_STEP;
+        const NUM_ROWS: usize = 0xFFFF / MEMORY_MAP_DUMP_STEP;
         egui::ScrollArea::both().auto_shrink([false; 2]).show_rows(
             ram_panel,
             row_height,
@@ -311,15 +311,18 @@ impl App {
             |ui, row_range| {
                 for row in row_range {
                     ui.horizontal(|ui| {
-                        ui.label(Self::create_ram_display_line(gameboy, row * RAM_DUMP_STEP));
+                        ui.label(Self::create_memory_map_display_line(
+                            gameboy,
+                            row * MEMORY_MAP_DUMP_STEP,
+                        ));
                     });
                 }
             },
         );
     }
 
-    fn create_ram_display_line(gameboy: &mut Gameboy, address: usize) -> String {
-        let memory = (address..(address + RAM_DUMP_STEP))
+    fn create_memory_map_display_line(gameboy: &mut Gameboy, address: usize) -> String {
+        let memory = (address..(address + MEMORY_MAP_DUMP_STEP))
             .map(|address| Ok(gameboy.mmu.get_word(address)?))
             .collect::<Result<Vec<u8>>>();
 
@@ -330,12 +333,12 @@ impl App {
         let fold_fn = |acc, elem| acc + format!(" {elem:02X}").as_str();
         let data = memory
             .iter()
-            .take(RAM_DUMP_STEP / 2)
+            .take(MEMORY_MAP_DUMP_STEP / 2)
             .fold(String::new(), fold_fn)
             + " "
             + &memory
                 .iter()
-                .skip(RAM_DUMP_STEP / 2)
+                .skip(MEMORY_MAP_DUMP_STEP / 2)
                 .fold(String::new(), fold_fn);
 
         let ascii = memory.iter().fold(String::new(), |mut acc, elem| {
